@@ -1,0 +1,100 @@
+.admin-dashboard {
+  padding: 20px;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+.admin-dashboard h1 {
+  margin-bottom: 20px;
+  text-align: center;
+  color: #f1f1f1;
+}
+
+.user-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+  background-color: #1c1c1c;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(255,255,255,0.1);
+}
+
+.user-form input,
+.user-form select {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: #2c2c2c;
+  color: white;
+}
+
+.user-form button {
+  padding: 8px 12px;
+  border-radius: 5px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.user-form button:hover {
+  background-color: #0056b3;
+}
+
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #1c1c1c;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(255,255,255,0.1);
+}
+
+.user-table th,
+.user-table td {
+  padding: 12px 15px;
+  text-align: left;
+  color: white;
+}
+
+.user-table th {
+  background-color: #333;
+}
+
+.user-table tr:nth-child(even) {
+  background-color: #2a2a2a;
+}
+
+.user-table tr:hover {
+  background-color: #3a3a3a;
+}
+
+.user-table button {
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.user-table button:first-child {
+  background-color: #ffc107;
+  color: black;
+  margin-right: 5px;
+}
+
+.user-table button:first-child:hover {
+  background-color: #e0a800;
+}
+
+.user-table button:last-child {
+  background-color: #dc3545;
+  color: white;
+}
+
+.user-table button:last-child:hover {
+  background-color: #a71d2a;
+}

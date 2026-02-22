@@ -1,0 +1,75 @@
+.add-bit-form {
+  font-family: Arial, sans-serif;
+  color: #fff;
+  max-width: 1400px;
+  margin: 20px auto;
+}
+
+.form-columns {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+}
+
+.card {
+  background-color: #000 !important;
+  
+  border-radius: 10px;
+  padding: 15px;
+  flex: 1 1 30%;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.card h2 {
+  color: #ffffff;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 8px;
+  gap: 5px;
+  color: #f2f2f9;
+}
+
+.form-row label {
+  min-width: 70px;
+  font-weight: bold;
+  
+}
+
+.form-row input,
+.form-row select {
+  padding: 5px 6px;
+  border-radius: 4px;
+  border: 1px solid #555;
+  background-color: #2c2c2c;
+  color: #fff;
+  font-size: 0.85em;
+  
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 15px;
+  
+}
+
+.btn {
+  padding: 8px 16px;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  
+}
+
+.btn-success { background-color: #28a745; color: #fff; }
+.btn-danger { background-color: #dc3545; color: #fff; }
