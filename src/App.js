@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 
-import Home from "./pages/home";
+import Home from "./pages/login";
 import Entry from "./pages/entry";
 import AdvancedSearch from "./pages/advancedSearch";
 import AddBit from "./pages/addBit";
