@@ -11,6 +11,9 @@ const Login = () => {
 
   const navigate = useNavigate();
 
+  // Dynamically uses your deployed Railway backend URL or falls back to local testing
+  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3000";
+
   const loginUser = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -18,25 +21,29 @@ const Login = () => {
 
     try {
       const res = await Axios.post(
-  "http://localhost:3001/api/login",
-  { username, password },
-  { withCredentials: true }
-);
+        `${API_URL}/api/login`, // Dynamic API target
+        { username, password },
+        { withCredentials: true }
+      );
 
-if (res.data.authenticated) {
-  const role = res.data.role;
+      if (res.data.authenticated) {
+        const role = res.data.role;
 
-  localStorage.setItem("isAuthenticated", "true");
-  localStorage.setItem("user", JSON.stringify({ username, role }));
+        localStorage.setItem("isAuthenticated", "true");
+        localStorage.setItem("user", JSON.stringify({ username, role }));
 
-  window.dispatchEvent(new Event("storage"));
-  navigate("/");
-} else {
-  setError("Invalid username or password");
-}
+        window.dispatchEvent(new Event("storage"));
+        navigate("/");
+      } else {
+        setError(res.data.error || "Invalid username or password");
+      }
     } catch (err) {
       console.error(err);
-      setError("Server error. Please try again.");
+      if (err.response && err.response.data && err.response.data.error) {
+        setError(err.response.data.error);
+      } else {
+        setError("Server error. Please try again.");
+      }
     }
 
     setLoading(false);
