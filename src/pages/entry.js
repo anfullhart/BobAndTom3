@@ -8,7 +8,7 @@ const Entry = () => {
     const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3000";
     
     const getTest = () => {
-        Axios.get(`${API_URL}`.then((response) =>{
+        Axios.get(`${API_URL}`).then((response) =>{
             setTest(response.data);
             
 
