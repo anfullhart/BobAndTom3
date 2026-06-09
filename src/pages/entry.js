@@ -2,12 +2,13 @@ import { React, useState, useEffect } from "react";
 import Home from "../style/home.css";
 import { Link } from 'react-router-dom';
 import Axios from "axios";
-import e from "cors";
+//import e from "cors";
 const Entry = () => {
     const [test, setTest] = useState("");
-
+    const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3000";
+    
     const getTest = () => {
-        Axios.get("http://localhost:3001/").then((response) =>{
+        Axios.get(`${API_URL}`.then((response) =>{
             setTest(response.data);
             
 
