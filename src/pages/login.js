@@ -19,7 +19,7 @@ const Login = () => {
     setLoading(true);
     setError("");
 
-    try {
+    /*try {
       const res = await Axios.post(
         `${API_URL}/api/login`, // Dynamic API target
         { username, password },
@@ -47,6 +47,7 @@ const Login = () => {
     }
 
     setLoading(false);
+    */
   };
 
   return (
