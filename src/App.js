@@ -22,16 +22,16 @@ import AdminDashboard from "./pages/adminDashboard";
 import DetailedLogResults from "./pages/detailedLogResults";
 import ProtectedRoute from "./pages/protectedRoute";
 import RoleProtectedRoute from "./pages/roleProtectedRoute";
-
+/*
 function App() {
   return (
     <Router>
       <Navbar />
       <Routes>
-        {/* Login is public */}
+        {/* Login is public }
         <Route path="/login" element={<LogIn />} />
 
-        {/* Home - any logged in user */}
+        {/* Home - any logged in user }
         <Route
           path="/"
           element={
@@ -41,7 +41,7 @@ function App() {
           }
         />
 
-        {/* ENTRY - ONLY admin & owner */}
+        {/* ENTRY - ONLY admin & owner }
         <Route
           path="/entry"
           element={
@@ -51,19 +51,19 @@ function App() {
           }
         />
 
-        {/* Search pages - available to all logged-in users */}
+        {/* Search pages - available to all logged-in users }
         <Route path="/advancedSearch" element={<ProtectedRoute><AdvancedSearch /></ProtectedRoute>} />
         <Route path="/results" element={<ProtectedRoute><Results /></ProtectedRoute>} />
         <Route path="/searchMedia" element={<ProtectedRoute><SearchMedia /></ProtectedRoute>} />
         <Route path="/searchRunSheet" element={<ProtectedRoute><SearchRunSheet /></ProtectedRoute>} />
         <Route path="/detailedBitResults" element={<ProtectedRoute><DetailedBitResults /></ProtectedRoute>} />
         <Route path="/detailedLogResults" element={<ProtectedRoute><DetailedLogResults /></ProtectedRoute>} />
-        {/* Other admin-level functionality (optional — restrict if needed) */}
+        {/* Other admin-level functionality (optional — restrict if needed) }
         <Route path="/addBit" element={<ProtectedRoute><AddBit /></ProtectedRoute>} />
         <Route path="/addToday" element={<ProtectedRoute><AddToday /></ProtectedRoute>} />
         <Route path="/cueSheet" element={<RoleProtectedRoute allowedRoles={["admin", "owner"]}><CueSheet /></RoleProtectedRoute>} />
         <Route path="/excel" element={<ProtectedRoute><Excel /></ProtectedRoute>} />
-                {/* Edit Bit - ONLY admin & owner */}
+                {/* Edit Bit - ONLY admin & owner }
         <Route
           path="/editBit"
           element={
@@ -77,7 +77,7 @@ function App() {
         <Route path="/editLog" element={<ProtectedRoute><EditLog /></ProtectedRoute>} />
         <Route path="/addArtist" element={<ProtectedRoute><AddArtist /></ProtectedRoute>} />
 
-        {/* Admin dashboard - admin & owner only */}
+        {/* Admin dashboard - admin & owner only }
         <Route
           path="/admin"
           element={
@@ -89,6 +89,17 @@ function App() {
       </Routes>
     </Router>
   );
+
 }
+*/
+
+function App(){
+   return (
+    <Router>
+      <Navbar />
+     </Router>
+  );
+}
+
 
 export default App;
