@@ -1,27 +1,27 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from "../components/Navbar";
+import Navbar from "./components/Navbar";
 
-import Home from "./home";
-import Entry from "./entry";
-import AdvancedSearch from "./advancedSearch";
-import AddBit from "./addBit";
-import LogIn from "./login";
-import AddToday from "./addToday";
-import CueSheet from "./cueSheet";
-import Results from "./results";
-import Excel from "./excel";
-import DetailedBitResults from "./detailedBitResults";
-import SearchMedia from "./searchMedia";
-import SearchRunSheet from "./searchRunSheet";
-import EditBit from "./editBit";
-import LogResults from "./logResults";
-import EditLog from "./editLog";
-import AddArtist from "./addArtist";
-import AdminDashboard from "./adminDashboard";
-import DetailedLogResults from "./detailedLogResults";
-import ProtectedRoute from "./protectedRoute";
-import RoleProtectedRoute from "./roleProtectedRoute";
+import Home from "./pages/home";
+import Entry from "./pages/entry";
+import AdvancedSearch from "./pages/advancedSearch";
+import AddBit from "./pages/addBit";
+import LogIn from "./pages/login";
+import AddToday from "./pages/addToday";
+import CueSheet from "./pages/cueSheet";
+import Results from "./pages/results";
+import Excel from "./pages/excel";
+import DetailedBitResults from "./pages/detailedBitResults";
+import SearchMedia from "./pages/searchMedia";
+import SearchRunSheet from "./pages/searchRunSheet";
+import EditBit from "./pages/editBit";
+import LogResults from "./pages/logResults";
+import EditLog from "./pages/editLog";
+import AddArtist from "./pages/addArtist";
+import AdminDashboard from "./pages/adminDashboard";
+import DetailedLogResults from "./pages/detailedLogResults";
+import ProtectedRoute from "./pages/protectedRoute";
+import RoleProtectedRoute from "./pages/roleProtectedRoute";
 
 function App() {
   return (
