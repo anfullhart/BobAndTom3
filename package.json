@@ -29,9 +29,9 @@
     "concurrently": "^9.1.0"
   },
   "scripts": {
-    "start": "concurrently \"npm:start-client\" \"npm:start-server\"",
+    "start": "node src/server.js",
     "start-client": "react-scripts start",
-    "start-server": "node server.js",
+    "start-server": "node src/server.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
