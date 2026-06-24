@@ -12,6 +12,7 @@
     "bootstrap": "^5.3.8",
     "cors": "^2.8.6",
     "express": "^5.2.1",
+    "express-mysql-session": "^3.0.3",
     "express-session": "^1.19.0",
     "file-saver": "^2.0.5",
     "jspdf": "^4.2.0",
