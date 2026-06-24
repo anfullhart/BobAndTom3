@@ -2,6 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import Axios from "axios";
 
+const API_URL =
+  process.env.REACT_APP_API_URL ||
+  "https://bobandtombackend-production-fb6d.up.railway.app";
+
 const LogResults = () => {
   const location = useLocation();
 
@@ -29,7 +33,7 @@ const LogResults = () => {
 
   const fetchLogs = (order) => {
     Axios.get(
-      `http://localhost:3001/api/get/log/${searchKeyword}/${searchArtist}/${searchDate}/${searchType}`
+      `${API_URL}/api/get/log/${searchKeyword}/${searchArtist}/${searchDate}/${searchType}`
     )
       .then((response) => {
         let sortedData = [...response.data];
@@ -50,7 +54,7 @@ const LogResults = () => {
   };
 
   const deleteLog = (RS_ID) => {
-    Axios.post("http://localhost:3001/api/delete/log", { RS_ID })
+    Axios.post(`${API_URL}/api/delete/log`, { RS_ID })
       .then(() => fetchLogs(sortOrder))
       .catch((err) => console.error(err));
   };

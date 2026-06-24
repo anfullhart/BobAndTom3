@@ -12,14 +12,16 @@ const Login = () => {
   const navigate = useNavigate();
 
   // Dynamically uses your deployed Railway backend URL or falls back to local testing
-  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3000";
+  const API_URL =
+    process.env.REACT_APP_API_URL ||
+    "https://bobandtombackend-production-fb6d.up.railway.app";
 
   const loginUser = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
-    /*try {
+    try {
       const res = await Axios.post(
         `${API_URL}/api/login`, // Dynamic API target
         { username, password },
@@ -47,7 +49,7 @@ const Login = () => {
     }
 
     setLoading(false);
-    */
+    
   };
 
   return (

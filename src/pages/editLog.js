@@ -3,6 +3,10 @@ import { useState, useEffect } from "react";
 import Axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 
+const API_URL =
+  process.env.REACT_APP_API_URL ||
+  "https://bobandtombackend-production-fb6d.up.railway.app";
+
 const EditLog = () => {
   const navigate = useNavigate();
   const { RS_ID = null } = useLocation().state || {};
@@ -12,13 +16,14 @@ const EditLog = () => {
   const [values, setValues] = useState([]);
   const [deletedRows, setDeletedRows] = useState([]); // TRACK DELETED ROWS
 
+  
   useEffect(() => {
     loadArtists();
     loadLogData();
   }, []);
 
   const loadArtists = () => {
-    Axios.get("http://localhost:3001/api/get/artist")
+    Axios.get(`${API_URL}/api/get/artist`)
       .then((res) => setArtistList(res.data))
       .catch((err) => console.error("Artist load error:", err));
   };
@@ -26,7 +31,7 @@ const EditLog = () => {
   const loadLogData = () => {
     if (!RS_ID) return;
 
-    Axios.get(`http://localhost:3001/api/get/runSheet/${RS_ID}`)
+    Axios.get(`${API_URL}/api/get/runSheet/${RS_ID}`)
       .then((res) => {
         if (Array.isArray(res.data) && res.data.length > 0) {
           setValues(
@@ -87,7 +92,7 @@ const EditLog = () => {
       }));
 
     try {
-      await Axios.post("http://localhost:3001/api/edit/runSheet", {
+      await Axios.post(`${API_URL}/api/edit/runSheet`, {
         RS_ID,
         logDate,
         data: payload,

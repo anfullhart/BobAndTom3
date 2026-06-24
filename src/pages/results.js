@@ -2,6 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import Axios from "axios";
 
+const API_URL =
+  process.env.REACT_APP_API_URL ||
+  "https://bobandtombackend-production-fb6d.up.railway.app";
+
 const Results = () => {
   const location = useLocation();
   const searchBitID = location.state?.bitID || '';
@@ -23,14 +27,14 @@ const Results = () => {
   }, []);
 
   const submitSearch = () => {
-    Axios.get(`http://localhost:3001/api/get/${searchBitID}/${searchKeyword}/${searchType}`)
+    Axios.get(`${API_URL}/api/get/${searchBitID}/${searchKeyword}/${searchType}`)
       .then((response) => setBitList(response.data))
       .catch((err) => console.error(err));
   };
 
   const deleteBit = (deleteBitID) => {
     if (!window.confirm(`Delete Record Number ${deleteBitID}?`)) return;
-    Axios.post("http://localhost:3001/api/delete/bit", { bitID: deleteBitID })
+    Axios.post(`${API_URL}/api/delete/bit`, { bitID: deleteBitID })
       .then(() => submitSearch())
       .catch((err) => console.error(err));
   };

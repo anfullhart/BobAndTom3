@@ -2,6 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import Axios from "axios";
 
+const API_URL =
+  process.env.REACT_APP_API_URL ||
+  "https://bobandtombackend-production-fb6d.up.railway.app";
+
 const DetailedBitResults = () => {
   const { type } = useParams();
   const searchBitID = useLocation().state?.searchBitID;
@@ -32,15 +36,15 @@ const DetailedBitResults = () => {
           albumRes,
           hyperlinkRes
         ] = await Promise.all([
-          Axios.get(`http://localhost:3001/api/get/bit/info/${searchBitID}`),
-          Axios.get(`http://localhost:3001/api/get/sport/info/${searchBitID}`),
-          Axios.get(`http://localhost:3001/api/get/subject/info/${searchBitID}`),
-          Axios.get(`http://localhost:3001/api/get/celeb1/info/${searchBitID}`),
-          Axios.get(`http://localhost:3001/api/get/celeb2/info/${searchBitID}`),
-          Axios.get(`http://localhost:3001/api/get/season/info/${searchBitID}`),
-          Axios.get(`http://localhost:3001/api/get/category/info/${searchBitID}`),
-          Axios.get(`http://localhost:3001/api/get/album/info/${searchBitID}`),
-          Axios.get(`http://localhost:3001/api/get/hyperlink/info/${searchBitID}`)
+          Axios.get(`${API_URL}/api/get/bit/info/${searchBitID}`),
+          Axios.get(`${API_URL}/api/get/sport/info/${searchBitID}`),
+          Axios.get(`${API_URL}/api/get/subject/info/${searchBitID}`),
+          Axios.get(`${API_URL}/api/get/celeb1/info/${searchBitID}`),
+          Axios.get(`${API_URL}/api/get/celeb2/info/${searchBitID}`),
+          Axios.get(`${API_URL}/api/get/season/info/${searchBitID}`),
+          Axios.get(`${API_URL}/api/get/category/info/${searchBitID}`),
+          Axios.get(`${API_URL}/api/get/album/info/${searchBitID}`),
+          Axios.get(`${API_URL}/api/get/hyperlink/info/${searchBitID}`)
         ]);
 
         setBitList(Array.isArray(bitRes.data) ? bitRes.data : []);

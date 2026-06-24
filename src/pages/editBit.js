@@ -3,6 +3,12 @@ import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 
+// Uses REACT_APP_API_URL if set (e.g. on Railway), otherwise falls back
+// to your deployed backend so this still works if the env var is missing.
+const API_URL =
+  process.env.REACT_APP_API_URL ||
+  "https://bobandtombackend-production-fb6d.up.railway.app";
+
 const EditBit = () => {
   const locationState = useLocation().state || {};
   const searchBitID = locationState.bitID;
@@ -66,15 +72,15 @@ const EditBit = () => {
           albumRes,
           sportInfoRes,
         ] = await Promise.all([
-          Axios.get(`http://localhost:3001/api/get/bit/info/${searchBitID}`),
-          Axios.get("http://localhost:3001/api/get/celebrity"),
-          Axios.get("http://localhost:3001/api/get/subject"),
-          Axios.get("http://localhost:3001/api/get/artist"),
-          Axios.get("http://localhost:3001/api/get/category"),
-          Axios.get("http://localhost:3001/api/get/sport"),
-          Axios.get("http://localhost:3001/api/get/season"),
-          Axios.get("http://localhost:3001/api/get/album"),
-          Axios.get(`http://localhost:3001/api/get/sport/info/${searchBitID}`),
+          Axios.get(`${API_URL}/api/get/bit/info/${searchBitID}`),
+          Axios.get(`${API_URL}/api/get/celebrity`),
+          Axios.get(`${API_URL}/api/get/subject`),
+          Axios.get(`${API_URL}/api/get/artist`),
+          Axios.get(`${API_URL}/api/get/category`),
+          Axios.get(`${API_URL}/api/get/sport`),
+          Axios.get(`${API_URL}/api/get/season`),
+          Axios.get(`${API_URL}/api/get/album`),
+          Axios.get(`${API_URL}/api/get/sport/info/${searchBitID}`),
         ]);
 
         // Set lists
@@ -138,7 +144,7 @@ const EditBit = () => {
   const handleConfirm = async (e) => {
     e.preventDefault();
     try {
-      await Axios.post("http://localhost:3001/api/update/bit", {
+      await Axios.post(`${API_URL}/api/update/bit`, {
         bitID: searchBitID,
         ...formData,
       });

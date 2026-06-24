@@ -2,6 +2,10 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // <- import navigate
 import Axios from "axios";
 
+const API_URL =
+  process.env.REACT_APP_API_URL ||
+  "https://bobandtombackend-production-fb6d.up.railway.app";
+
 const AddToday = () => {
   const [artistList, setArtistList] = useState([]);
   const navigate = useNavigate(); // <- initialize navigate
@@ -22,7 +26,7 @@ const AddToday = () => {
   const [logDate, setLogDate] = useState(defaultDate);
 
   useEffect(() => {
-    Axios.get("http://localhost:3001/api/get/artist").then((response) => {
+    Axios.get(`${API_URL}/api/get/artist`).then((response) => {
       setArtistList(response.data);
     });
   }, []);
@@ -62,7 +66,7 @@ const AddToday = () => {
       }))
     };
 
-    Axios.post("http://localhost:3001/api/insert/runSheet", payload)
+    Axios.post(`${API_URL}/api/insert/runSheet`, payload)
       .then(() => {
         // Confirmation prompt
         const confirmed = window.confirm("Run Sheet submitted successfully!");

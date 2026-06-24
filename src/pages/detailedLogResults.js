@@ -7,6 +7,10 @@ import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 
+const API_URL =
+  process.env.REACT_APP_API_URL ||
+  "https://bobandtombackend-production-fb6d.up.railway.app";
+
 const DetailedLogResults = () => {
   const locationState = useLocation().state || {};
   const { RS_ID = null } = locationState;
@@ -21,7 +25,7 @@ const DetailedLogResults = () => {
   }, []);
 
   const getArtist = () => {
-    Axios.get("http://localhost:3001/api/get/artist")
+    Axios.get(`${API_URL}/api/get/artist`)
       .then((res) => setArtistList(res.data))
       .catch((err) => console.error("Artist load error:", err));
   };
@@ -29,7 +33,7 @@ const DetailedLogResults = () => {
   const getLogData = () => {
     if (!RS_ID) return;
 
-    Axios.get(`http://localhost:3001/api/get/runSheet/${RS_ID}`)
+    Axios.get(`${API_URL}/api/get/runSheet/${RS_ID}`)
       .then((res) => {
         if (Array.isArray(res.data) && res.data.length > 0) {
           setValues(

@@ -2,6 +2,10 @@ import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import "./addBit.css"; 
 
+const API_URL =
+  process.env.REACT_APP_API_URL ||
+  "https://bobandtombackend-production-fb6d.up.railway.app";
+
 const AddBit = () => {
   const [type, setType] = useState("Bit");
   const [title, setTitle] = useState("");
@@ -43,17 +47,17 @@ const AddBit = () => {
   const [albumList, setAlbumList] = useState([]);
 
   useEffect(() => {
-    Axios.get("http://localhost:3001/api/get/celebrity").then(res => setCelebList(res.data));
-    Axios.get("http://localhost:3001/api/get/subject").then(res => setSubjectList(res.data));
-    Axios.get("http://localhost:3001/api/get/artist").then(res => setArtistList(res.data));
-    Axios.get("http://localhost:3001/api/get/category").then(res => setCategoryList(res.data));
-    Axios.get("http://localhost:3001/api/get/sport").then(res => setSportList(res.data));
-    Axios.get("http://localhost:3001/api/get/season").then(res => setSeasonList(res.data));
-    Axios.get("http://localhost:3001/api/get/album").then(res => setAlbumList(res.data));
+    Axios.get(`${API_URL}/api/get/celebrity`).then(res => setCelebList(res.data));
+    Axios.get(`${API_URL}/api/get/subject`).then(res => setSubjectList(res.data));
+    Axios.get(`${API_URL}/api/get/artist`).then(res => setArtistList(res.data));
+    Axios.get(`${API_URL}/api/get/category`).then(res => setCategoryList(res.data));
+    Axios.get(`${API_URL}/api/get/sport`).then(res => setSportList(res.data));
+    Axios.get(`${API_URL}/api/get/season`).then(res => setSeasonList(res.data));
+    Axios.get(`${API_URL}/api/get/album`).then(res => setAlbumList(res.data));
   }, []);
 
   const submitMedia = () => {
-    Axios.post("http://localhost:3001/api/insert/bit", {
+    Axios.post(`${API_URL}/api/insert/bit`, {
       type, title, category, artist, date, time, autoNum,
       sub1, sub2, sub3, sub4,
       celebrity1, celebrity2,

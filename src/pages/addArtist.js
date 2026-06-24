@@ -2,6 +2,11 @@ import { React, useState, useEffect } from "react";
 import Home from "../style/home.css";
 import { Link } from 'react-router-dom';
 import Axios from "axios";
+
+const API_URL =
+  process.env.REACT_APP_API_URL ||
+  "https://bobandtombackend-production-fb6d.up.railway.app";
+
 const AddArtist = () => {
 
     const [artistName, setArtistName] = useState("");
@@ -16,17 +21,17 @@ const AddArtist = () => {
     getArtist();
   }, []);
   const getArtist = () => {
-    Axios.get("http://localhost:3001/api/get/artist").then((response) => {
+    Axios.get(`${API_URL}/api/get/artist`).then((response) => {
       setArtistList(response.data);
     });
   };
   const addNewArtist = () => {
-    Axios.post('http://localhost:3001/api/insert/artist/', { name: artistName })
+    Axios.post(`${API_URL}/api/insert/artist/`, { name: artistName })
     window.location.reload(true);
   };
 
   const removeArtist = () => {
-    Axios.post('http://localhost:3001/api/delete/artist', {deleteArtist: deleteArtist})
+    Axios.post(`${API_URL}/api/delete/artist`, {deleteArtist: deleteArtist})
     window.location.reload(true);
   };
     return (

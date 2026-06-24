@@ -93,13 +93,6 @@ function App() {
 }
 
 
-function App(){
-   return (
-    <Router>
-      <Navbar />
-     </Router>
-  );
-}
 
 
 export default App;

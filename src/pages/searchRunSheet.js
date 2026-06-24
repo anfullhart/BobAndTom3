@@ -3,6 +3,10 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Axios from 'axios';
 
+const API_URL =
+  process.env.REACT_APP_API_URL ||
+  "https://bobandtombackend-production-fb6d.up.railway.app";
+
 const SearchRunSheet = () => {
   const navigate = useNavigate();
 
@@ -14,7 +18,7 @@ const SearchRunSheet = () => {
 
   // Fetch artist list on mount
   useEffect(() => {
-    Axios.get("http://localhost:3001/api/get/artist")
+    Axios.get(`${API_URL}/api/get/artist`)
       .then((response) => setArtistList(response.data))
       .catch((err) => console.error(err));
   }, []);

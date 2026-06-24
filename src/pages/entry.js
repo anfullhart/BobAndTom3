@@ -5,7 +5,9 @@ import Axios from "axios";
 //import e from "cors";
 const Entry = () => {
     const [test, setTest] = useState("");
-    const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3000";
+    const API_URL =
+      process.env.REACT_APP_API_URL ||
+      "https://bobandtombackend-production-fb6d.up.railway.app";
     
     const getTest = () => {
         Axios.get(`${API_URL}`).then((response) =>{

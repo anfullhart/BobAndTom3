@@ -3,6 +3,10 @@ import "bootstrap/dist/css/bootstrap.css";
 import Axios from "axios";
 import { Link } from "react-router-dom";
 
+const API_URL =
+  process.env.REACT_APP_API_URL ||
+  "https://bobandtombackend-production-fb6d.up.railway.app";
+
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [isLoading, setLoading] = useState(false);
@@ -21,9 +25,8 @@ const ForgotPassword = () => {
     setLoading(true);
 
     try {
-      // TODO: Replace this with your actual backend API route
       const response = await Axios.post(
-        "http://localhost:3001/api/forgot-password",
+        `${API_URL}/api/forgot-password`,
         { email }
       );
 

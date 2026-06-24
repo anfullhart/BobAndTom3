@@ -2,6 +2,10 @@ import React, { useEffect, useState } from "react";
 import Axios from "axios";
 import "./adminDashboard.css";
 
+const API_URL =
+  process.env.REACT_APP_API_URL ||
+  "https://bobandtombackend-production-fb6d.up.railway.app";
+
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -12,7 +16,7 @@ const AdminDashboard = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const res = await Axios.get("http://localhost:3001/api/admin/users", { withCredentials: true });
+      const res = await Axios.get(`${API_URL}/api/admin/users`, { withCredentials: true });
       setUsers(res.data);
     } catch (err) {
       setError("Failed to load users.");
@@ -43,13 +47,13 @@ const AdminDashboard = () => {
 
     if (editUserId) {
       await Axios.put(
-        `http://localhost:3001/api/admin/users/${editUserId}`,
+        `${API_URL}/api/admin/users/${editUserId}`,
         payload,
         { withCredentials: true }
       );
     } else {
       await Axios.post(
-        "http://localhost:3001/api/admin/users",
+        `${API_URL}/api/admin/users`,
         payload,
         { withCredentials: true }
       );
@@ -72,7 +76,7 @@ const AdminDashboard = () => {
   const handleDelete = async (userid) => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
     try {
-      await Axios.delete(`http://localhost:3001/api/admin/users/${userid}`, { withCredentials: true });
+      await Axios.delete(`${API_URL}/api/admin/users/${userid}`, { withCredentials: true });
       fetchUsers();
     } catch (err) {
       console.error(err);
