@@ -18,8 +18,10 @@ const AdminDashboard = () => {
     try {
       const res = await Axios.get(`${API_URL}/api/admin/users`, { withCredentials: true });
       setUsers(res.data);
+    
     } catch (err) {
       setError("Failed to load users.");
+      console.log(err);
     } finally {
       setLoading(false);
     }
