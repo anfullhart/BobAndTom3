@@ -23,36 +23,78 @@ const Entry = () => {
        }, []);
 */
     return (
-   
-    <div  style={{paddingLeft: '28%', paddingTop: '100px'}}>
-        <div>
-            <Link to="/addBit"
-                onMouseEnter={e => e.target.style.background = "grey"}
-                onMouseLeave={e => e.target.style.background = "black"} 
-                 style={{textDecoration: 'none', backgroundColor: 'black', size: '100px',color:'white', fontSize: '20px', padding: '10px 60px', cursor: 'pointer', borderRadius: '5px' }}>
-                Add New Entry
-            </Link>
-            
-            <span style={{padding:'20px'}}></span>
-            <Link to="/addToday"
-                onMouseEnter={e => e.target.style.background = "grey"}
-                onMouseLeave={e => e.target.style.background = "black"} 
-                style={{textDecoration: 'none', backgroundColor: 'black', size: '100px',color:'white', fontSize: '20px', padding: '10px 60px', cursor: 'pointer', borderRadius: '5px' }}>
-                 Today's Log
-            </Link>
-           </div>
-           <div style={{paddingTop:'50px'}}>
-           <Link to="/addArtist"
-                onMouseEnter={e => e.target.style.background = "grey"}
-                onMouseLeave={e => e.target.style.background = "black"} 
-                 style={{textDecoration: 'none', backgroundColor: 'black', size: '100px',color:'white', fontSize: '20px', padding: '10px 60px', marginLeft:'150px', cursor: 'pointer', borderRadius: '5px' }}>
-                 New Artist
-            </Link>
-           </div>
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      minHeight: "100vh",
+      flexDirection: "column"
+    }}
+  >
+    <div
+      style={{
+        display: "flex",
+        gap: "20px",
+        flexWrap: "wrap",
+        justifyContent: "center"
+      }}
+    >
+      <Link
+        to="/addBit"
+        onMouseEnter={e => e.target.style.background = "grey"}
+        onMouseLeave={e => e.target.style.background = "black"}
+        style={{
+          textDecoration: "none",
+          backgroundColor: "black",
+          color: "white",
+          fontSize: "20px",
+          padding: "10px 60px",
+          cursor: "pointer",
+          borderRadius: "5px"
+        }}
+      >
+        Add New Entry
+      </Link>
+
+      <Link
+        to="/addToday"
+        onMouseEnter={e => e.target.style.background = "grey"}
+        onMouseLeave={e => e.target.style.background = "black"}
+        style={{
+          textDecoration: "none",
+          backgroundColor: "black",
+          color: "white",
+          fontSize: "20px",
+          padding: "10px 60px",
+          cursor: "pointer",
+          borderRadius: "5px"
+        }}
+      >
+        Today's Log
+      </Link>
     </div>
-   
-   
-    );
-};
+
+    <div style={{ marginTop: "30px" }}>
+      <Link
+        to="/addArtist"
+        onMouseEnter={e => e.target.style.background = "grey"}
+        onMouseLeave={e => e.target.style.background = "black"}
+        style={{
+          textDecoration: "none",
+          backgroundColor: "black",
+          color: "white",
+          fontSize: "20px",
+          padding: "10px 60px",
+          cursor: "pointer",
+          borderRadius: "5px"
+        }}
+      >
+        New Artist
+      </Link>
+    </div>
+  </div>
+);
+   };
 
 export default Entry;
