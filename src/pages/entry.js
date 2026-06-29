@@ -29,7 +29,7 @@ const Entry = () => {
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        minHeight: "100vh",
+        paddingTop: "100px",
         transform: "translateY(-20%)"
       }}
     >
