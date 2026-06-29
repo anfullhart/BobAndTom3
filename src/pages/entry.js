@@ -23,15 +23,16 @@ const Entry = () => {
        }, []);
 */
     return (
-  <div
-    style={{
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      minHeight: "100vh",
-      flexDirection: "column"
-    }}
-  >
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        transform: "translateY(-20%)"
+      }}
+    >
     <div
       style={{
         display: "flex",
