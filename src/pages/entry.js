@@ -1,101 +1,91 @@
-import { React, useState, useEffect } from "react";
-import Home from "../style/home.css";
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import Axios from "axios";
-//import e from "cors";
+
 const Entry = () => {
-    const [test, setTest] = useState("");
-    const API_URL =
-      process.env.REACT_APP_API_URL ||
-      "https://bobandtombackend-production-fb6d.up.railway.app";
-    
-    const getTest = () => {
-        Axios.get(`${API_URL}`).then((response) =>{
-            setTest(response.data);
-            
+  const [test, setTest] = useState("");
 
-        });
-    }
-    /*
-    useEffect(() => {
-        getTest(); 
-        
-       }, []);
-*/
-    return (
+  const API_URL =
+    process.env.REACT_APP_API_URL ||
+    "https://bobandtombackend-production-fb6d.up.railway.app";
+
+  const getTest = () => {
+    Axios.get(`${API_URL}`).then((response) => {
+      setTest(response.data);
+    });
+  };
+
+  const buttonStyle = {
+    textDecoration: "none",
+    backgroundColor: "black",
+    color: "white",
+    fontSize: "20px",
+    padding: "12px 50px",
+    cursor: "pointer",
+    borderRadius: "5px",
+    textAlign: "center",
+    transition: "background-color 0.2s ease",
+    minWidth: "240px",
+  };
+
+  return (
     <div
       style={{
         display: "flex",
-        flexDirection: "column",
         justifyContent: "center",
-        alignItems: "center",
-        paddingTop: "100px",
-        transform: "translateY(-20%)"
+        alignItems: "flex-start",
+        minHeight: "100vh",
+        width: "100%",
+        paddingTop: "15vh",
+        boxSizing: "border-box",
       }}
     >
-    <div
-      style={{
-        display: "flex",
-        gap: "20px",
-        flexWrap: "wrap",
-        justifyContent: "center"
-      }}
-    >
-      <Link
-        to="/addBit"
-        onMouseEnter={e => e.target.style.background = "grey"}
-        onMouseLeave={e => e.target.style.background = "black"}
+      <div
         style={{
-          textDecoration: "none",
-          backgroundColor: "black",
-          color: "white",
-          fontSize: "20px",
-          padding: "10px 60px",
-          cursor: "pointer",
-          borderRadius: "5px"
+          display: "flex",
+          flexDirection: "column",
+          gap: "20px",
+          alignItems: "center",
         }}
       >
-        Add New Entry
-      </Link>
+        <div
+          style={{
+            display: "flex",
+            gap: "20px",
+            flexWrap: "wrap",
+            justifyContent: "center",
+          }}
+        >
+          <Link
+            to="/addBit"
+            style={buttonStyle}
+            onMouseEnter={(e) => (e.target.style.backgroundColor = "grey")}
+            onMouseLeave={(e) => (e.target.style.backgroundColor = "black")}
+          >
+            Add New Entry
+          </Link>
 
-      <Link
-        to="/addToday"
-        onMouseEnter={e => e.target.style.background = "grey"}
-        onMouseLeave={e => e.target.style.background = "black"}
-        style={{
-          textDecoration: "none",
-          backgroundColor: "black",
-          color: "white",
-          fontSize: "20px",
-          padding: "10px 60px",
-          cursor: "pointer",
-          borderRadius: "5px"
-        }}
-      >
-        Today's Log
-      </Link>
-    </div>
+          <Link
+            to="/addToday"
+            style={buttonStyle}
+            onMouseEnter={(e) => (e.target.style.backgroundColor = "grey")}
+            onMouseLeave={(e) => (e.target.style.backgroundColor = "black")}
+          >
+            Today's Log
+          </Link>
+        </div>
 
-    <div style={{ marginTop: "30px" }}>
-      <Link
-        to="/addArtist"
-        onMouseEnter={e => e.target.style.background = "grey"}
-        onMouseLeave={e => e.target.style.background = "black"}
-        style={{
-          textDecoration: "none",
-          backgroundColor: "black",
-          color: "white",
-          fontSize: "20px",
-          padding: "10px 60px",
-          cursor: "pointer",
-          borderRadius: "5px"
-        }}
-      >
-        New Artist
-      </Link>
+        <Link
+          to="/addArtist"
+          style={buttonStyle}
+          onMouseEnter={(e) => (e.target.style.backgroundColor = "grey")}
+          onMouseLeave={(e) => (e.target.style.backgroundColor = "black")}
+        >
+          New Artist
+        </Link>
+      </div>
     </div>
-  </div>
-);
-   };
+  );
+};
 
 export default Entry;
