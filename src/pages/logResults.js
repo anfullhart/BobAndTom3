@@ -102,29 +102,7 @@ switch (searchType) {
 
   return (
     <div style={{ padding: "20px", color: "#fff", fontFamily: "Arial, sans-serif" }}>
-              <div
-          style={{
-            marginBottom: "25px",
-            backgroundColor: "#1c1c1c",
-            borderRadius: "10px",
-            padding: "15px 20px",
-          }}
-        >
-          <h2 style={{ margin: 0, color: "#00ff88" }}>
-            Search Results
-          </h2>
-
-          <p
-            style={{
-              marginTop: "10px",
-              marginBottom: 0,
-              fontSize: "18px",
-              color: "#ddd",
-            }}
-          >
-            {searchSummary}
-          </p>
-        </div>
+              
       {/* Sort Dropdown */}
       <div style={{ marginBottom: "20px" }}>
         <label style={{ marginRight: "10px", fontWeight: "bold" }}>Sort by Date:</label>
@@ -136,6 +114,17 @@ switch (searchType) {
           <option value="asc">Ascending</option>
           <option value="desc">Descending</option>
         </select>
+
+          <p
+            style={{
+              marginTop: "10px",
+              marginBottom: 0,
+              fontSize: "18px",
+              color: "#ddd",
+            }}
+          >
+            {searchSummary}
+          </p>
       </div>
 
       {/* Log Groups */}
