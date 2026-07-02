@@ -19,20 +19,31 @@ const LogResults = () => {
   const [sortOrder, setSortOrder] = useState("asc");
   const [role, setRole] = useState(null);
 
-  // Build search summary
-  const searchCriteria = [];
+  // Build display text based on the selected search type
+let searchSummary = "Showing all Run Sheets";
 
-  if (searchKeyword) searchCriteria.push(`Keyword: ${searchKeyword}`);
-  if (searchArtist) searchCriteria.push(`Artist: ${searchArtist}`);
-  if (searchDate) searchCriteria.push(`Date: ${searchDate}`);
-  if (searchType) searchCriteria.push(`Type: ${searchType}`);
-  if (searchRSID) searchCriteria.push(`Run Sheet ID: ${searchRSID}`);
+switch (searchType) {
+  case "keyword":
+    searchSummary = `Keyword: ${searchKeyword}`;
+    break;
 
-  const searchSummary =
-    searchCriteria.length > 0
-      ? searchCriteria.join(" | ")
-      : "Showing all Run Sheets";
+  case "artist":
+    searchSummary = `Artist: ${searchArtist}`;
+    break;
 
+  case "date":
+    searchSummary = `Date: ${searchDate}`;
+    break;
+
+  case "id":
+    searchSummary = `Run Sheet ID: ${searchKeyword}`;
+    break;
+
+  default:
+    if (searchKeyword) searchSummary = `Keyword: ${searchKeyword}`;
+    else if (searchArtist) searchSummary = `Artist: ${searchArtist}`;
+    else if (searchDate) searchSummary = `Date: ${searchDate}`;
+}
 
   // Get user role from localStorage
   useEffect(() => {
@@ -91,44 +102,29 @@ const LogResults = () => {
 
   return (
     <div style={{ padding: "20px", color: "#fff", fontFamily: "Arial, sans-serif" }}>
+              <div
+          style={{
+            marginBottom: "25px",
+            backgroundColor: "#1c1c1c",
+            borderRadius: "10px",
+            padding: "15px 20px",
+          }}
+        >
+          <h2 style={{ margin: 0, color: "#00ff88" }}>
+            Search Results
+          </h2>
 
-  <div
-    style={{
-      padding: "20px",
-      color: "#fff",
-      fontFamily: "Arial, sans-serif",
-    }}
-  >
-    <div
-      style={{
-        marginBottom: "25px",
-        backgroundColor: "#1c1c1c",
-        border: "1px solid #444",
-        borderRadius: "10px",
-        padding: "15px 20px",
-      }}
-    >
-      <h2
-        style={{
-          margin: 0,
-          color: "#00ff88",
-        }}
-      >
-        Search Results
-      </h2>
-
-      <p
-        style={{
-          marginTop: "10px",
-          marginBottom: 0,
-          fontSize: "18px",
-          color: "#ddd",
-        }}
-      >
-        {searchSummary}
-      </p>
-    </div>
-    </div>
+          <p
+            style={{
+              marginTop: "10px",
+              marginBottom: 0,
+              fontSize: "18px",
+              color: "#ddd",
+            }}
+          >
+            {searchSummary}
+          </p>
+        </div>
       {/* Sort Dropdown */}
       <div style={{ marginBottom: "20px" }}>
         <label style={{ marginRight: "10px", fontWeight: "bold" }}>Sort by Date:</label>
