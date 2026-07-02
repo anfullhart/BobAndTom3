@@ -1,28 +1,59 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
-import { Link, useLocation, useParams} from "react-router-dom";
-import Axios from 'axios';
-
+import { Link } from "react-router-dom";
 
 const Home = () => {
-    
-    return(
-      <div style={{paddingLeft: '25%', paddingTop: '100px'}}>
-            <Link to="/searchMedia"
-                onMouseEnter={e => e.target.style.background = "grey"}
-                onMouseLeave={e => e.target.style.background = "black"} 
-                 style={{textDecoration: 'none', backgroundColor: 'black', size: '100px',color:'white', fontSize: '20px', padding: '10px 60px', cursor: 'pointer', borderRadius: '5px' }}>
-                Search Media Entries
-            </Link>
-            
-            <span style={{padding:'20px'}}></span>
-            <Link to="/searchRunSheet"
-                onMouseEnter={e => e.target.style.background = "grey"}
-                onMouseLeave={e => e.target.style.background = "black"} 
-                 style={{textDecoration: 'none', backgroundColor: 'black', size: '100px',color:'white', fontSize: '20px', padding: '10px 60px', cursor: 'pointer', borderRadius: '5px' }}>
-                Search Run Sheets
-            </Link>
+  const buttonStyle = {
+    textDecoration: "none",
+    backgroundColor: "black",
+    color: "white",
+    fontSize: "20px",
+    padding: "12px 60px",
+    cursor: "pointer",
+    borderRadius: "5px",
+    textAlign: "center",
+    transition: "background-color 0.2s ease",
+  };
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",   // Centers horizontally
+        alignItems: "flex-start",   // Keeps content toward the top
+        minHeight: "100vh",
+        paddingTop: "15vh",         // Places buttons in the upper-middle
+        width: "100%",
+        boxSizing: "border-box",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          gap: "20px",
+          flexWrap: "wrap",         // Stacks nicely on smaller screens
+          justifyContent: "center",
+        }}
+      >
+        <Link
+          to="/searchMedia"
+          style={buttonStyle}
+          onMouseEnter={(e) => (e.target.style.backgroundColor = "grey")}
+          onMouseLeave={(e) => (e.target.style.backgroundColor = "black")}
+        >
+          Search Media Entries
+        </Link>
+
+        <Link
+          to="/searchRunSheet"
+          style={buttonStyle}
+          onMouseEnter={(e) => (e.target.style.backgroundColor = "grey")}
+          onMouseLeave={(e) => (e.target.style.backgroundColor = "black")}
+        >
+          Search Run Sheets
+        </Link>
       </div>
-    );
-}
+    </div>
+  );
+};
+
 export default Home;
