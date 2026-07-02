@@ -13,10 +13,26 @@ const LogResults = () => {
   const searchArtist = location.state?.searchArtist || "";
   const searchDate = location.state?.searchDate || "";
   const searchType = location.state?.searchType || "";
+  const searchRSID = location.state?.searchRSID || "";
 
   const [logList, setLogList] = useState([]);
   const [sortOrder, setSortOrder] = useState("asc");
   const [role, setRole] = useState(null);
+
+  // Build search summary
+  const searchCriteria = [];
+
+  if (searchKeyword) searchCriteria.push(`Keyword: ${searchKeyword}`);
+  if (searchArtist) searchCriteria.push(`Artist: ${searchArtist}`);
+  if (searchDate) searchCriteria.push(`Date: ${searchDate}`);
+  if (searchType) searchCriteria.push(`Type: ${searchType}`);
+  if (searchRSID) searchCriteria.push(`Run Sheet ID: ${searchRSID}`);
+
+  const searchSummary =
+    searchCriteria.length > 0
+      ? searchCriteria.join(" | ")
+      : "Showing all Run Sheets";
+
 
   // Get user role from localStorage
   useEffect(() => {
@@ -75,6 +91,44 @@ const LogResults = () => {
 
   return (
     <div style={{ padding: "20px", color: "#fff", fontFamily: "Arial, sans-serif" }}>
+
+  <div
+    style={{
+      padding: "20px",
+      color: "#fff",
+      fontFamily: "Arial, sans-serif",
+    }}
+  >
+    <div
+      style={{
+        marginBottom: "25px",
+        backgroundColor: "#1c1c1c",
+        border: "1px solid #444",
+        borderRadius: "10px",
+        padding: "15px 20px",
+      }}
+    >
+      <h2
+        style={{
+          margin: 0,
+          color: "#00ff88",
+        }}
+      >
+        Search Results
+      </h2>
+
+      <p
+        style={{
+          marginTop: "10px",
+          marginBottom: 0,
+          fontSize: "18px",
+          color: "#ddd",
+        }}
+      >
+        {searchSummary}
+      </p>
+    </div>
+    </div>
       {/* Sort Dropdown */}
       <div style={{ marginBottom: "20px" }}>
         <label style={{ marginRight: "10px", fontWeight: "bold" }}>Sort by Date:</label>
