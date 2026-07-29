@@ -83,6 +83,15 @@ const Entry = () => {
         >
           New Artist
         </Link>
+
+        <Link
+          to="/editCelebrity"
+          style={buttonStyle}
+          onMouseEnter={(e) => (e.target.style.backgroundColor = "grey")}
+          onMouseLeave={(e) => (e.target.style.backgroundColor = "black")}
+        >
+          Edit Celebrities
+        </Link>
       </div>
     </div>
   );
