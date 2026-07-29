@@ -74,7 +74,14 @@ const Entry = () => {
             Today's Log
           </Link>
         </div>
-
+        <div
+          style={{
+            display: "flex",
+            gap: "20px",
+            flexWrap: "wrap",
+            justifyContent: "center",
+          }}
+        >
         <Link
           to="/addArtist"
           style={buttonStyle}
@@ -92,6 +99,15 @@ const Entry = () => {
         >
           Edit Celebrities
         </Link>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            gap: "20px",
+            flexWrap: "wrap",
+            justifyContent: "center",
+          }}
+        >
         <Link
           to="/editSeason"
           style={buttonStyle}
@@ -100,6 +116,15 @@ const Entry = () => {
         >
           Edit Seasons
         </Link>
+        <Link
+          to="/editSport"
+          style={buttonStyle}
+          onMouseEnter={(e) => (e.target.style.backgroundColor = "grey")}
+          onMouseLeave={(e) => (e.target.style.backgroundColor = "black")}
+        >
+          Edit Sports
+        </Link>
+        </div>
       </div>
     </div>
   );
