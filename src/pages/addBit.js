@@ -56,8 +56,9 @@ const AddBit = () => {
     Axios.get(`${API_URL}/api/get/album`).then(res => setAlbumList(res.data));
   }, []);
 
-  const submitMedia = () => {
-    Axios.post(`${API_URL}/api/insert/bit`, {
+  const submitMedia = async () => {
+  try {
+    const response = await Axios.post(`${API_URL}/api/insert/bit`, {
       type, title, category, artist, date, time, autoNum,
       sub1, sub2, sub3, sub4,
       celebrity1, celebrity2,
@@ -66,8 +67,30 @@ const AddBit = () => {
       hyperlink1, hyperlink2, hyperlink3, hyperlink4, hyperlink5, hyperlink6,
       album1, track1, album2, track2, album3, track3, album4, track4
     });
-  };
 
+    if (response.status === 200) {
+      window.alert("Bit added successfully!");
+      
+      // Optional: clear the form after successful insert
+      setTitle("");
+      setDate("");
+      setTime("");
+      setAutoNum("");
+      setKeywords("");
+      setHyperlink1("");
+      setHyperlink2("");
+      setHyperlink3("");
+      setHyperlink4("");
+      setHyperlink5("");
+      setHyperlink6("");
+    }
+
+  } catch (error) {
+    console.error("Error adding bit:", error);
+    window.alert("Failed to add bit. Please check the data and try again.");
+  }
+};
+ 
   return (
     <form className="add-bit-form">
       {/* Columns */}
