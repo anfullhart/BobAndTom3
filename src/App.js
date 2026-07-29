@@ -77,7 +77,7 @@ function App() {
         <Route path="/logResults" element={<ProtectedRoute><LogResults /></ProtectedRoute>} />
         <Route path="/editLog" element={<ProtectedRoute><EditLog /></ProtectedRoute>} />
         <Route path="/addArtist" element={<ProtectedRoute><AddArtist /></ProtectedRoute>} />
-        <Route path="/editCelebrity" element={<ProtectedRoute allowedRoles={["admin", "owner"]}><AddArtist /></ProtectedRoute>} />
+        <Route path="/editCelebrity" element={<ProtectedRoute allowedRoles={["admin", "owner"]}><EditCelebrity /></ProtectedRoute>} />
 
         {/* Admin dashboard - admin & owner only */}
         <Route
