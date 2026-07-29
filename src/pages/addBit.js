@@ -105,12 +105,22 @@ const AddBit = () => {
           </div>
           <div className="form-row"><label>Category:</label>
             <select value={category} onChange={(e) => setCategory(e.target.value)}>
-              {categoryList.map(val => <option key={val.CatID} value={val.CatID}>{val.Category}</option>)}
+             <option value="">-- Select Category --</option>
+              {categoryList.map(val => (
+              <option key={val.CatID} value={val.CatID}>
+                {val.Category}
+              </option>
+              ))}
             </select>
           </div>
           <div className="form-row"><label>Artist:</label>
             <select value={artist} onChange={(e) => setArtist(e.target.value)}>
-              {artistList.map(val => <option key={val.ArtistID} value={val.ArtistID}>{val.Name}</option>)}
+               <option value="">-- Select Artist --</option>
+                  {artistList.map(val => (
+              <option key={val.ArtistID} value={val.ArtistID}>
+              {val.Name}
+                </option>
+              ))}
             </select>
           </div>
           <div className="form-row"><label>Air Date:</label><input
@@ -124,32 +134,62 @@ const AddBit = () => {
           </div>
           <div className="form-row"><label>Subjects:</label>
             {[sub1, sub2, sub3, sub4].map((sub, idx) => (
-              <select key={idx} onChange={(e) => {
-                if(idx===0) setSub1(e.target.value);
-                if(idx===1) setSub2(e.target.value);
-                if(idx===2) setSub3(e.target.value);
-                if(idx===3) setSub4(e.target.value);
-              }}>
-                {subjectList.map(val => <option key={val.SubID} value={val.SubID}>{val.Subject}</option>)}
-              </select>
+             <select
+              value={sub}
+              onChange={(e) => {
+                if (idx === 0) setSub1(e.target.value);
+                if (idx === 1) setSub2(e.target.value);
+                if (idx === 2) setSub3(e.target.value);
+                if (idx === 3) setSub4(e.target.value);
+              }}
+              >
+          <option value="">-- Select Subject --</option>
+            {subjectList.map(val => (
+          <option key={val.SubID} value={val.SubID}>
+            {val.Subject}
+          </option>
+        ))}
+        </select>
             ))}
           </div>
           <div className="form-row"><label>Celebrities:</label>
             <select value={celebrity1} onChange={(e) => setCelebrity1(e.target.value)}>
-              {celebList.map(val => <option key={val.CelebID} value={val.CelebID}>{val.Name}</option>)}
+              <option value="">-- Select Celebrity --</option>
+              {celebList.map(val => (
+              <option key={val.CelebID} value={val.CelebID}>
+                {val.Name}
+              </option>
+              ))}
             </select>
-            <select value={celebrity2} onChange={(e) => setCelebrity2(e.target.value)}>
-              {celebList.map(val => <option key={val.CelebID} value={val.CelebID}>{val.Name}</option>)}
-            </select>
+
+        <select value={celebrity2} onChange={(e) => setCelebrity2(e.target.value)}>
+          <option value="">-- Select Celebrity --</option>
+            {celebList.map(val => (
+          <option key={val.CelebID} value={val.CelebID}>
+            {val.Name}
+          </option>
+            ))}
+          </select>
           </div>
           <div className="form-row"><label>Sport:</label>
             <select value={sport} onChange={(e) => setSport(e.target.value)}>
-              {sportList.map(val => <option key={val.SportID} value={val.SportID}>{val.Sport}</option>)}
+              <option value="">-- Select Sport --</option>
+                {sportList.map(val => (
+              <option key={val.SportID} value={val.SportID}>
+                {val.Sport}
+              </option>
+              ))}
             </select>
             <label>Season:</label>
+            
             <select value={season} onChange={(e) => setSeason(e.target.value)}>
-              {seasonList.map(val => <option key={val.SeasonID} value={val.SeasonID}>{val.Season}</option>)}
-            </select>
+              <option value="">-- Select Season --</option>
+                {seasonList.map(val => (
+              <option key={val.SeasonID} value={val.SeasonID}>
+                {val.Season}
+              </option>
+              ))}
+          </select>
           </div>
           <div className="form-row"><label>Keywords:</label><input type="text" value={keywords} onChange={(e) => setKeywords(e.target.value)} placeholder="Enter keywords"/></div>
         </div>
@@ -182,8 +222,13 @@ const AddBit = () => {
               <div className="form-row" key={idx}>
                 <label>Album {idx+1}:</label>
                 <select value={arr[0]} onChange={(e) => arr[2](e.target.value)}>
-                  {albumList.map(val => <option key={val.AlbumID} value={val.AlbumID}>{val.Album_Name}</option>)}
-                </select>
+                  <option value="">-- Select Album --</option>
+                  {albumList.map(val => (
+                  <option key={val.AlbumID} value={val.AlbumID}>
+                  {val.Album_Name}
+                </option>
+                ))}
+              </select>
                 <label>Track:</label>
                 <input type="text" value={arr[1]} onChange={(e) => arr[3](e.target.value)} placeholder="Track #"/>
               </div>
