@@ -64,7 +64,7 @@ function App() {
         <Route path="/detailedBitResults" element={<ProtectedRoute><DetailedBitResults /></ProtectedRoute>} />
         <Route path="/detailedLogResults" element={<ProtectedRoute><DetailedLogResults /></ProtectedRoute>} />
         {/* Other admin-level functionality (optional — restrict if needed) */}
-        <Route path="/addBit" element={<ProtectedRoute><AddBit /></ProtectedRoute>} />
+        <Route path="/addBit" element={<RoleProtectedRoute allowedRoles={["admin", "owner"]}><AddBit /></RoleProtectedRoute>} />
         <Route path="/addToday" element={<RoleProtectedRoute allowedRoles={["admin", "owner"]}><AddToday /></RoleProtectedRoute>} />
         <Route path="/cueSheet" element={<RoleProtectedRoute allowedRoles={["admin", "owner"]}><CueSheet /></RoleProtectedRoute>} />
         <Route path="/excel" element={<ProtectedRoute><Excel /></ProtectedRoute>} />
