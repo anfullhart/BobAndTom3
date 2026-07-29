@@ -103,7 +103,7 @@ const AddBit = () => {
                 if(idx===2) setSub3(e.target.value);
                 if(idx===3) setSub4(e.target.value);
               }}>
-                {subjectList.map(val => <option key={val.subID} value={val.subID}>{val.Subject}</option>)}
+                {subjectList.map(val => <option key={val.SubID} value={val.SubID}>{val.Subject}</option>)}
               </select>
             ))}
           </div>
