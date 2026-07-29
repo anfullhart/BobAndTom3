@@ -10,7 +10,7 @@ const AddBit = () => {
   const [type, setType] = useState("Bit");
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
-  const [artist, setArtist] = useState(0);
+  const [artist, setArtist] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [autoNum, setAutoNum] = useState("");
@@ -58,31 +58,74 @@ const AddBit = () => {
 
   const submitMedia = async () => {
   try {
-    const response = await Axios.post(`${API_URL}/api/insert/bit`, {
-      type, title, category, artist, date, time, autoNum,
-      sub1, sub2, sub3, sub4,
-      celebrity1, celebrity2,
-      sport, season,
-      keywords,
-      hyperlink1, hyperlink2, hyperlink3, hyperlink4, hyperlink5, hyperlink6,
-      album1, track1, album2, track2, album3, track3, album4, track4
-    });
+   const response = await Axios.post(`${API_URL}/api/insert/bit`, {
+          type,
+          title,
+          category: category || null,
+          artist: artist || null,
+          date,
+          time,
+          autoNum,
+        
+          sub1: sub1 || null,
+          sub2: sub2 || null,
+          sub3: sub3 || null,
+          sub4: sub4 || null,
+        
+          celebrity1: celebrity1 || null,
+          celebrity2: celebrity2 || null,
+        
+          sport: sport || null,
+          season: season || null,
+        
+          keywords,
+        
+          hyperlink1,
+          hyperlink2,
+          hyperlink3,
+          hyperlink4,
+          hyperlink5,
+          hyperlink6,
+        
+          album1: album1 || null,
+          track1,
+          album2: album2 || null,
+          track2,
+          album3: album3 || null,
+          track3,
+          album4: album4 || null,
+          track4,
+        });
 
     if (response.status === 200) {
       window.alert("Bit added successfully!");
       
       // Optional: clear the form after successful insert
-      setTitle("");
-      setDate("");
-      setTime("");
-      setAutoNum("");
-      setKeywords("");
-      setHyperlink1("");
-      setHyperlink2("");
-      setHyperlink3("");
-      setHyperlink4("");
-      setHyperlink5("");
-      setHyperlink6("");
+      setCategory("");
+setArtist("");
+
+setSub1("");
+setSub2("");
+setSub3("");
+setSub4("");
+
+setCelebrity1("");
+setCelebrity2("");
+
+setSport("");
+setSeason("");
+
+setAlbum1("");
+setTrack1("");
+
+setAlbum2("");
+setTrack2("");
+
+setAlbum3("");
+setTrack3("");
+
+setAlbum4("");
+setTrack4("");
     }
 
   } catch (error) {
