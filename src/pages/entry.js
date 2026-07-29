@@ -141,6 +141,14 @@ const Entry = () => {
         >
           Edit Subjects
         </Link>
+        <Link
+          to="/editAlbum"
+          style={buttonStyle}
+          onMouseEnter={(e) => (e.target.style.backgroundColor = "grey")}
+          onMouseLeave={(e) => (e.target.style.backgroundColor = "black")}
+        >
+          Edit Albums
+        </Link>
         </div>
       </div>
     </div>

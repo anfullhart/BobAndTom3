@@ -14,6 +14,7 @@ import Excel from "./pages/excel";
 import DetailedBitResults from "./pages/detailedBitResults";
 import SearchMedia from "./pages/searchMedia";
 import SearchRunSheet from "./pages/searchRunSheet";
+import EditAlbum from "./pages/editAlbum";
 import EditBit from "./pages/editBit";
 import LogResults from "./pages/logResults";
 import EditLog from "./pages/editLog";
@@ -84,6 +85,7 @@ function App() {
         <Route path="/editSeason" element={<RoleProtectedRoute allowedRoles={["admin", "owner"]}><EditSeason /></RoleProtectedRoute>} />
         <Route path="/editSport" element={<RoleProtectedRoute allowedRoles={["admin", "owner"]}><EditSport /></RoleProtectedRoute>} />
         <Route path="/editSubject" element={<RoleProtectedRoute allowedRoles={["admin", "owner"]}><EditSubject /></RoleProtectedRoute>} />
+        <Route path="/editAlbum" element={<RoleProtectedRoute allowedRoles={["admin", "owner"]}><EditAlbum /></RoleProtectedRoute>} />
 
         {/* Admin dashboard - admin & owner only */}
         <Route
