@@ -91,13 +91,14 @@ const Entry = () => {
           New Artist
         </Link>
 
-        <Link
-          to="/editCelebrity"
+        
+         <Link
+          to="/editAlbum"
           style={buttonStyle}
           onMouseEnter={(e) => (e.target.style.backgroundColor = "grey")}
           onMouseLeave={(e) => (e.target.style.backgroundColor = "black")}
         >
-          Edit Celebrities
+          Edit Albums
         </Link>
         </div>
         <div
@@ -108,6 +109,14 @@ const Entry = () => {
             justifyContent: "center",
           }}
         >
+          <Link
+          to="/editCelebrity"
+          style={buttonStyle}
+          onMouseEnter={(e) => (e.target.style.backgroundColor = "grey")}
+          onMouseLeave={(e) => (e.target.style.backgroundColor = "black")}
+        >
+          Edit Celebrities
+        </Link>
         <Link
           to="/editSeason"
           style={buttonStyle}
@@ -116,14 +125,7 @@ const Entry = () => {
         >
           Edit Seasons
         </Link>
-        <Link
-          to="/editSport"
-          style={buttonStyle}
-          onMouseEnter={(e) => (e.target.style.backgroundColor = "grey")}
-          onMouseLeave={(e) => (e.target.style.backgroundColor = "black")}
-        >
-          Edit Sports
-        </Link>
+       
         </div>
         <div
           style={{
@@ -133,6 +135,14 @@ const Entry = () => {
             justifyContent: "center",
           }}
         >
+           <Link
+          to="/editSport"
+          style={buttonStyle}
+          onMouseEnter={(e) => (e.target.style.backgroundColor = "grey")}
+          onMouseLeave={(e) => (e.target.style.backgroundColor = "black")}
+        >
+          Edit Sports
+        </Link>
             <Link
           to="/editSubject"
           style={buttonStyle}
@@ -141,14 +151,7 @@ const Entry = () => {
         >
           Edit Subjects
         </Link>
-        <Link
-          to="/editAlbum"
-          style={buttonStyle}
-          onMouseEnter={(e) => (e.target.style.backgroundColor = "grey")}
-          onMouseLeave={(e) => (e.target.style.backgroundColor = "black")}
-        >
-          Edit Albums
-        </Link>
+       
         </div>
       </div>
     </div>
