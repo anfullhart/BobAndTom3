@@ -63,7 +63,7 @@ function App() {
         <Route path="/detailedLogResults" element={<ProtectedRoute><DetailedLogResults /></ProtectedRoute>} />
         {/* Other admin-level functionality (optional — restrict if needed) */}
         <Route path="/addBit" element={<ProtectedRoute><AddBit /></ProtectedRoute>} />
-        <Route path="/addToday" element={<ProtectedRoute><AddToday /></ProtectedRoute>} />
+        <Route path="/addToday" element={<RoleProtectedRoute allowedRoles={["admin", "owner"]}><AddToday /></RoleProtectedRoute>} />
         <Route path="/cueSheet" element={<RoleProtectedRoute allowedRoles={["admin", "owner"]}><CueSheet /></RoleProtectedRoute>} />
         <Route path="/excel" element={<ProtectedRoute><Excel /></ProtectedRoute>} />
                 {/* Edit Bit - ONLY admin & owner */}
@@ -77,11 +77,11 @@ function App() {
         />
 
         <Route path="/logResults" element={<ProtectedRoute><LogResults /></ProtectedRoute>} />
-        <Route path="/editLog" element={<ProtectedRoute><EditLog /></ProtectedRoute>} />
-        <Route path="/addArtist" element={<ProtectedRoute><AddArtist /></ProtectedRoute>} />
-        <Route path="/editCelebrity" element={<ProtectedRoute allowedRoles={["admin", "owner"]}><EditCelebrity /></ProtectedRoute>} />
-        <Route path="/editSeason" element={<ProtectedRoute allowedRoles={["admin", "owner"]}><EditSeason /></ProtectedRoute>} />
-        <Route path="/editSport" element={<ProtectedRoute allowedRoles={["admin", "owner"]}><EditSport /></ProtectedRoute>} />
+        <Route path="/editLog" element={<RoleProtectedRoute allowedRoles={["admin", "owner"]}><EditLog /></RoleProtectedRoute>} />
+        <Route path="/addArtist" element={<RoleProtectedRoute allowedRoles={["admin", "owner"]}><AddArtist /></RoleProtectedRoute>} />
+        <Route path="/editCelebrity" element={<RoleProtectedRoute allowedRoles={["admin", "owner"]}><EditCelebrity /></RoleProtectedRoute>} />
+        <Route path="/editSeason" element={<RoleProtectedRoute allowedRoles={["admin", "owner"]}><EditSeason /></RoleProtectedRoute>} />
+        <Route path="/editSport" element={<RoleProtectedRoute allowedRoles={["admin", "owner"]}><EditSport /></RoleProtectedRoute>} />
 
         {/* Admin dashboard - admin & owner only */}
         <Route
