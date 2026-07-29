@@ -20,6 +20,7 @@ import EditLog from "./pages/editLog";
 import EditCelebrity from "./pages/editCelebrity";
 import EditSeason from "./pages/editSeason";
 import EditSport from "./pages/editSport";
+import EditSubject from "./pages/editSubject";
 import AddArtist from "./pages/addArtist";
 import AdminDashboard from "./pages/adminDashboard";
 import DetailedLogResults from "./pages/detailedLogResults";
@@ -82,6 +83,7 @@ function App() {
         <Route path="/editCelebrity" element={<RoleProtectedRoute allowedRoles={["admin", "owner"]}><EditCelebrity /></RoleProtectedRoute>} />
         <Route path="/editSeason" element={<RoleProtectedRoute allowedRoles={["admin", "owner"]}><EditSeason /></RoleProtectedRoute>} />
         <Route path="/editSport" element={<RoleProtectedRoute allowedRoles={["admin", "owner"]}><EditSport /></RoleProtectedRoute>} />
+        <Route path="/editSubject" element={<RoleProtectedRoute allowedRoles={["admin", "owner"]}><EditSubject /></RoleProtectedRoute>} />
 
         {/* Admin dashboard - admin & owner only */}
         <Route

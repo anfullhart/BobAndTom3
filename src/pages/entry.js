@@ -125,6 +125,23 @@ const Entry = () => {
           Edit Sports
         </Link>
         </div>
+        <div
+          style={{
+            display: "flex",
+            gap: "20px",
+            flexWrap: "wrap",
+            justifyContent: "center",
+          }}
+        >
+            <Link
+          to="/editSubject"
+          style={buttonStyle}
+          onMouseEnter={(e) => (e.target.style.backgroundColor = "grey")}
+          onMouseLeave={(e) => (e.target.style.backgroundColor = "black")}
+        >
+          Edit Subjects
+        </Link>
+        </div>
       </div>
     </div>
   );
