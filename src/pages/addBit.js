@@ -10,7 +10,7 @@ const AddBit = () => {
   const [type, setType] = useState("Bit");
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
-  const [artist, setArtist] = useState("");
+  const [artist, setArtist] = useState(0);
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [autoNum, setAutoNum] = useState("");
