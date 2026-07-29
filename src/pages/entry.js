@@ -92,6 +92,14 @@ const Entry = () => {
         >
           Edit Celebrities
         </Link>
+        <Link
+          to="/editSeason"
+          style={buttonStyle}
+          onMouseEnter={(e) => (e.target.style.backgroundColor = "grey")}
+          onMouseLeave={(e) => (e.target.style.backgroundColor = "black")}
+        >
+          Edit Seasons
+        </Link>
       </div>
     </div>
   );
