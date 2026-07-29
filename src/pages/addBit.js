@@ -90,7 +90,11 @@ const AddBit = () => {
               {artistList.map(val => <option key={val.ArtistID} value={val.ArtistID}>{val.Name}</option>)}
             </select>
           </div>
-          <div className="form-row"><label>Air Date:</label><input type="text" value={date} onChange={(e) => setDate(e.target.value)} placeholder="MM/DD/YYYY"/></div>
+          <div className="form-row"><label>Air Date:</label><input
+  type="date"
+  value={date}
+  onChange={(e) => setDate(e.target.value)}
+/></div>
           <div className="form-row"><label>Length:</label><input type="text" value={time} onChange={(e) => setTime(e.target.value)} placeholder="HH:MM:SS"/>
     
             <label>Automation #:</label><input type="text" value={autoNum} onChange={(e) => setAutoNum(e.target.value)} placeholder="0123456789"/>
