@@ -1,3 +1,35 @@
+import React, { useState, useEffect } from "react";
+import Axios from "axios";
+const API_URL = process.env.REACT_APP_API_URL || "https://bobandtombackend-production-fb6d.up.railway.app";
+const EditAlbum = () => {
+  const [albumName, setAlbumName] = useState("");
+  const [albumList, setAlbumList] = useState([]); 
+  const [deleteAlbum, setDeleteAlbum] = useState("");
+  useEffect(() => { 
+    getAlbums(); 
+  }, []); 
+  const getAlbums = () => {
+    Axios.get(${API_URL}/api/get/albums)
+      .then((response) => {
+        setAlbumList(response.data);
+  }); };
+const addAlbum = async () => {
+  try { 
+    await Axios.post(${API_URL}/api/insert/album, { album: albumName });
+    window.alert(albumName + " added successfully!");
+    setAlbumName(""); 
+    getAlbums();
+  } catch (error)
+  { console.log(error); 
+   window.alert("Failed to add album.");
+  } }; const removeAlbum = async () => { 
+  try { await Axios.post(${API_URL}/api/delete/album, { deleteAlbum: deleteAlbum }); 
+    window.alert("Album deleted successfully!");
+       getAlbums(); } 
+  catch(error) { 
+    console.log(error); 
+    window.alert("Failed to delete album."); } 
+};
 return (
   <div
     style={{
@@ -103,3 +135,4 @@ return (
     </div>
   </div>
 );
+export default EditAlbum;
