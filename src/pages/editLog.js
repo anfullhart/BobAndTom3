@@ -112,30 +112,62 @@ const EditLog = () => {
   };
 
   return (
-    <form>
+  <div
+    style={{
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      minHeight: "100vh",
+      padding: "20px",
+      boxSizing: "border-box",
+    }}
+  >
+    <form
+      style={{
+        width: "100%",
+        maxWidth: "1100px",
+      }}
+    >
       {/* DATE */}
       <div
         style={{
-          backgroundColor: "white",
-          color: "black",
-          width: "250px",
-          height: "50px",
-          borderRadius: "10px",
+          backgroundColor: "#fff",
+          color: "#000",
+          width: "100%",
+          maxWidth: "320px",
+          borderRadius: "12px",
           border: "3px solid black",
-          marginLeft: "10px",
-          marginTop: "10px",
+          padding: "12px",
+          marginBottom: "20px",
           textAlign: "center",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
+          fontWeight: "bold",
         }}
       >
-        <span>Run Sheet Date:</span>
+        Run Sheet Date:
+
         <input
-          style={{ marginLeft: "5px", width: "110px" }}
           value={logDate}
           onChange={(e) => setLogDate(e.target.value)}
           placeholder="MM-DD-YYYY"
+          style={{
+            marginTop: "10px",
+            width: "100%",
+            padding: "8px",
+            fontSize: "18px",
+            fontWeight: "bold",
+            color: "#d32f2f",
+            backgroundColor: "#fff5f5",
+            border: "2px solid #d32f2f",
+            borderRadius: "8px",
+            textAlign: "center",
+            outline: "none",
+          }}
+          onFocus={(e) => {
+            e.target.style.boxShadow = "0 0 8px rgba(211,47,47,.6)";
+          }}
+          onBlur={(e) => {
+            e.target.style.boxShadow = "none";
+          }}
         />
       </div>
 
@@ -145,42 +177,58 @@ const EditLog = () => {
           backgroundColor: "black",
           color: "white",
           fontSize: "15px",
-          marginTop: "15px",
-          marginLeft: "18%",
           padding: "20px",
           borderRadius: "15px",
-          width: "925px"
+          width: "100%",
+          maxWidth: "1100px",
+          overflowX: "auto",
         }}
       >
         {/* Table headers */}
-        <div style={{ display: "flex", alignItems: "center", marginBottom: "10px" }}>
-          <span style={{ width: "80px" }}>Time</span>
-          <span style={{ width: "420px", marginLeft: "40px" }}>Description</span>
-          <span style={{ width: "150px", marginLeft: "10px" }}>Artist</span>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "90px 1fr 220px 35px 35px",
+            gap: "10px",
+            alignItems: "center",
+            fontWeight: "bold",
+            marginBottom: "15px",
+          }}
+        >
+          <span>Time</span>
+          <span>Description</span>
+          <span>Artist</span>
+          <span></span>
+          <span></span>
         </div>
 
         {values.map((row, index) => (
           <div
             key={index}
-            style={{ display: "flex", alignItems: "center", marginBottom: "10px" }}
+            style={{
+              display: "grid",
+              gridTemplateColumns: "90px 1fr 220px 35px 35px",
+              gap: "10px",
+              alignItems: "center",
+              marginBottom: "10px",
+            }}
           >
             <input
               type="text"
               placeholder="00:00:00"
               value={row.bTime}
               onChange={(e) => handleChange(index, "bTime", e.target.value)}
-              style={{ width: "75px" }}
             />
+
             <input
               type="text"
               placeholder="Description"
-              style={{ marginLeft: "10px", width: "480px" }}
               value={row.bitDesc}
               onChange={(e) => handleChange(index, "bitDesc", e.target.value)}
             />
+
             <select
               value={row.ArtistID}
-              style={{ marginLeft: "10px", width: "250px" }}
               onChange={(e) => handleChange(index, "ArtistID", e.target.value)}
             >
               <option value="">Choose Artist</option>
@@ -191,12 +239,11 @@ const EditLog = () => {
               ))}
             </select>
 
-                        {/* Small minus button */}
+            {/* Delete */}
             <button
               type="button"
               onClick={() => handleDeleteRow(index)}
               style={{
-                marginLeft: "10px",
                 fontWeight: "bold",
                 fontSize: "18px",
                 color: "#fff",
@@ -204,29 +251,34 @@ const EditLog = () => {
                 border: "none",
                 borderRadius: "50%",
                 cursor: "pointer",
-                height: "25px",
-                width: "25px",
+                height: "28px",
+                width: "28px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                paddingBottom: "5px",
+                paddingBottom: "4px",
               }}
               title="Delete Row"
             >
               −
             </button>
 
-            {/* Small plus button */}
+            {/* Insert */}
             <button
               type="button"
               onClick={() => {
-                const newRow = { L_ID: null, bTime: "", bitDesc: "", ArtistID: "" };
+                const newRow = {
+                  L_ID: null,
+                  bTime: "",
+                  bitDesc: "",
+                  ArtistID: "",
+                };
+
                 const updated = [...values];
                 updated.splice(index + 1, 0, newRow);
                 setValues(updated);
               }}
               style={{
-                marginLeft: "5px",
                 fontWeight: "bold",
                 fontSize: "18px",
                 color: "#fff",
@@ -234,43 +286,66 @@ const EditLog = () => {
                 border: "none",
                 borderRadius: "50%",
                 cursor: "pointer",
-                height: "25px",
-                width: "25px",
+                height: "28px",
+                width: "28px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                padding: "0",
-                paddingBottom: "5px"
+                paddingBottom: "4px",
               }}
               title="Add Row Below"
             >
               +
             </button>
-
           </div>
         ))}
       </div>
 
-      {/* ACTIONS */}
-      <div style={{ marginTop: "20px", marginLeft: "18%", display: "flex", gap: "10px" }}>
-        <button type="button" className="btn btn-warning" onClick={handleRemove1Row}>
+      {/* ACTION BUTTONS */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          flexWrap: "wrap",
+          gap: "10px",
+          marginTop: "20px",
+        }}
+      >
+        <button
+          type="button"
+          className="btn btn-warning"
+          onClick={handleRemove1Row}
+        >
           − 1 Row
         </button>
 
-        <button type="button" className="btn btn-warning" onClick={handleAdd3Rows}>
+        <button
+          type="button"
+          className="btn btn-warning"
+          onClick={handleAdd3Rows}
+        >
           + 3 Rows
         </button>
 
-        <button className="btn btn-danger" onClick={handleCancelEdits}>
+        <button
+          type="button"
+          className="btn btn-danger"
+          onClick={handleCancelEdits}
+        >
           Cancel
         </button>
 
-        <button className="btn btn-success" onClick={handleConfirmEdits}>
+        <button
+          type="button"
+          className="btn btn-success"
+          onClick={handleConfirmEdits}
+        >
           Confirm Edits
         </button>
       </div>
     </form>
-  );
+  </div>
+);
 };
 
 export default EditLog;
