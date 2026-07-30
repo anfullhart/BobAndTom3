@@ -128,49 +128,56 @@ const EditLog = () => {
         maxWidth: "1100px",
       }}
     >
-      {/* DATE */}
-      <div
-        style={{
-          backgroundColor: "#fff",
-          color: "#000",
-          width: "100%",
-          maxWidth: "320px",
-          borderRadius: "12px",
-          border: "3px solid black",
-          padding: "12px",
-          marginBottom: "20px",
-          textAlign: "center",
-          fontWeight: "bold",
-        }}
-      >
-        Run Sheet Date:
+     {/* DATE */}
+<div
+  style={{
+    display: "flex",
+    justifyContent: "center",
+    width: "100%",
+    marginBottom: "20px",
+  }}
+>
+  <div
+    style={{
+      backgroundColor: "#fff",
+      color: "#000",
+      width: "100%",
+      maxWidth: "320px",
+      borderRadius: "12px",
+      border: "3px solid black",
+      padding: "12px",
+      textAlign: "center",
+      fontWeight: "bold",
+    }}
+  >
+    Run Sheet Date:
 
-        <input
-          value={logDate}
-          onChange={(e) => setLogDate(e.target.value)}
-          placeholder="MM-DD-YYYY"
-          style={{
-            marginTop: "10px",
-            width: "100%",
-            padding: "8px",
-            fontSize: "18px",
-            fontWeight: "bold",
-            color: "#d32f2f",
-            backgroundColor: "#fff5f5",
-            border: "2px solid #d32f2f",
-            borderRadius: "8px",
-            textAlign: "center",
-            outline: "none",
-          }}
-          onFocus={(e) => {
-            e.target.style.boxShadow = "0 0 8px rgba(211,47,47,.6)";
-          }}
-          onBlur={(e) => {
-            e.target.style.boxShadow = "none";
-          }}
-        />
-      </div>
-
+    <input
+      value={logDate}
+      onChange={(e) => setLogDate(e.target.value)}
+      placeholder="MM-DD-YYYY"
+      style={{
+        marginTop: "10px",
+        width: "100%",
+        padding: "8px",
+        fontSize: "18px",
+        fontWeight: "bold",
+        color: "#d32f2f",
+        backgroundColor: "#fff5f5",
+        border: "2px solid #d32f2f",
+        borderRadius: "8px",
+        textAlign: "center",
+        outline: "none",
+      }}
+      onFocus={(e) => {
+        e.target.style.boxShadow = "0 0 8px rgba(211,47,47,.6)";
+      }}
+      onBlur={(e) => {
+        e.target.style.boxShadow = "none";
+      }}
+    />
+  </div>
+</div>
       {/* TABLE */}
       <div
         style={{
