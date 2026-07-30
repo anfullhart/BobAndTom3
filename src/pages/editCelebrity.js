@@ -1,6 +1,4 @@
-import { React, useState, useEffect } from "react";
-import Home from "../style/home.css";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import Axios from "axios";
 
 const API_URL =
@@ -12,10 +10,6 @@ const EditCelebrity = () => {
   const [celebrityList, setCelebrityList] = useState([]);
   const [deleteCelebrity, setDeleteCelebrity] = useState("");
 
-  const handleCelebrityNameChange = (e) => {
-    setCelebName(e.target.value);
-  };
-
   useEffect(() => {
     getCelebrities();
   }, []);
@@ -23,85 +17,147 @@ const EditCelebrity = () => {
   const getCelebrities = () => {
     Axios.get(`${API_URL}/api/get/celebrities`).then((response) => {
       setCelebrityList(response.data);
+
+      if (response.data.length > 0) {
+        setDeleteCelebrity(response.data[0].CelebID);
+      }
     });
   };
 
-  const addNewCelebrity = () => {
-    Axios.post(`${API_URL}/api/insert/celebrity`, {
-      name: celebName,
-    }).then(() => {
-      window.location.reload(true);
-    });
+  const addNewCelebrity = async () => {
+    if (!celebName.trim()) {
+      window.alert("Please enter a celebrity name.");
+      return;
+    }
+
+    try {
+      await Axios.post(`${API_URL}/api/insert/celebrity`, {
+        name: celebName,
+      });
+
+      window.alert(`${celebName} added successfully!`);
+
+      setCelebName("");
+      getCelebrities();
+    } catch (error) {
+      console.log(error);
+      window.alert("Failed to add celebrity.");
+    }
   };
 
-  const removeCelebrity = () => {
-    Axios.post(`${API_URL}/api/delete/celebrity`, {
-      deleteCelebrity: deleteCelebrity,
-    }).then(() => {
-      window.location.reload(true);
-    });
+  const removeCelebrity = async () => {
+    if (!deleteCelebrity) {
+      window.alert("Please select a celebrity.");
+      return;
+    }
+
+    try {
+      await Axios.post(`${API_URL}/api/delete/celebrity`, {
+        deleteCelebrity,
+      });
+
+      window.alert("Celebrity deleted successfully!");
+
+      getCelebrities();
+    } catch (error) {
+      console.log(error);
+      window.alert("Failed to delete celebrity.");
+    }
   };
 
   return (
-    <div>
-      <div
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        minHeight: "100vh",
+        padding: "40px 20px",
+        boxSizing: "border-box",
+      }}
+    >
+      <h2
         style={{
           color: "white",
-          fontSize: "30px",
-          marginLeft: "36%",
-          marginTop: "75px",
+          marginBottom: "30px",
+          textAlign: "center",
         }}
       >
-        Input New Celebrity
-      </div>
+        Edit Celebrities
+      </h2>
 
       <div
         style={{
-          paddingLeft: "50px",
           backgroundColor: "black",
           color: "white",
-          fontSize: "15px",
-          marginTop: "20px",
-          marginLeft: "25%",
           borderRadius: "15px",
-          width: "600px",
-          height: "160px",
+          padding: "30px",
+          width: "100%",
+          maxWidth: "650px",
+          boxSizing: "border-box",
         }}
       >
-        Celebrity:
-        <input
+        {/* Add Celebrity */}
+        <div
           style={{
-            marginTop: "20px",
-            marginLeft: "10px",
-            width: "400px",
-          }}
-          onChange={handleCelebrityNameChange}
-        />
-
-        <button
-          className="btn btn-success"
-          style={{ marginLeft: "10px" }}
-          onClick={() => {
-            window.alert(`${celebName} added to the database.`);
-            addNewCelebrity();
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            flexWrap: "wrap",
+            marginBottom: "30px",
           }}
         >
-          Add
-        </button>
+          <label
+            style={{
+              minWidth: "100px",
+            }}
+          >
+            Celebrity:
+          </label>
 
-        <div style={{ marginTop: "20px" }}>
-          <label htmlFor="ddlCelebrity">List of Celebrities: </label>
+          <input
+            style={{
+              flex: 1,
+              minWidth: "250px",
+              padding: "6px",
+            }}
+            value={celebName}
+            onChange={(e) => setCelebName(e.target.value)}
+          />
+
+          <button
+            className="btn btn-success"
+            onClick={addNewCelebrity}
+          >
+            Add
+          </button>
+        </div>
+
+        {/* Delete Celebrity */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            flexWrap: "wrap",
+          }}
+        >
+          <label
+            style={{
+              minWidth: "100px",
+            }}
+          >
+            Celebrities:
+          </label>
 
           <select
-            id="ddlCelebrity"
-            size="1"
             style={{
-              marginLeft: "10px",
-              fontSize: "15px",
+              flex: 1,
+              minWidth: "250px",
+              padding: "6px",
             }}
-            onChange={(e) => {
-              setDeleteCelebrity(e.target.value);
-            }}
+            value={deleteCelebrity}
+            onChange={(e) => setDeleteCelebrity(e.target.value)}
           >
             {celebrityList.map((val) => (
               <option
@@ -115,7 +171,6 @@ const EditCelebrity = () => {
 
           <button
             className="btn btn-danger"
-            style={{ marginLeft: "10px" }}
             onClick={() => {
               if (window.confirm("Remove celebrity?")) {
                 removeCelebrity();
