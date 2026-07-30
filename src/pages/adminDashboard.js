@@ -9,11 +9,14 @@ const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
   const [form, setForm] = useState({
     username: "",
     password: "",
+    confirmPassword: "",
     role: "user",
   });
+
   const [editUserId, setEditUserId] = useState(null);
 
   const fetchUsers = async () => {
@@ -38,14 +41,32 @@ const AdminDashboard = () => {
     fetchUsers();
   }, []);
 
-  const handleChange = (e) =>
+  const handleChange = (e) => {
     setForm({
       ...form,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const clearForm = () => {
+    setForm({
+      username: "",
+      password: "",
+      confirmPassword: "",
+      role: "user",
+    });
+
+    setEditUserId(null);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Check passwords match
+    if (form.password !== form.confirmPassword) {
+      window.alert("Passwords do not match.");
+      return;
+    }
 
     try {
       const payload = {
@@ -53,6 +74,7 @@ const AdminDashboard = () => {
         role: form.role,
       };
 
+      // Only send password if one was entered
       if (form.password.trim() !== "") {
         payload.password = form.password;
       }
@@ -61,29 +83,38 @@ const AdminDashboard = () => {
         await Axios.put(
           `${API_URL}/api/admin/users/${editUserId}`,
           payload,
-          { withCredentials: true }
+          {
+            withCredentials: true,
+          }
         );
+
+        window.alert("User updated successfully!");
       } else {
+        if (!form.password.trim()) {
+          window.alert("Password is required for new users.");
+          return;
+        }
+
         await Axios.post(
           `${API_URL}/api/admin/users`,
           payload,
-          { withCredentials: true }
+          {
+            withCredentials: true,
+          }
         );
+
+        window.alert("User added successfully!");
       }
 
-      setForm({
-        username: "",
-        password: "",
-        role: "user",
-      });
-
-      setEditUserId(null);
+      clearForm();
       fetchUsers();
+
     } catch (err) {
       console.error(err);
       setError("Failed to save user.");
     }
   };
+
 
   const handleEdit = (user) => {
     setEditUserId(user.userid);
@@ -91,51 +122,62 @@ const AdminDashboard = () => {
     setForm({
       username: user.login,
       password: "",
+      confirmPassword: "",
       role: user.role,
     });
   };
 
+
   const handleDelete = async (userid) => {
-    if (!window.confirm("Are you sure you want to delete this user?")) return;
+    if (!window.confirm("Are you sure you want to delete this user?")) {
+      return;
+    }
 
     try {
-      await Axios.delete(`${API_URL}/api/admin/users/${userid}`, {
-        withCredentials: true,
-      });
+      await Axios.delete(
+        `${API_URL}/api/admin/users/${userid}`,
+        {
+          withCredentials: true,
+        }
+      );
 
       fetchUsers();
+
     } catch (err) {
       console.error(err);
       setError("Failed to delete user.");
     }
   };
 
+
   if (loading)
     return (
       <div
         style={{
-          display: "flex",
-          justifyContent: "center",
-          marginTop: "100px",
           color: "white",
+          textAlign: "center",
+          marginTop: "100px",
         }}
       >
         <h3>Loading users...</h3>
       </div>
     );
 
+
   if (error)
     return (
       <div
         style={{
-          display: "flex",
-          justifyContent: "center",
+          textAlign: "center",
           marginTop: "100px",
         }}
       >
-        <div className="alert alert-danger">{error}</div>
+        <div className="alert alert-danger">
+          {error}
+        </div>
       </div>
     );
+
 
   return (
     <div
@@ -144,20 +186,21 @@ const AdminDashboard = () => {
         justifyContent: "center",
         padding: "40px 20px",
         minHeight: "100vh",
-        boxSizing: "border-box",
       }}
     >
+
       <div
         style={{
+          backgroundColor: "#1b1b1b",
+          color: "white",
           width: "100%",
           maxWidth: "1100px",
-          backgroundColor: "#1b1b1b",
-          borderRadius: "15px",
           padding: "30px",
-          color: "white",
+          borderRadius: "15px",
           boxShadow: "0 8px 20px rgba(0,0,0,.45)",
         }}
       >
+
         <h2
           style={{
             textAlign: "center",
@@ -167,15 +210,17 @@ const AdminDashboard = () => {
           User Administration
         </h2>
 
+
         <form
           onSubmit={handleSubmit}
           style={{
             display: "grid",
-            gridTemplateColumns: "2fr 2fr 1fr auto",
+            gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))",
             gap: "15px",
-            marginBottom: "35px",
+            marginBottom: "30px",
           }}
         >
+
           <input
             className="form-control"
             name="username"
@@ -185,18 +230,30 @@ const AdminDashboard = () => {
             required
           />
 
+
           <input
             className="form-control"
             name="password"
             type="password"
             placeholder={
               editUserId
-                ? "Leave blank to keep password"
+                ? "New password (optional)"
                 : "Password"
             }
             value={form.password}
             onChange={handleChange}
           />
+
+
+          <input
+            className="form-control"
+            name="confirmPassword"
+            type="password"
+            placeholder="Confirm password"
+            value={form.confirmPassword}
+            onChange={handleChange}
+          />
+
 
           <select
             className="form-select"
@@ -204,84 +261,130 @@ const AdminDashboard = () => {
             value={form.role}
             onChange={handleChange}
           >
-            <option value="user">User</option>
-            <option value="admin">Admin</option>
-            <option value="owner">Owner</option>
+            <option value="user">
+              User
+            </option>
+
+            <option value="admin">
+              Admin
+            </option>
+
+            <option value="owner">
+              Owner
+            </option>
+
           </select>
 
+
           <button
+            className={
+              editUserId
+                ? "btn btn-warning"
+                : "btn btn-success"
+            }
             type="submit"
-            className={`btn ${
-              editUserId ? "btn-warning" : "btn-success"
-            }`}
           >
-            {editUserId ? "Update User" : "Add User"}
+            {editUserId
+              ? "Update User"
+              : "Add User"}
           </button>
+
+
+          {editUserId && (
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={clearForm}
+            >
+              Cancel Edit
+            </button>
+          )}
+
         </form>
 
+
+
         <div style={{ overflowX: "auto" }}>
-          <table className="table table-dark table-hover table-striped align-middle">
+
+          <table className="table table-dark table-striped table-hover">
+
             <thead>
               <tr>
-                <th style={{ width: "80px" }}>ID</th>
+                <th>ID</th>
                 <th>Username</th>
-                <th style={{ width: "150px" }}>Role</th>
-                <th style={{ width: "180px" }}>Actions</th>
+                <th>Role</th>
+                <th>Actions</th>
               </tr>
             </thead>
 
-            <tbody>
-              {users.map((user) => (
-                <tr key={user.userid}>
-                  <td>{user.userid}</td>
 
-                  <td>{user.login}</td>
+            <tbody>
+
+              {users.map((user) => (
+
+                <tr key={user.userid}>
+
+                  <td>
+                    {user.userid}
+                  </td>
+
+
+                  <td>
+                    {user.login}
+                  </td>
+
 
                   <td>
                     <span
-                      className={`badge ${
+                      className={
                         user.role === "owner"
-                          ? "bg-danger"
+                          ? "badge bg-danger"
                           : user.role === "admin"
-                          ? "bg-warning text-dark"
-                          : "bg-secondary"
-                      }`}
+                          ? "badge bg-warning text-dark"
+                          : "badge bg-secondary"
+                      }
                     >
                       {user.role}
                     </span>
                   </td>
 
+
                   <td>
+
                     <button
-                      className="btn btn-sm btn-primary me-2"
+                      className="btn btn-primary btn-sm me-2"
                       onClick={() => handleEdit(user)}
                     >
                       Edit
                     </button>
 
+
                     <button
-                      className="btn btn-sm btn-danger"
-                      onClick={() => handleDelete(user.userid)}
+                      className="btn btn-danger btn-sm"
+                      onClick={() =>
+                        handleDelete(user.userid)
+                      }
                     >
                       Delete
                     </button>
+
                   </td>
+
                 </tr>
+
               ))}
 
-              {users.length === 0 && (
-                <tr>
-                  <td colSpan="4" className="text-center">
-                    No users found.
-                  </td>
-                </tr>
-              )}
             </tbody>
+
           </table>
+
         </div>
+
       </div>
+
     </div>
   );
 };
+
 
 export default AdminDashboard;
