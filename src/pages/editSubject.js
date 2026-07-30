@@ -17,104 +17,160 @@ const EditSubject = () => {
   const getSubjects = () => {
     Axios.get(`${API_URL}/api/get/subjects`).then((response) => {
       setSubjectList(response.data);
+
+      if (response.data.length > 0) {
+        setDeleteSubject(response.data[0].SubID);
+      }
     });
   };
 
-  const addSubject = () => {
-    if (subject.trim() === "") {
+  const addSubject = async () => {
+    if (!subject.trim()) {
       window.alert("Please enter a subject.");
       return;
     }
 
-    Axios.post(`${API_URL}/api/insert/subject`, {
-      subject: subject,
-    }).then(() => {
-      window.alert(`${subject} added.`);
-      window.location.reload(true);
-    });
+    try {
+      await Axios.post(`${API_URL}/api/insert/subject`, {
+        subject,
+      });
+
+      window.alert(`${subject} added successfully!`);
+
+      setSubject("");
+      getSubjects();
+    } catch (error) {
+      console.log(error);
+      window.alert("Failed to add subject.");
+    }
   };
 
-  const removeSubject = () => {
-    Axios.post(`${API_URL}/api/delete/subject`, {
-      deleteSubject: deleteSubject,
-    }).then(() => {
-      window.location.reload(true);
-    });
+  const removeSubject = async () => {
+    if (!deleteSubject) {
+      window.alert("Please select a subject.");
+      return;
+    }
+
+    try {
+      await Axios.post(`${API_URL}/api/delete/subject`, {
+        deleteSubject,
+      });
+
+      window.alert("Subject deleted successfully!");
+
+      getSubjects();
+    } catch (error) {
+      console.log(error);
+      window.alert("Failed to delete subject.");
+    }
   };
 
   return (
-    <div>
-      <div
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        minHeight: "100vh",
+        padding: "40px 20px",
+        boxSizing: "border-box",
+      }}
+    >
+      <h2
         style={{
           color: "white",
-          fontSize: "30px",
-          marginLeft: "40%",
-          marginTop: "75px",
+          marginBottom: "30px",
+          textAlign: "center",
         }}
       >
         Edit Subjects
-      </div>
+      </h2>
 
       <div
         style={{
-          paddingLeft: "50px",
           backgroundColor: "black",
           color: "white",
-          fontSize: "15px",
-          marginTop: "20px",
-          marginLeft: "25%",
           borderRadius: "15px",
-          width: "600px",
-          height: "160px",
+          padding: "30px",
+          width: "100%",
+          maxWidth: "650px",
+          boxSizing: "border-box",
         }}
       >
-        Subject:
-        <input
+        {/* Add Subject */}
+        <div
           style={{
-            marginTop: "20px",
-            marginLeft: "10px",
-            width: "400px",
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            flexWrap: "wrap",
+            marginBottom: "30px",
           }}
-          value={subject}
-          onChange={(e) => setSubject(e.target.value)}
-        />
-
-        <button
-          className="btn btn-success"
-          style={{ marginLeft: "10px" }}
-          onClick={addSubject}
         >
-          Add
-        </button>
+          <label
+            style={{
+              minWidth: "100px",
+            }}
+          >
+            Subject:
+          </label>
 
-        <div style={{ marginTop: "20px" }}>
-          <label htmlFor="ddlSubject">
-            List of Subjects:
+          <input
+            style={{
+              flex: 1,
+              minWidth: "250px",
+              padding: "6px",
+            }}
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
+          />
+
+          <button
+            className="btn btn-success"
+            onClick={addSubject}
+          >
+            Add
+          </button>
+        </div>
+
+        {/* Delete Subject */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            flexWrap: "wrap",
+          }}
+        >
+          <label
+            style={{
+              minWidth: "100px",
+            }}
+          >
+            Subjects:
           </label>
 
           <select
-            id="ddlSubject"
             style={{
-              marginLeft: "10px",
-              fontSize: "15px",
+              flex: 1,
+              minWidth: "250px",
+              padding: "6px",
             }}
+            value={deleteSubject}
             onChange={(e) => setDeleteSubject(e.target.value)}
           >
-            <option value="">Select Subject</option>
-
-            {subjectList.map((val) => (
+            {subjectList.map((item) => (
               <option
-                key={val.SubID}
-                value={val.SubID}
+                key={item.SubID}
+                value={item.SubID}
               >
-                {val.Subject}
+                {item.Subject}
               </option>
             ))}
           </select>
 
           <button
             className="btn btn-danger"
-            style={{ marginLeft: "10px" }}
             onClick={() => {
               if (window.confirm("Remove subject?")) {
                 removeSubject();
