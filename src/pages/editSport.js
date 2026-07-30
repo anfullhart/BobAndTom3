@@ -17,99 +17,160 @@ const EditSport = () => {
   const getSports = () => {
     Axios.get(`${API_URL}/api/get/sports`).then((response) => {
       setSportList(response.data);
+
+      if (response.data.length > 0) {
+        setDeleteSport(response.data[0].SportID);
+      }
     });
   };
 
-  const addSport = () => {
-    if (sport.trim() === "") {
+  const addSport = async () => {
+    if (!sport.trim()) {
       window.alert("Please enter a sport.");
       return;
     }
 
-    Axios.post(`${API_URL}/api/insert/sport`, {
-      sport: sport,
-    }).then(() => {
-      window.alert(`${sport} added.`);
-      window.location.reload(true);
-    });
+    try {
+      await Axios.post(`${API_URL}/api/insert/sport`, {
+        sport,
+      });
+
+      window.alert(`${sport} added successfully!`);
+
+      setSport("");
+      getSports();
+    } catch (error) {
+      console.log(error);
+      window.alert("Failed to add sport.");
+    }
   };
 
-  const removeSport = () => {
-    Axios.post(`${API_URL}/api/delete/sport`, {
-      deleteSport: deleteSport,
-    }).then(() => {
-      window.location.reload(true);
-    });
+  const removeSport = async () => {
+    if (!deleteSport) {
+      window.alert("Please select a sport.");
+      return;
+    }
+
+    try {
+      await Axios.post(`${API_URL}/api/delete/sport`, {
+        deleteSport,
+      });
+
+      window.alert("Sport deleted successfully!");
+
+      getSports();
+    } catch (error) {
+      console.log(error);
+      window.alert("Failed to delete sport.");
+    }
   };
 
   return (
-    <div>
-      <div
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        minHeight: "100vh",
+        padding: "40px 20px",
+        boxSizing: "border-box",
+      }}
+    >
+      <h2
         style={{
           color: "white",
-          fontSize: "30px",
-          marginLeft: "40%",
-          marginTop: "75px",
+          marginBottom: "30px",
+          textAlign: "center",
         }}
       >
         Edit Sports
-      </div>
+      </h2>
 
       <div
         style={{
-          paddingLeft: "50px",
           backgroundColor: "black",
           color: "white",
-          fontSize: "15px",
-          marginTop: "20px",
-          marginLeft: "25%",
           borderRadius: "15px",
-          width: "600px",
-          height: "160px",
+          padding: "30px",
+          width: "100%",
+          maxWidth: "650px",
+          boxSizing: "border-box",
         }}
       >
-        Sport:
-        <input
+        {/* Add Sport */}
+        <div
           style={{
-            marginTop: "20px",
-            marginLeft: "10px",
-            width: "400px",
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            flexWrap: "wrap",
+            marginBottom: "30px",
           }}
-          value={sport}
-          onChange={(e) => setSport(e.target.value)}
-        />
-
-        <button
-          className="btn btn-success"
-          style={{ marginLeft: "10px" }}
-          onClick={addSport}
         >
-          Add
-        </button>
+          <label
+            style={{
+              minWidth: "100px",
+            }}
+          >
+            Sport:
+          </label>
 
-        <div style={{ marginTop: "20px" }}>
-          <label htmlFor="ddlSport">List of Sports:</label>
+          <input
+            style={{
+              flex: 1,
+              minWidth: "250px",
+              padding: "6px",
+            }}
+            value={sport}
+            onChange={(e) => setSport(e.target.value)}
+          />
+
+          <button
+            className="btn btn-success"
+            onClick={addSport}
+          >
+            Add
+          </button>
+        </div>
+
+        {/* Delete Sport */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            flexWrap: "wrap",
+          }}
+        >
+          <label
+            style={{
+              minWidth: "100px",
+            }}
+          >
+            Sports:
+          </label>
 
           <select
-            id="ddlSport"
             style={{
-              marginLeft: "10px",
-              fontSize: "15px",
+              flex: 1,
+              minWidth: "250px",
+              padding: "6px",
             }}
+            value={deleteSport}
             onChange={(e) => setDeleteSport(e.target.value)}
           >
-            <option value="">Select Sport</option>
-
-            {sportList.map((val) => (
-              <option key={val.SportID} value={val.SportID}>
-                {val.Sport}
+            {sportList.map((item) => (
+              <option
+                key={item.SportID}
+                value={item.SportID}
+              >
+                {item.Sport}
               </option>
             ))}
           </select>
 
           <button
             className="btn btn-danger"
-            style={{ marginLeft: "10px" }}
             onClick={() => {
               if (window.confirm("Remove sport?")) {
                 removeSport();
@@ -125,4 +186,3 @@ const EditSport = () => {
 };
 
 export default EditSport;
-
