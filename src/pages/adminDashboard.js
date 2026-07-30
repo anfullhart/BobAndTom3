@@ -62,7 +62,6 @@ const AdminDashboard = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check passwords match
     if (form.password !== form.confirmPassword) {
       window.alert("Passwords do not match.");
       return;
@@ -74,7 +73,6 @@ const AdminDashboard = () => {
         role: form.role,
       };
 
-      // Only send password if one was entered
       if (form.password.trim() !== "") {
         payload.password = form.password;
       }
@@ -150,7 +148,7 @@ const AdminDashboard = () => {
   };
 
 
-  if (loading)
+  if (loading) {
     return (
       <div
         style={{
@@ -162,9 +160,10 @@ const AdminDashboard = () => {
         <h3>Loading users...</h3>
       </div>
     );
+  }
 
 
-  if (error)
+  if (error) {
     return (
       <div
         style={{
@@ -177,6 +176,7 @@ const AdminDashboard = () => {
         </div>
       </div>
     );
+  }
 
 
   return (
@@ -186,6 +186,7 @@ const AdminDashboard = () => {
         justifyContent: "center",
         padding: "40px 20px",
         minHeight: "100vh",
+        boxSizing: "border-box",
       }}
     >
 
@@ -214,8 +215,9 @@ const AdminDashboard = () => {
         <form
           onSubmit={handleSubmit}
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))",
+            display: "flex",
+            flexWrap: "wrap",
+            alignItems: "center",
             gap: "15px",
             marginBottom: "30px",
           }}
@@ -227,6 +229,9 @@ const AdminDashboard = () => {
             placeholder="Username"
             value={form.username}
             onChange={handleChange}
+            style={{
+              flex: "1 1 200px",
+            }}
             required
           />
 
@@ -242,6 +247,9 @@ const AdminDashboard = () => {
             }
             value={form.password}
             onChange={handleChange}
+            style={{
+              flex: "1 1 200px",
+            }}
           />
 
 
@@ -252,6 +260,9 @@ const AdminDashboard = () => {
             placeholder="Confirm password"
             value={form.confirmPassword}
             onChange={handleChange}
+            style={{
+              flex: "1 1 200px",
+            }}
           />
 
 
@@ -260,6 +271,9 @@ const AdminDashboard = () => {
             name="role"
             value={form.role}
             onChange={handleChange}
+            style={{
+              flex: "1 1 150px",
+            }}
           >
             <option value="user">
               User
@@ -276,35 +290,49 @@ const AdminDashboard = () => {
           </select>
 
 
-          <button
-            className={
-              editUserId
-                ? "btn btn-warning"
-                : "btn btn-success"
-            }
-            type="submit"
+          <div
+            style={{
+              display: "flex",
+              gap: "10px",
+              marginLeft: "auto",
+            }}
           >
-            {editUserId
-              ? "Update User"
-              : "Add User"}
-          </button>
+
+            {editUserId && (
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={clearForm}
+              >
+                Cancel Edit
+              </button>
+            )}
 
 
-          {editUserId && (
             <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={clearForm}
+              type="submit"
+              className={
+                editUserId
+                  ? "btn btn-warning"
+                  : "btn btn-success"
+              }
             >
-              Cancel Edit
+              {editUserId
+                ? "Update User"
+                : "Add User"}
             </button>
-          )}
+
+          </div>
 
         </form>
 
 
 
-        <div style={{ overflowX: "auto" }}>
+        <div
+          style={{
+            overflowX: "auto",
+          }}
+        >
 
           <table className="table table-dark table-striped table-hover">
 
@@ -328,11 +356,9 @@ const AdminDashboard = () => {
                     {user.userid}
                   </td>
 
-
                   <td>
                     {user.login}
                   </td>
-
 
                   <td>
                     <span
@@ -385,6 +411,5 @@ const AdminDashboard = () => {
     </div>
   );
 };
-
 
 export default AdminDashboard;
