@@ -17,102 +17,160 @@ const EditSeason = () => {
   const getSeasons = () => {
     Axios.get(`${API_URL}/api/get/seasons`).then((response) => {
       setSeasonList(response.data);
+
+      if (response.data.length > 0) {
+        setDeleteSeason(response.data[0].SeasonID);
+      }
     });
   };
 
-  const addSeason = () => {
-    if (season.trim() === "") {
+  const addSeason = async () => {
+    if (!season.trim()) {
       window.alert("Please enter a season.");
       return;
     }
 
-    Axios.post(`${API_URL}/api/insert/season`, {
-      season: season,
-    }).then(() => {
-      window.alert(`${season} added.`);
-      window.location.reload(true);
-    });
+    try {
+      await Axios.post(`${API_URL}/api/insert/season`, {
+        season,
+      });
+
+      window.alert(`${season} added successfully!`);
+
+      setSeason("");
+      getSeasons();
+    } catch (error) {
+      console.log(error);
+      window.alert("Failed to add season.");
+    }
   };
 
-  const removeSeason = () => {
-    Axios.post(`${API_URL}/api/delete/season`, {
-      deleteSeason: deleteSeason,
-    }).then(() => {
-      window.location.reload(true);
-    });
+  const removeSeason = async () => {
+    if (!deleteSeason) {
+      window.alert("Please select a season.");
+      return;
+    }
+
+    try {
+      await Axios.post(`${API_URL}/api/delete/season`, {
+        deleteSeason,
+      });
+
+      window.alert("Season deleted successfully!");
+
+      getSeasons();
+    } catch (error) {
+      console.log(error);
+      window.alert("Failed to delete season.");
+    }
   };
 
   return (
-    <div>
-      <div
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        minHeight: "100vh",
+        padding: "40px 20px",
+        boxSizing: "border-box",
+      }}
+    >
+      <h2
         style={{
           color: "white",
-          fontSize: "30px",
-          marginLeft: "40%",
-          marginTop: "75px",
+          marginBottom: "30px",
+          textAlign: "center",
         }}
       >
         Edit Seasons
-      </div>
+      </h2>
 
       <div
         style={{
-          paddingLeft: "50px",
           backgroundColor: "black",
           color: "white",
-          fontSize: "15px",
-          marginTop: "20px",
-          marginLeft: "25%",
           borderRadius: "15px",
-          width: "600px",
-          height: "160px",
+          padding: "30px",
+          width: "100%",
+          maxWidth: "650px",
+          boxSizing: "border-box",
         }}
       >
-        Season:
-        <input
+        {/* Add Season */}
+        <div
           style={{
-            marginTop: "20px",
-            marginLeft: "10px",
-            width: "400px",
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            flexWrap: "wrap",
+            marginBottom: "30px",
           }}
-          value={season}
-          onChange={(e) => setSeason(e.target.value)}
-        />
-
-        <button
-          className="btn btn-success"
-          style={{ marginLeft: "10px" }}
-          onClick={addSeason}
         >
-          Add
-        </button>
+          <label
+            style={{
+              minWidth: "100px",
+            }}
+          >
+            Season:
+          </label>
 
-        <div style={{ marginTop: "20px" }}>
-          <label htmlFor="ddlSeason">List of Seasons:</label>
+          <input
+            style={{
+              flex: 1,
+              minWidth: "250px",
+              padding: "6px",
+            }}
+            value={season}
+            onChange={(e) => setSeason(e.target.value)}
+          />
+
+          <button
+            className="btn btn-success"
+            onClick={addSeason}
+          >
+            Add
+          </button>
+        </div>
+
+        {/* Delete Season */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            flexWrap: "wrap",
+          }}
+        >
+          <label
+            style={{
+              minWidth: "100px",
+            }}
+          >
+            Seasons:
+          </label>
 
           <select
-            id="ddlSeason"
             style={{
-              marginLeft: "10px",
-              fontSize: "15px",
+              flex: 1,
+              minWidth: "250px",
+              padding: "6px",
             }}
+            value={deleteSeason}
             onChange={(e) => setDeleteSeason(e.target.value)}
           >
-            <option value="">Select Season</option>
-
-            {seasonList.map((val) => (
+            {seasonList.map((item) => (
               <option
-                key={val.SeasonID}
-                value={val.SeasonID}
+                key={item.SeasonID}
+                value={item.SeasonID}
               >
-                {val.Season}
+                {item.Season}
               </option>
             ))}
           </select>
 
           <button
             className="btn btn-danger"
-            style={{ marginLeft: "10px" }}
             onClick={() => {
               if (window.confirm("Remove season?")) {
                 removeSeason();
