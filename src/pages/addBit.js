@@ -101,6 +101,7 @@ const AddBit = () => {
 
   const submitMedia = async () => {
     try {
+      console.log("Hyperlinks being sent:", hyperlinks);
       const response = await Axios.post(`${API_URL}/api/insert/bit`, {
         type,
         title,
