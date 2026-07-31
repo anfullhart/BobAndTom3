@@ -129,9 +129,26 @@ setTrack4("");
     }
 
   } catch (error) {
-    console.error("Error adding bit:", error);
-    window.alert("Failed to add bit. Please check the data and try again.");
+  console.error("Error adding bit:", error);
+
+  let errorMessage = "Unknown error occurred.";
+
+  if (error.response) {
+    // Server returned an error response (4xx or 5xx)
+    errorMessage =
+      error.response.data?.error ||
+      error.response.data?.message ||
+      JSON.stringify(error.response.data);
+  } else if (error.request) {
+    // Request was made but no response received
+    errorMessage = "No response received from the server.";
+  } else {
+    // Something else happened
+    errorMessage = error.message;
   }
+
+  window.alert(`Failed to add bit:\n\n${errorMessage}`);
+}
 };
  
   return (
