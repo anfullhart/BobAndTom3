@@ -31,18 +31,43 @@ const AddBit = () => {
   // Unlimited hyperlinks
   const [hyperlinks, setHyperlinks] = useState([""]);
 
-  const [album1, setAlbum1] = useState("");
-  const [track1, setTrack1] = useState("");
+  const updateAlbum = (index, field, value) => {
+    const updated = [...albums];
+    updated[index][field] = value;
+    setAlbums(updated);
+  };
 
-  const [album2, setAlbum2] = useState("");
-  const [track2, setTrack2] = useState("");
-
-  const [album3, setAlbum3] = useState("");
-  const [track3, setTrack3] = useState("");
-
-  const [album4, setAlbum4] = useState("");
-  const [track4, setTrack4] = useState("");
-
+  const addAlbum = () => {
+    setAlbums([
+      ...albums,
+      {
+        album: "",
+        track: ""
+      }
+    ]);
+  };
+  
+  const removeAlbum = (index) => {
+    const updated = albums.filter((_, i) => i !== index);
+  
+    if (updated.length === 0) {
+      setAlbums([
+        {
+          album: "",
+          track: ""
+        }
+      ]);
+    } else {
+      setAlbums(updated);
+    }
+  };
+  
+  const [albums, setAlbums] = useState([
+    {
+      album: "",
+      track: ""
+    }
+  ]);
   const [celebList, setCelebList] = useState([]);
   const [subjectList, setSubjectList] = useState([]);
   const [artistList, setArtistList] = useState([]);
@@ -129,17 +154,9 @@ const AddBit = () => {
           (link) => link && link.trim() !== ""
         ),
 
-        album1: album1 || null,
-        track1,
-
-        album2: album2 || null,
-        track2,
-
-        album3: album3 || null,
-        track3,
-
-        album4: album4 || null,
-        track4,
+        albums: albums.filter(
+          (a) => a.album && a.album !== ""
+        )
       });
 
       if (response.status === 200) {
@@ -159,17 +176,12 @@ const AddBit = () => {
         setSport("");
         setSeason("");
 
-        setAlbum1("");
-        setTrack1("");
-
-        setAlbum2("");
-        setTrack2("");
-
-        setAlbum3("");
-        setTrack3("");
-
-        setAlbum4("");
-        setTrack4("");
+        setAlbums([
+          {
+            album: "",
+            track: ""
+          }
+        ]);
 
         setHyperlinks([""]);
               }
@@ -424,65 +436,73 @@ const AddBit = () => {
         </div>
 
 
-        {/* Album Info */}
-        <div className="card">
-          <h2>Albums</h2>
+       <div className="card">
+  <h2>Albums</h2>
 
-          {[
-            [album1, track1, setAlbum1, setTrack1],
-            [album2, track2, setAlbum2, setTrack2],
-            [album3, track3, setAlbum3, setTrack3],
-            [album4, track4, setAlbum4, setTrack4],
-          ].map((arr, idx) => (
+  {albums.map((item, index) => (
 
-            <div className="form-row" key={idx}>
+    <div className="form-row" key={index}>
 
-              <label>
-                Album {idx + 1}:
-              </label>
+      <label>
+        Album {index + 1}:
+      </label>
 
-              <select
-                value={arr[0]}
-                onChange={(e) =>
-                  arr[2](e.target.value)
-                }
-              >
+      <select
+        value={item.album}
+        onChange={(e) =>
+          updateAlbum(index, "album", e.target.value)
+        }
+      >
+        <option value="">
+          -- Select Album --
+        </option>
 
-                <option value="">
-                  -- Select Album --
-                </option>
+        {albumList.map((val) => (
+          <option
+            key={val.AlbumID}
+            value={val.AlbumID}
+          >
+            {val.Album_Name}
+          </option>
+        ))}
+      </select>
 
-                {albumList.map((val) => (
-                  <option
-                    key={val.AlbumID}
-                    value={val.AlbumID}
-                  >
-                    {val.Album_Name}
-                  </option>
-                ))}
+      <label>
+        Track:
+      </label>
 
-              </select>
+      <input
+        type="text"
+        value={item.track}
+        onChange={(e) =>
+          updateAlbum(index, "track", e.target.value)
+        }
+        placeholder="Track #"
+      />
 
+      {albums.length > 1 && (
+        <button
+          type="button"
+          className="btn btn-danger"
+          onClick={() => removeAlbum(index)}
+        >
+          Remove
+        </button>
+      )}
 
-              <label>
-                Track:
-              </label>
+    </div>
 
-              <input
-                type="text"
-                value={arr[1]}
-                onChange={(e) =>
-                  arr[3](e.target.value)
-                }
-                placeholder="Track #"
-              />
+  ))}
 
-            </div>
+  <button
+    type="button"
+    className="btn btn-primary"
+    onClick={addAlbum}
+  >
+    + Add Album
+  </button>
 
-          ))}
-
-        </div>
-
+</div>
       </div>
       <div className="form-actions">
 
