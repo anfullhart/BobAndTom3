@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Axios from "axios";
 
-// Uses REACT_APP_API_URL if set (e.g. on Railway), otherwise falls back
-// to your deployed backend so this still works if the env var is missing.
 const API_URL =
   process.env.REACT_APP_API_URL ||
   "https://bobandtombackend-production-fb6d.up.railway.app";
@@ -14,8 +11,6 @@ const EditBit = () => {
   const searchBitID = locationState.bitID;
   const navigate = useNavigate();
 
-  
-  // --- Form State ---
   const [formData, setFormData] = useState({
     type: "",
     title: "",
@@ -24,16 +19,27 @@ const EditBit = () => {
     date: "",
     time: "",
     autoNum: "",
+
     sub1: "",
     sub2: "",
     sub3: "",
     sub4: "",
+
     celebrity1: "",
     celebrity2: "",
-    sport: [],
+
+    sport: "",
     season: "",
+
     keywords: "",
-    hyperlink: "",
+
+    hyperlink1: "",
+    hyperlink2: "",
+    hyperlink3: "",
+    hyperlink4: "",
+    hyperlink5: "",
+    hyperlink6: "",
+
     album1: "",
     track1: "",
     album2: "",
@@ -45,7 +51,6 @@ const EditBit = () => {
   });
 
   const [lists, setLists] = useState({
-    bitList: [],
     celebList: [],
     subjectList: [],
     artistList: [],
@@ -55,7 +60,6 @@ const EditBit = () => {
     albumList: [],
   });
 
-  // --- Load initial data ---
   useEffect(() => {
     if (!searchBitID) return;
 
@@ -71,6 +75,13 @@ const EditBit = () => {
           seasonRes,
           albumRes,
           sportInfoRes,
+          subjectInfoRes,
+          celeb1InfoRes,
+          celeb2InfoRes,
+          seasonInfoRes,
+          categoryInfoRes,
+          albumInfoRes,
+          hyperlinkInfoRes,
         ] = await Promise.all([
           Axios.get(`${API_URL}/api/get/bit/info/${searchBitID}`),
           Axios.get(`${API_URL}/api/get/celebrity`),
@@ -80,12 +91,18 @@ const EditBit = () => {
           Axios.get(`${API_URL}/api/get/sport`),
           Axios.get(`${API_URL}/api/get/season`),
           Axios.get(`${API_URL}/api/get/album`),
+
           Axios.get(`${API_URL}/api/get/sport/info/${searchBitID}`),
+          Axios.get(`${API_URL}/api/get/subject/info/${searchBitID}`),
+          Axios.get(`${API_URL}/api/get/celeb1/info/${searchBitID}`),
+          Axios.get(`${API_URL}/api/get/celeb2/info/${searchBitID}`),
+          Axios.get(`${API_URL}/api/get/season/info/${searchBitID}`),
+          Axios.get(`${API_URL}/api/get/category/info/${searchBitID}`),
+          Axios.get(`${API_URL}/api/get/album/info/${searchBitID}`),
+          Axios.get(`${API_URL}/api/get/hyperlink/info/${searchBitID}`),
         ]);
 
-        // Set lists
         setLists({
-          bitList: bitRes.data,
           celebList: celebRes.data,
           subjectList: subjectRes.data,
           artistList: artistRes.data,
@@ -95,234 +112,474 @@ const EditBit = () => {
           albumList: albumRes.data,
         });
 
-        // Prefill form with backend data if available
-        if (bitRes.data && bitRes.data.length > 0) {
-          const bit = bitRes.data[0];
-          setFormData({
-            ...formData,
-            type: bit.Type || "",
-            title: bit.Title || "",
-            date: bit.AirDate || "",
-            time: bit.Time || "",
-            autoNum: bit.ProphetNum || "",
-            category: bit.Category || "",
-            artist: bit.Artist || "",
-            sub1: bit.Sub1 || "",
-            sub2: bit.Sub2 || "",
-            sub3: bit.Sub3 || "",
-            sub4: bit.Sub4 || "",
-            celebrity1: bit.Celebrity1 || "",
-            celebrity2: bit.Celebrity2 || "",
-            sport: sportInfoRes.data || [],
-            season: bit.Season || "",
-            keywords: bit.Keywords || "",
-            hyperlink: bit.Hyperlink || "",
-            album1: bit.Album1 || "",
-            track1: bit.Track1 || "",
-            album2: bit.Album2 || "",
-            track2: bit.Track2 || "",
-            album3: bit.Album3 || "",
-            track3: bit.Track3 || "",
-            album4: bit.Album4 || "",
-            track4: bit.Track4 || "",
-          });
+        const bit = bitRes.data?.[0];
+
+        if (!bit) {
+          console.log("No bit found.");
+          return;
         }
+
+        const subjects = subjectInfoRes.data || [];
+        const celeb1 = celeb1InfoRes.data?.[0];
+        const celeb2 = celeb2InfoRes.data?.[0];
+        const sport = sportInfoRes.data?.[0];
+        const season = seasonInfoRes.data?.[0];
+        const category = categoryInfoRes.data?.[0];
+        const albums = albumInfoRes.data || [];
+        const hyperlinks = hyperlinkInfoRes.data?.[0];
+
+        setFormData({
+          type: bit.Type || "",
+          title: bit.Title || "",
+          date: bit.AirDate
+            ? new Date(bit.AirDate).toISOString().split("T")[0]
+            : "",
+          time: bit.Time || "",
+          autoNum: bit.ProphetNum || "",
+
+          category:
+            category?.CatID ||
+            bit.CatID ||
+            "",
+
+          artist:
+            bit.ArtistID ||
+            "",
+
+          sub1: subjects[0]?.SubID || "",
+          sub2: subjects[1]?.SubID || "",
+          sub3: subjects[2]?.SubID || "",
+          sub4: subjects[3]?.SubID || "",
+
+          celebrity1:
+            celeb1?.Celeb1_ID ||
+            celeb1?.CelebID ||
+            "",
+
+          celebrity2:
+            celeb2?.Celeb2_ID ||
+            celeb2?.CelebID ||
+            "",
+
+          sport:
+            sport?.SportID ||
+            "",
+
+          season:
+            season?.SeasonID ||
+            "",
+
+          keywords: bit.Keywords || "",
+
+          hyperlink1: hyperlinks?.Hyperlink1 || "",
+          hyperlink2: hyperlinks?.Hyperlink2 || "",
+          hyperlink3: hyperlinks?.Hyperlink3 || "",
+          hyperlink4: hyperlinks?.Hyperlink4 || "",
+          hyperlink5: hyperlinks?.Hyperlink5 || "",
+          hyperlink6: hyperlinks?.Hyperlink6 || "",
+
+          album1: albums[0]?.AlbumID || "",
+          track1: albums[0]?.Album_Track || "",
+
+          album2: albums[1]?.AlbumID || "",
+          track2: albums[1]?.Album_Track || "",
+
+          album3: albums[2]?.AlbumID || "",
+          track3: albums[2]?.Album_Track || "",
+
+          album4: albums[3]?.AlbumID || "",
+          track4: albums[3]?.Album_Track || "",
+        });
       } catch (err) {
-        console.error("Error fetching data:", err);
+        console.error("Error fetching bit data:", err);
       }
     };
 
     fetchData();
   }, [searchBitID]);
 
-  // --- Handlers ---
   const handleChange = (field, value) => {
-    setFormData({ ...formData, [field]: value });
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   };
-  
 
   const handleConfirm = async (e) => {
     e.preventDefault();
+
     try {
       await Axios.post(`${API_URL}/api/update/bit`, {
         bitID: searchBitID,
         ...formData,
       });
+
       alert("Bit updated successfully!");
     } catch (err) {
       console.error("Error updating bit:", err);
-      alert("Failed to update bit");
+      alert("Failed to update bit.");
     }
   };
 
   const handleCancel = (e) => {
-  e.preventDefault();
-  // Reset form
-  setFormData({
-    type: "",
-    title: "",
-    category: "",
-    artist: "",
-    date: "",
-    time: "",
-    autoNum: "",
-    sub1: "",
-    sub2: "",
-    sub3: "",
-    sub4: "",
-    celebrity1: "",
-    celebrity2: "",
-    sport: [],
-    season: "",
-    keywords: "",
-    hyperlink: "",
-    album1: "",
-    track1: "",
-    album2: "",
-    track2: "",
-    album3: "",
-    track3: "",
-    album4: "",
-    track4: "",
-  });
-  
-  // Navigate back to previous page
-  navigate(-1);
-};
+    e.preventDefault();
+    navigate(-1);
+  };
 
   return (
-    <form style={{ padding: "20px" }}>
-      {/* General Info */}
-      <section
+    <form
+      onSubmit={handleConfirm}
+      style={{
+        padding: "20px",
+        color: "white",
+      }}
+    >
+      <div
         style={{
-          backgroundColor: "#1a1a1a",
-          color: "white",
-          padding: "20px",
-          borderRadius: "10px",
-          marginBottom: "20px",
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
+          gap: "20px",
         }}
       >
-        <h2 style={{ color: "#979bdb" }}>General Information</h2>
-        <div style={{ marginBottom: "10px" }}>
-          <label>Media Title: </label>
-          <input
-            type="text"
-            value={formData.title}
-            onChange={(e) => handleChange("title", e.target.value)}
-            style={{ marginLeft: "5px", width: "300px" }}
-          />
-        </div>
-        <div style={{ marginBottom: "10px" }}>
-          <label>Media Type: </label>
-          <select
-            value={formData.type}
-            onChange={(e) => handleChange("type", e.target.value)}
-            style={{ marginLeft: "5px" }}
-          >
-            <option value="">Select Type</option>
-            <option value="Bit">Bit</option>
-            <option value="Segment">Segment</option>
-            <option value="Video">Video</option>
-          </select>
-        </div>
-        <div style={{ marginBottom: "10px" }}>
-          <label>Original Air Date: </label>
-          <input
-            type="text"
-            placeholder="YYYY-MM-DD"
-            value={formData.date}
-            onChange={(e) => handleChange("date", e.target.value)}
-            style={{ marginLeft: "5px", width: "150px" }}
-          />
-        </div>
-        <div style={{ marginBottom: "10px" }}>
-          <label>Time: </label>
-          <input
-            type="text"
-            placeholder="00:00:00"
-            value={formData.time}
-            onChange={(e) => handleChange("time", e.target.value)}
-            style={{ marginLeft: "5px", width: "100px" }}
-          />
-        </div>
-        <div style={{ marginBottom: "10px" }}>
-          <label>Automation Number: </label>
-          <input
-            type="text"
-            value={formData.autoNum}
-            onChange={(e) => handleChange("autoNum", e.target.value)}
-            style={{ marginLeft: "5px", width: "150px" }}
-          />
-        </div>
-      </section>
 
-      {/* Hyperlink Info */}
-      <section
-        style={{
-          backgroundColor: "#1a1a1a",
-          color: "white",
-          padding: "20px",
-          borderRadius: "10px",
-          marginBottom: "20px",
-        }}
-      >
-        <h2 style={{ color: "#979bdb" }}>Hyperlink Information</h2>
-        <input
-          type="text"
-          placeholder="Enter a link to a valid media source"
-          value={formData.hyperlink}
-          onChange={(e) => handleChange("hyperlink", e.target.value)}
-          style={{ width: "100%" }}
-        />
-      </section>
+        {/* GENERAL INFORMATION */}
+        <section
+          style={{
+            backgroundColor: "#1a1a1a",
+            padding: "20px",
+            borderRadius: "10px",
+          }}
+        >
+          <h2 style={{ color: "#979bdb" }}>General Information</h2>
 
-      {/* Album Info */}
-      <section
-        style={{
-          backgroundColor: "#1a1a1a",
-          color: "white",
-          padding: "20px",
-          borderRadius: "10px",
-          marginBottom: "20px",
-        }}
-      >
-        <h2 style={{ color: "#979bdb" }}>Album Information</h2>
-        {[1, 2, 3, 4].map((i) => (
-          <div key={i} style={{ marginBottom: "10px" }}>
-            <label>Album {i}: </label>
+          <div style={{ marginBottom: "12px" }}>
+            <label>Media Title:</label>
+            <input
+              type="text"
+              value={formData.title}
+              onChange={(e) => handleChange("title", e.target.value)}
+              style={{ width: "100%" }}
+            />
+          </div>
+
+          <div style={{ marginBottom: "12px" }}>
+            <label>Media Type:</label>
             <select
-              value={formData[`album${i}`]}
-              onChange={(e) => handleChange(`album${i}`, e.target.value)}
-              style={{ marginLeft: "5px", width: "200px" }}
+              value={formData.type}
+              onChange={(e) => handleChange("type", e.target.value)}
+              style={{ width: "100%" }}
             >
-              <option value="">Select Album</option>
-              {lists.albumList.map((val) => (
-                <option key={val.AlbumID} value={val.AlbumID}>
-                  {val.Album_Name}
+              <option value="">Select Type</option>
+              <option value="Bit">Bit</option>
+              <option value="Segment">Segment</option>
+              <option value="Video">Video</option>
+            </select>
+          </div>
+
+          <div style={{ marginBottom: "12px" }}>
+            <label>Category:</label>
+            <select
+              value={formData.category}
+              onChange={(e) => handleChange("category", e.target.value)}
+              style={{ width: "100%" }}
+            >
+              <option value="">Select Category</option>
+
+              {lists.categoryList.map((val) => (
+                <option key={val.CatID} value={val.CatID}>
+                  {val.Category}
                 </option>
               ))}
             </select>
-            <label style={{ marginLeft: "10px" }}>Track: </label>
+          </div>
+
+          <div style={{ marginBottom: "12px" }}>
+            <label>Artist:</label>
+            <select
+              value={formData.artist}
+              onChange={(e) => handleChange("artist", e.target.value)}
+              style={{ width: "100%" }}
+            >
+              <option value="">Select Artist</option>
+
+              {lists.artistList.map((val) => (
+                <option key={val.ArtistID} value={val.ArtistID}>
+                  {val.Name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div style={{ marginBottom: "12px" }}>
+            <label>Original Air Date:</label>
             <input
-              type="text"
-              value={formData[`track${i}`]}
-              onChange={(e) => handleChange(`track${i}`, e.target.value)}
-              style={{ width: "100px", marginLeft: "5px" }}
+              type="date"
+              value={formData.date}
+              onChange={(e) => handleChange("date", e.target.value)}
+              style={{ width: "100%" }}
             />
           </div>
-        ))}
-      </section>
 
-      {/* Buttons */}
-      <div style={{ marginTop: "20px" }}>
+          <div style={{ marginBottom: "12px" }}>
+            <label>Length:</label>
+            <input
+              type="text"
+              placeholder="HH:MM:SS"
+              value={formData.time}
+              onChange={(e) => handleChange("time", e.target.value)}
+              style={{ width: "100%" }}
+            />
+          </div>
+
+          <div style={{ marginBottom: "12px" }}>
+            <label>Automation Number:</label>
+            <input
+              type="text"
+              value={formData.autoNum}
+              onChange={(e) => handleChange("autoNum", e.target.value)}
+              style={{ width: "100%" }}
+            />
+          </div>
+        </section>
+
+        {/* SUBJECTS / CELEBRITIES */}
+        <section
+          style={{
+            backgroundColor: "#1a1a1a",
+            padding: "20px",
+            borderRadius: "10px",
+          }}
+        >
+          <h2 style={{ color: "#979bdb" }}>Subjects & People</h2>
+
+          <h4>Subjects</h4>
+
+          {[1, 2, 3, 4].map((i) => (
+            <div style={{ marginBottom: "10px" }} key={i}>
+              <label>Subject {i}:</label>
+
+              <select
+                value={formData[`sub${i}`]}
+                onChange={(e) =>
+                  handleChange(`sub${i}`, e.target.value)
+                }
+                style={{ width: "100%" }}
+              >
+                <option value="">Select Subject</option>
+
+                {lists.subjectList.map((val) => (
+                  <option key={val.SubID} value={val.SubID}>
+                    {val.Subject}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ))}
+
+          <h4 style={{ marginTop: "20px" }}>Celebrities</h4>
+
+          <div style={{ marginBottom: "10px" }}>
+            <label>Celebrity 1:</label>
+
+            <select
+              value={formData.celebrity1}
+              onChange={(e) =>
+                handleChange("celebrity1", e.target.value)
+              }
+              style={{ width: "100%" }}
+            >
+              <option value="">Select Celebrity</option>
+
+              {lists.celebList.map((val) => (
+                <option key={val.CelebID} value={val.CelebID}>
+                  {val.Name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div style={{ marginBottom: "10px" }}>
+            <label>Celebrity 2:</label>
+
+            <select
+              value={formData.celebrity2}
+              onChange={(e) =>
+                handleChange("celebrity2", e.target.value)
+              }
+              style={{ width: "100%" }}
+            >
+              <option value="">Select Celebrity</option>
+
+              {lists.celebList.map((val) => (
+                <option key={val.CelebID} value={val.CelebID}>
+                  {val.Name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </section>
+
+        {/* SPORT / SEASON / KEYWORDS */}
+        <section
+          style={{
+            backgroundColor: "#1a1a1a",
+            padding: "20px",
+            borderRadius: "10px",
+          }}
+        >
+          <h2 style={{ color: "#979bdb" }}>Additional Information</h2>
+
+          <div style={{ marginBottom: "12px" }}>
+            <label>Sport:</label>
+
+            <select
+              value={formData.sport}
+              onChange={(e) => handleChange("sport", e.target.value)}
+              style={{ width: "100%" }}
+            >
+              <option value="">Select Sport</option>
+
+              {lists.sportList.map((val) => (
+                <option key={val.SportID} value={val.SportID}>
+                  {val.Sport}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div style={{ marginBottom: "12px" }}>
+            <label>Season:</label>
+
+            <select
+              value={formData.season}
+              onChange={(e) => handleChange("season", e.target.value)}
+              style={{ width: "100%" }}
+            >
+              <option value="">Select Season</option>
+
+              {lists.seasonList.map((val) => (
+                <option key={val.SeasonID} value={val.SeasonID}>
+                  {val.Season}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div style={{ marginBottom: "12px" }}>
+            <label>Keywords:</label>
+
+            <input
+              type="text"
+              value={formData.keywords}
+              onChange={(e) => handleChange("keywords", e.target.value)}
+              placeholder="Enter keywords"
+              style={{ width: "100%" }}
+            />
+          </div>
+        </section>
+
+        {/* HYPERLINKS */}
+        <section
+          style={{
+            backgroundColor: "#1a1a1a",
+            padding: "20px",
+            borderRadius: "10px",
+          }}
+        >
+          <h2 style={{ color: "#979bdb" }}>Hyperlinks</h2>
+
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div style={{ marginBottom: "10px" }} key={i}>
+              <label>Link {i}:</label>
+
+              <input
+                type="text"
+                value={formData[`hyperlink${i}`]}
+                onChange={(e) =>
+                  handleChange(`hyperlink${i}`, e.target.value)
+                }
+                placeholder="Enter link"
+                style={{ width: "100%" }}
+              />
+            </div>
+          ))}
+        </section>
+
+        {/* ALBUMS */}
+        <section
+          style={{
+            backgroundColor: "#1a1a1a",
+            padding: "20px",
+            borderRadius: "10px",
+            gridColumn: "1 / -1",
+          }}
+        >
+          <h2 style={{ color: "#979bdb" }}>Albums</h2>
+
+          {[1, 2, 3, 4].map((i) => (
+            <div
+              key={i}
+              style={{
+                display: "flex",
+                gap: "10px",
+                alignItems: "center",
+                marginBottom: "12px",
+              }}
+            >
+              <label>Album {i}:</label>
+
+              <select
+                value={formData[`album${i}`]}
+                onChange={(e) =>
+                  handleChange(`album${i}`, e.target.value)
+                }
+                style={{ width: "250px" }}
+              >
+                <option value="">Select Album</option>
+
+                {lists.albumList.map((val) => (
+                  <option key={val.AlbumID} value={val.AlbumID}>
+                    {val.Album_Name}
+                  </option>
+                ))}
+              </select>
+
+              <label>Track:</label>
+
+              <input
+                type="text"
+                value={formData[`track${i}`]}
+                onChange={(e) =>
+                  handleChange(`track${i}`, e.target.value)
+                }
+                placeholder="Track #"
+                style={{ width: "100px" }}
+              />
+            </div>
+          ))}
+        </section>
+      </div>
+
+      {/* BUTTONS */}
+      <div
+        style={{
+          marginTop: "20px",
+          display: "flex",
+          gap: "10px",
+        }}
+      >
         <button
-          onClick={handleConfirm}
+          type="submit"
           className="btn btn-success"
-          style={{ marginRight: "10px" }}
         >
           Confirm Edits
         </button>
-        <button onClick={handleCancel} className="btn btn-danger">
+
+        <button
+          type="button"
+          onClick={handleCancel}
+          className="btn btn-danger"
+        >
           Cancel Edits
         </button>
       </div>
@@ -331,3 +588,4 @@ const EditBit = () => {
 };
 
 export default EditBit;
+
