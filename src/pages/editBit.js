@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Axios from "axios";
+import "./addBit.css";
 
 const API_URL =
   process.env.REACT_APP_API_URL ||
@@ -11,54 +12,119 @@ const EditBit = () => {
   const searchBitID = locationState.bitID;
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    type: "",
-    title: "",
-    category: "",
-    artist: "",
-    date: "",
-    time: "",
-    autoNum: "",
+  // ===============================
+  // General Form State
+  // ===============================
 
-    sub1: "",
-    sub2: "",
-    sub3: "",
-    sub4: "",
+  const [type, setType] = useState("");
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("");
+  const [artist, setArtist] = useState("");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [autoNum, setAutoNum] = useState("");
 
-    celebrity1: "",
-    celebrity2: "",
+  const [sub1, setSub1] = useState("");
+  const [sub2, setSub2] = useState("");
+  const [sub3, setSub3] = useState("");
+  const [sub4, setSub4] = useState("");
 
-    sport: "",
-    season: "",
+  const [celebrity1, setCelebrity1] = useState("");
+  const [celebrity2, setCelebrity2] = useState("");
 
-    keywords: "",
+  const [sport, setSport] = useState("");
+  const [season, setSeason] = useState("");
 
-    hyperlink1: "",
-    hyperlink2: "",
-    hyperlink3: "",
-    hyperlink4: "",
-    hyperlink5: "",
-    hyperlink6: "",
+  const [keywords, setKeywords] = useState("");
 
-    album1: "",
-    track1: "",
-    album2: "",
-    track2: "",
-    album3: "",
-    track3: "",
-    album4: "",
-    track4: "",
-  });
+  // ===============================
+  // Unlimited Hyperlinks
+  // ===============================
 
-  const [lists, setLists] = useState({
-    celebList: [],
-    subjectList: [],
-    artistList: [],
-    categoryList: [],
-    sportList: [],
-    seasonList: [],
-    albumList: [],
-  });
+  const [hyperlinks, setHyperlinks] = useState([""]);
+
+  const updateHyperlink = (index, value) => {
+    const updated = [...hyperlinks];
+    updated[index] = value;
+    setHyperlinks(updated);
+  };
+
+  const addHyperlink = () => {
+    setHyperlinks([...hyperlinks, ""]);
+  };
+
+  const removeHyperlink = (index) => {
+    const updated = hyperlinks.filter((_, i) => i !== index);
+
+    if (updated.length === 0) {
+      setHyperlinks([""]);
+    } else {
+      setHyperlinks(updated);
+    }
+  };
+
+  // ===============================
+  // Unlimited Albums / Tracks
+  // ===============================
+
+  const [albums, setAlbums] = useState([
+    {
+      album: "",
+      track: "",
+    },
+  ]);
+
+  const updateAlbum = (index, field, value) => {
+    const updated = [...albums];
+
+    updated[index] = {
+      ...updated[index],
+      [field]: value,
+    };
+
+    setAlbums(updated);
+  };
+
+  const addAlbum = () => {
+    setAlbums([
+      ...albums,
+      {
+        album: "",
+        track: "",
+      },
+    ]);
+  };
+
+  const removeAlbum = (index) => {
+    const updated = albums.filter((_, i) => i !== index);
+
+    if (updated.length === 0) {
+      setAlbums([
+        {
+          album: "",
+          track: "",
+        },
+      ]);
+    } else {
+      setAlbums(updated);
+    }
+  };
+
+  // ===============================
+  // Dropdown Lists
+  // ===============================
+
+  const [celebList, setCelebList] = useState([]);
+  const [subjectList, setSubjectList] = useState([]);
+  const [artistList, setArtistList] = useState([]);
+  const [categoryList, setCategoryList] = useState([]);
+  const [sportList, setSportList] = useState([]);
+  const [seasonList, setSeasonList] = useState([]);
+  const [albumList, setAlbumList] = useState([]);
+
+  // ===============================
+  // Load Data
+  // ===============================
 
   useEffect(() => {
     if (!searchBitID) return;
@@ -75,13 +141,6 @@ const EditBit = () => {
           seasonRes,
           albumRes,
           sportInfoRes,
-          subjectInfoRes,
-          celeb1InfoRes,
-          celeb2InfoRes,
-          seasonInfoRes,
-          categoryInfoRes,
-          albumInfoRes,
-          hyperlinkInfoRes,
         ] = await Promise.all([
           Axios.get(`${API_URL}/api/get/bit/info/${searchBitID}`),
           Axios.get(`${API_URL}/api/get/celebrity`),
@@ -91,454 +150,651 @@ const EditBit = () => {
           Axios.get(`${API_URL}/api/get/sport`),
           Axios.get(`${API_URL}/api/get/season`),
           Axios.get(`${API_URL}/api/get/album`),
-
           Axios.get(`${API_URL}/api/get/sport/info/${searchBitID}`),
-          Axios.get(`${API_URL}/api/get/subject/info/${searchBitID}`),
-          Axios.get(`${API_URL}/api/get/celeb1/info/${searchBitID}`),
-          Axios.get(`${API_URL}/api/get/celeb2/info/${searchBitID}`),
-          Axios.get(`${API_URL}/api/get/season/info/${searchBitID}`),
-          Axios.get(`${API_URL}/api/get/category/info/${searchBitID}`),
-          Axios.get(`${API_URL}/api/get/album/info/${searchBitID}`),
-          Axios.get(`${API_URL}/api/get/hyperlink/info/${searchBitID}`),
         ]);
 
-        setLists({
-          celebList: celebRes.data,
-          subjectList: subjectRes.data,
-          artistList: artistRes.data,
-          categoryList: categoryRes.data,
-          sportList: sportRes.data,
-          seasonList: seasonRes.data,
-          albumList: albumRes.data,
-        });
+        // ===============================
+        // Set Dropdown Lists
+        // ===============================
 
-        const bit = bitRes.data?.[0];
+        setCelebList(celebRes.data);
+        setSubjectList(subjectRes.data);
+        setArtistList(artistRes.data);
+        setCategoryList(categoryRes.data);
+        setSportList(sportRes.data);
+        setSeasonList(seasonRes.data);
+        setAlbumList(albumRes.data);
 
-        if (!bit) {
-          console.log("No bit found.");
-          return;
+        // ===============================
+        // Load Bit Information
+        // ===============================
+
+        if (bitRes.data && bitRes.data.length > 0) {
+          const bit = bitRes.data[0];
+
+          setType(bit.Type || "");
+          setTitle(bit.Title || "");
+          setCategory(bit.Category || "");
+          setArtist(bit.Artist || "");
+          setDate(bit.AirDate || "");
+          setTime(bit.Time || "");
+          setAutoNum(bit.ProphetNum || "");
+
+          setSub1(bit.Sub1 || "");
+          setSub2(bit.Sub2 || "");
+          setSub3(bit.Sub3 || "");
+          setSub4(bit.Sub4 || "");
+
+          setCelebrity1(bit.Celebrity1 || "");
+          setCelebrity2(bit.Celebrity2 || "");
+
+          // Sport endpoint
+          if (sportInfoRes.data) {
+            if (Array.isArray(sportInfoRes.data)) {
+              setSport(
+                sportInfoRes.data.length > 0
+                  ? sportInfoRes.data[0]
+                  : ""
+              );
+            } else {
+              setSport(sportInfoRes.data);
+            }
+          }
+
+          setSeason(bit.Season || "");
+          setKeywords(bit.Keywords || "");
+
+          // ===============================
+          // Hyperlinks
+          // ===============================
+
+          if (
+            Array.isArray(bit.Hyperlinks) &&
+            bit.Hyperlinks.length > 0
+          ) {
+            setHyperlinks(
+              bit.Hyperlinks.map((link) => {
+                if (typeof link === "string") {
+                  return link;
+                }
+
+                return (
+                  link.Hyperlink ||
+                  link.Link ||
+                  link.URL ||
+                  ""
+                );
+              })
+            );
+          } else if (bit.Hyperlink) {
+            // Backwards compatibility with old single hyperlink
+            setHyperlinks([bit.Hyperlink]);
+          } else {
+            setHyperlinks([""]);
+          }
+
+          // ===============================
+          // Albums
+          // ===============================
+
+          if (
+            Array.isArray(bit.Albums) &&
+            bit.Albums.length > 0
+          ) {
+            setAlbums(
+              bit.Albums.map((item) => ({
+                album:
+                  item.album ||
+                  item.AlbumID ||
+                  item.Album ||
+                  "",
+                track:
+                  item.track ||
+                  item.Track ||
+                  "",
+              }))
+            );
+          } else {
+            // Backwards compatibility with old Album1-4 fields
+            const oldAlbums = [
+              {
+                album: bit.Album1 || "",
+                track: bit.Track1 || "",
+              },
+              {
+                album: bit.Album2 || "",
+                track: bit.Track2 || "",
+              },
+              {
+                album: bit.Album3 || "",
+                track: bit.Track3 || "",
+              },
+              {
+                album: bit.Album4 || "",
+                track: bit.Track4 || "",
+              },
+            ].filter((item) => item.album || item.track);
+
+            if (oldAlbums.length > 0) {
+              setAlbums(oldAlbums);
+            } else {
+              setAlbums([
+                {
+                  album: "",
+                  track: "",
+                },
+              ]);
+            }
+          }
         }
-
-        const subjects = subjectInfoRes.data || [];
-        const celeb1 = celeb1InfoRes.data?.[0];
-        const celeb2 = celeb2InfoRes.data?.[0];
-        const sport = sportInfoRes.data?.[0];
-        const season = seasonInfoRes.data?.[0];
-        const category = categoryInfoRes.data?.[0];
-        const albums = albumInfoRes.data || [];
-        const hyperlinks = hyperlinkInfoRes.data?.[0];
-
-        setFormData({
-          type: bit.Type || "",
-          title: bit.Title || "",
-          date: bit.AirDate
-            ? new Date(bit.AirDate).toISOString().split("T")[0]
-            : "",
-          time: bit.Time || "",
-          autoNum: bit.ProphetNum || "",
-
-          category:
-            category?.CatID ||
-            bit.CatID ||
-            "",
-
-          artist:
-            bit.ArtistID ||
-            "",
-
-          sub1: subjects[0]?.SubID || "",
-          sub2: subjects[1]?.SubID || "",
-          sub3: subjects[2]?.SubID || "",
-          sub4: subjects[3]?.SubID || "",
-
-          celebrity1:
-            celeb1?.Celeb1_ID ||
-            celeb1?.CelebID ||
-            "",
-
-          celebrity2:
-            celeb2?.Celeb2_ID ||
-            celeb2?.CelebID ||
-            "",
-
-          sport:
-            sport?.SportID ||
-            "",
-
-          season:
-            season?.SeasonID ||
-            "",
-
-          keywords: bit.Keywords || "",
-
-          hyperlink1: hyperlinks?.Hyperlink1 || "",
-          hyperlink2: hyperlinks?.Hyperlink2 || "",
-          hyperlink3: hyperlinks?.Hyperlink3 || "",
-          hyperlink4: hyperlinks?.Hyperlink4 || "",
-          hyperlink5: hyperlinks?.Hyperlink5 || "",
-          hyperlink6: hyperlinks?.Hyperlink6 || "",
-
-          album1: albums[0]?.AlbumID || "",
-          track1: albums[0]?.Album_Track || "",
-
-          album2: albums[1]?.AlbumID || "",
-          track2: albums[1]?.Album_Track || "",
-
-          album3: albums[2]?.AlbumID || "",
-          track3: albums[2]?.Album_Track || "",
-
-          album4: albums[3]?.AlbumID || "",
-          track4: albums[3]?.Album_Track || "",
-        });
       } catch (err) {
-        console.error("Error fetching bit data:", err);
+        console.error("Error fetching data:", err);
+        alert("Failed to load bit information.");
       }
     };
 
     fetchData();
   }, [searchBitID]);
 
-  const handleChange = (field, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
+  // ===============================
+  // Submit Changes
+  // ===============================
 
   const handleConfirm = async (e) => {
     e.preventDefault();
 
     try {
-      await Axios.post(`${API_URL}/api/update/bit`, {
-        bitID: searchBitID,
-        ...formData,
-      });
+      const cleanedHyperlinks = hyperlinks.filter(
+        (link) => link && link.trim() !== ""
+      );
 
-      alert("Bit updated successfully!");
+      const cleanedAlbums = albums.filter(
+        (item) => item.album && item.album !== ""
+      );
+
+      const response = await Axios.post(
+        `${API_URL}/api/update/bit`,
+        {
+          bitID: searchBitID,
+
+          type,
+          title,
+          category: category || null,
+          artist: artist || null,
+          date,
+          time,
+          autoNum,
+
+          sub1: sub1 || null,
+          sub2: sub2 || null,
+          sub3: sub3 || null,
+          sub4: sub4 || null,
+
+          celebrity1: celebrity1 || null,
+          celebrity2: celebrity2 || null,
+
+          sport: sport || null,
+          season: season || null,
+
+          keywords,
+
+          // Unlimited hyperlinks
+          hyperlinks: cleanedHyperlinks,
+
+          // Unlimited albums/tracks
+          albums: cleanedAlbums,
+        }
+      );
+
+      if (response.status === 200) {
+        alert("Bit updated successfully!");
+      }
     } catch (err) {
       console.error("Error updating bit:", err);
-      alert("Failed to update bit.");
+
+      let errorMessage = "Unknown error occurred.";
+
+      if (err.response) {
+        errorMessage =
+          err.response.data?.error ||
+          err.response.data?.message ||
+          JSON.stringify(err.response.data);
+      } else if (err.request) {
+        errorMessage = "No response received from the server.";
+      } else {
+        errorMessage = err.message;
+      }
+
+      alert(`Failed to update bit:\n\n${errorMessage}`);
     }
   };
+
+  // ===============================
+  // Cancel
+  // ===============================
 
   const handleCancel = (e) => {
     e.preventDefault();
     navigate(-1);
   };
 
+  // ===============================
+  // Clear Form
+  // ===============================
+
+  const handleClear = () => {
+    setType("");
+    setTitle("");
+    setCategory("");
+    setArtist("");
+    setDate("");
+    setTime("");
+    setAutoNum("");
+
+    setSub1("");
+    setSub2("");
+    setSub3("");
+    setSub4("");
+
+    setCelebrity1("");
+    setCelebrity2("");
+
+    setSport("");
+    setSeason("");
+
+    setKeywords("");
+
+    setHyperlinks([""]);
+
+    setAlbums([
+      {
+        album: "",
+        track: "",
+      },
+    ]);
+  };
+
+  // ===============================
+  // JSX
+  // ===============================
+
   return (
-    <form
-      onSubmit={handleConfirm}
-      style={{
-        padding: "20px",
-        color: "white",
-      }}
-    >
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
-          gap: "20px",
-        }}
-      >
+    <form className="add-bit-form" onSubmit={handleConfirm}>
+      <div className="form-columns">
 
-        {/* GENERAL INFORMATION */}
-        <section
-          style={{
-            backgroundColor: "#1a1a1a",
-            padding: "20px",
-            borderRadius: "10px",
-          }}
-        >
-          <h2 style={{ color: "#979bdb" }}>General Information</h2>
+        {/* ===============================
+            GENERAL INFO
+        =============================== */}
 
-          <div style={{ marginBottom: "12px" }}>
-            <label>Media Title:</label>
+        <div className="card">
+          <h2>General Info</h2>
+
+          <div className="form-row">
+            <label>Title:</label>
+
             <input
               type="text"
-              value={formData.title}
-              onChange={(e) => handleChange("title", e.target.value)}
-              style={{ width: "100%" }}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Media Title"
             />
           </div>
 
-          <div style={{ marginBottom: "12px" }}>
-            <label>Media Type:</label>
+          <div className="form-row">
+            <label>Type:</label>
+
             <select
-              value={formData.type}
-              onChange={(e) => handleChange("type", e.target.value)}
-              style={{ width: "100%" }}
+              value={type}
+              onChange={(e) => setType(e.target.value)}
             >
-              <option value="">Select Type</option>
+              <option value="">-- Select Type --</option>
               <option value="Bit">Bit</option>
               <option value="Segment">Segment</option>
               <option value="Video">Video</option>
             </select>
           </div>
 
-          <div style={{ marginBottom: "12px" }}>
+          <div className="form-row">
             <label>Category:</label>
-            <select
-              value={formData.category}
-              onChange={(e) => handleChange("category", e.target.value)}
-              style={{ width: "100%" }}
-            >
-              <option value="">Select Category</option>
 
-              {lists.categoryList.map((val) => (
-                <option key={val.CatID} value={val.CatID}>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            >
+              <option value="">
+                -- Select Category --
+              </option>
+
+              {categoryList.map((val) => (
+                <option
+                  key={val.CatID}
+                  value={val.CatID}
+                >
                   {val.Category}
                 </option>
               ))}
             </select>
           </div>
 
-          <div style={{ marginBottom: "12px" }}>
+          <div className="form-row">
             <label>Artist:</label>
-            <select
-              value={formData.artist}
-              onChange={(e) => handleChange("artist", e.target.value)}
-              style={{ width: "100%" }}
-            >
-              <option value="">Select Artist</option>
 
-              {lists.artistList.map((val) => (
-                <option key={val.ArtistID} value={val.ArtistID}>
+            <select
+              value={artist}
+              onChange={(e) => setArtist(e.target.value)}
+            >
+              <option value="">
+                -- Select Artist --
+              </option>
+
+              {artistList.map((val) => (
+                <option
+                  key={val.ArtistID}
+                  value={val.ArtistID}
+                >
                   {val.Name}
                 </option>
               ))}
             </select>
           </div>
 
-          <div style={{ marginBottom: "12px" }}>
-            <label>Original Air Date:</label>
+          <div className="form-row">
+            <label>Air Date:</label>
+
             <input
               type="date"
-              value={formData.date}
-              onChange={(e) => handleChange("date", e.target.value)}
-              style={{ width: "100%" }}
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
             />
           </div>
 
-          <div style={{ marginBottom: "12px" }}>
+          <div className="form-row">
             <label>Length:</label>
+
             <input
               type="text"
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
               placeholder="HH:MM:SS"
-              value={formData.time}
-              onChange={(e) => handleChange("time", e.target.value)}
-              style={{ width: "100%" }}
             />
-          </div>
 
-          <div style={{ marginBottom: "12px" }}>
-            <label>Automation Number:</label>
+            <label>Automation #:</label>
+
             <input
               type="text"
-              value={formData.autoNum}
-              onChange={(e) => handleChange("autoNum", e.target.value)}
-              style={{ width: "100%" }}
+              value={autoNum}
+              onChange={(e) => setAutoNum(e.target.value)}
+              placeholder="0123456789"
             />
           </div>
-        </section>
 
-        {/* SUBJECTS / CELEBRITIES */}
-        <section
-          style={{
-            backgroundColor: "#1a1a1a",
-            padding: "20px",
-            borderRadius: "10px",
-          }}
-        >
-          <h2 style={{ color: "#979bdb" }}>Subjects & People</h2>
+          {/* Subjects */}
 
-          <h4>Subjects</h4>
-
-          {[1, 2, 3, 4].map((i) => (
-            <div style={{ marginBottom: "10px" }} key={i}>
-              <label>Subject {i}:</label>
-
-              <select
-                value={formData[`sub${i}`]}
-                onChange={(e) =>
-                  handleChange(`sub${i}`, e.target.value)
-                }
-                style={{ width: "100%" }}
-              >
-                <option value="">Select Subject</option>
-
-                {lists.subjectList.map((val) => (
-                  <option key={val.SubID} value={val.SubID}>
-                    {val.Subject}
-                  </option>
-                ))}
-              </select>
-            </div>
-          ))}
-
-          <h4 style={{ marginTop: "20px" }}>Celebrities</h4>
-
-          <div style={{ marginBottom: "10px" }}>
-            <label>Celebrity 1:</label>
+          <div className="form-row">
+            <label>Subjects:</label>
 
             <select
-              value={formData.celebrity1}
-              onChange={(e) =>
-                handleChange("celebrity1", e.target.value)
-              }
-              style={{ width: "100%" }}
+              value={sub1}
+              onChange={(e) => setSub1(e.target.value)}
             >
-              <option value="">Select Celebrity</option>
+              <option value="">
+                -- Select Subject --
+              </option>
 
-              {lists.celebList.map((val) => (
-                <option key={val.CelebID} value={val.CelebID}>
+              {subjectList.map((val) => (
+                <option
+                  key={val.SubID}
+                  value={val.SubID}
+                >
+                  {val.Subject}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={sub2}
+              onChange={(e) => setSub2(e.target.value)}
+            >
+              <option value="">
+                -- Select Subject --
+              </option>
+
+              {subjectList.map((val) => (
+                <option
+                  key={val.SubID}
+                  value={val.SubID}
+                >
+                  {val.Subject}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={sub3}
+              onChange={(e) => setSub3(e.target.value)}
+            >
+              <option value="">
+                -- Select Subject --
+              </option>
+
+              {subjectList.map((val) => (
+                <option
+                  key={val.SubID}
+                  value={val.SubID}
+                >
+                  {val.Subject}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={sub4}
+              onChange={(e) => setSub4(e.target.value)}
+            >
+              <option value="">
+                -- Select Subject --
+              </option>
+
+              {subjectList.map((val) => (
+                <option
+                  key={val.SubID}
+                  value={val.SubID}
+                >
+                  {val.Subject}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Celebrities */}
+
+          <div className="form-row">
+            <label>Celebrities:</label>
+
+            <select
+              value={celebrity1}
+              onChange={(e) =>
+                setCelebrity1(e.target.value)
+              }
+            >
+              <option value="">
+                -- Select Celebrity --
+              </option>
+
+              {celebList.map((val) => (
+                <option
+                  key={val.CelebID}
+                  value={val.CelebID}
+                >
+                  {val.Name}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={celebrity2}
+              onChange={(e) =>
+                setCelebrity2(e.target.value)
+              }
+            >
+              <option value="">
+                -- Select Celebrity --
+              </option>
+
+              {celebList.map((val) => (
+                <option
+                  key={val.CelebID}
+                  value={val.CelebID}
+                >
                   {val.Name}
                 </option>
               ))}
             </select>
           </div>
 
-          <div style={{ marginBottom: "10px" }}>
-            <label>Celebrity 2:</label>
+          {/* Sport / Season */}
 
-            <select
-              value={formData.celebrity2}
-              onChange={(e) =>
-                handleChange("celebrity2", e.target.value)
-              }
-              style={{ width: "100%" }}
-            >
-              <option value="">Select Celebrity</option>
-
-              {lists.celebList.map((val) => (
-                <option key={val.CelebID} value={val.CelebID}>
-                  {val.Name}
-                </option>
-              ))}
-            </select>
-          </div>
-        </section>
-
-        {/* SPORT / SEASON / KEYWORDS */}
-        <section
-          style={{
-            backgroundColor: "#1a1a1a",
-            padding: "20px",
-            borderRadius: "10px",
-          }}
-        >
-          <h2 style={{ color: "#979bdb" }}>Additional Information</h2>
-
-          <div style={{ marginBottom: "12px" }}>
+          <div className="form-row">
             <label>Sport:</label>
 
             <select
-              value={formData.sport}
-              onChange={(e) => handleChange("sport", e.target.value)}
-              style={{ width: "100%" }}
+              value={sport}
+              onChange={(e) => setSport(e.target.value)}
             >
-              <option value="">Select Sport</option>
+              <option value="">
+                -- Select Sport --
+              </option>
 
-              {lists.sportList.map((val) => (
-                <option key={val.SportID} value={val.SportID}>
+              {sportList.map((val) => (
+                <option
+                  key={val.SportID}
+                  value={val.SportID}
+                >
                   {val.Sport}
                 </option>
               ))}
             </select>
-          </div>
 
-          <div style={{ marginBottom: "12px" }}>
             <label>Season:</label>
 
             <select
-              value={formData.season}
-              onChange={(e) => handleChange("season", e.target.value)}
-              style={{ width: "100%" }}
+              value={season}
+              onChange={(e) => setSeason(e.target.value)}
             >
-              <option value="">Select Season</option>
+              <option value="">
+                -- Select Season --
+              </option>
 
-              {lists.seasonList.map((val) => (
-                <option key={val.SeasonID} value={val.SeasonID}>
+              {seasonList.map((val) => (
+                <option
+                  key={val.SeasonID}
+                  value={val.SeasonID}
+                >
                   {val.Season}
                 </option>
               ))}
             </select>
           </div>
 
-          <div style={{ marginBottom: "12px" }}>
+          {/* Keywords */}
+
+          <div className="form-row">
             <label>Keywords:</label>
 
             <input
               type="text"
-              value={formData.keywords}
-              onChange={(e) => handleChange("keywords", e.target.value)}
+              value={keywords}
+              onChange={(e) =>
+                setKeywords(e.target.value)
+              }
               placeholder="Enter keywords"
-              style={{ width: "100%" }}
             />
           </div>
-        </section>
+        </div>
 
-        {/* HYPERLINKS */}
-        <section
-          style={{
-            backgroundColor: "#1a1a1a",
-            padding: "20px",
-            borderRadius: "10px",
-          }}
-        >
-          <h2 style={{ color: "#979bdb" }}>Hyperlinks</h2>
+        {/* ===============================
+            HYPERLINKS
+        =============================== */}
 
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div style={{ marginBottom: "10px" }} key={i}>
-              <label>Link {i}:</label>
+        <div className="card">
+          <h2>Hyperlinks</h2>
+
+          {hyperlinks.map((link, index) => (
+            <div className="form-row" key={index}>
+              <label>
+                Link {index + 1}:
+              </label>
 
               <input
                 type="text"
-                value={formData[`hyperlink${i}`]}
+                value={link}
                 onChange={(e) =>
-                  handleChange(`hyperlink${i}`, e.target.value)
+                  updateHyperlink(
+                    index,
+                    e.target.value
+                  )
                 }
                 placeholder="Enter link"
-                style={{ width: "100%" }}
               />
+
+              {hyperlinks.length > 1 && (
+                <button
+                  type="button"
+                  className="btn btn-danger"
+                  onClick={() =>
+                    removeHyperlink(index)
+                  }
+                >
+                  Remove
+                </button>
+              )}
             </div>
           ))}
-        </section>
 
-        {/* ALBUMS */}
-        <section
-          style={{
-            backgroundColor: "#1a1a1a",
-            padding: "20px",
-            borderRadius: "10px",
-            gridColumn: "1 / -1",
-          }}
-        >
-          <h2 style={{ color: "#979bdb" }}>Albums</h2>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={addHyperlink}
+          >
+            + Add Hyperlink
+          </button>
+        </div>
 
-          {[1, 2, 3, 4].map((i) => (
+        {/* ===============================
+            ALBUMS
+        =============================== */}
+
+        <div className="card">
+          <h2>Albums</h2>
+
+          {albums.map((item, index) => (
             <div
-              key={i}
-              style={{
-                display: "flex",
-                gap: "10px",
-                alignItems: "center",
-                marginBottom: "12px",
-              }}
+              className="form-row"
+              key={index}
             >
-              <label>Album {i}:</label>
+              <label>
+                Album {index + 1}:
+              </label>
 
               <select
-                value={formData[`album${i}`]}
+                value={item.album}
                 onChange={(e) =>
-                  handleChange(`album${i}`, e.target.value)
+                  updateAlbum(
+                    index,
+                    "album",
+                    e.target.value
+                  )
                 }
-                style={{ width: "250px" }}
               >
-                <option value="">Select Album</option>
+                <option value="">
+                  -- Select Album --
+                </option>
 
-                {lists.albumList.map((val) => (
-                  <option key={val.AlbumID} value={val.AlbumID}>
+                {albumList.map((val) => (
+                  <option
+                    key={val.AlbumID}
+                    value={val.AlbumID}
+                  >
                     {val.Album_Name}
                   </option>
                 ))}
@@ -548,26 +804,46 @@ const EditBit = () => {
 
               <input
                 type="text"
-                value={formData[`track${i}`]}
+                value={item.track}
                 onChange={(e) =>
-                  handleChange(`track${i}`, e.target.value)
+                  updateAlbum(
+                    index,
+                    "track",
+                    e.target.value
+                  )
                 }
                 placeholder="Track #"
-                style={{ width: "100px" }}
               />
+
+              {albums.length > 1 && (
+                <button
+                  type="button"
+                  className="btn btn-danger"
+                  onClick={() =>
+                    removeAlbum(index)
+                  }
+                >
+                  Remove
+                </button>
+              )}
             </div>
           ))}
-        </section>
+
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={addAlbum}
+          >
+            + Add Album
+          </button>
+        </div>
       </div>
 
-      {/* BUTTONS */}
-      <div
-        style={{
-          marginTop: "20px",
-          display: "flex",
-          gap: "10px",
-        }}
-      >
+      {/* ===============================
+          BUTTONS
+      =============================== */}
+
+      <div className="form-actions">
         <button
           type="submit"
           className="btn btn-success"
@@ -577,10 +853,18 @@ const EditBit = () => {
 
         <button
           type="button"
-          onClick={handleCancel}
           className="btn btn-danger"
+          onClick={handleClear}
         >
-          Cancel Edits
+          Clear
+        </button>
+
+        <button
+          type="button"
+          className="btn btn-secondary"
+          onClick={handleCancel}
+        >
+          Cancel
         </button>
       </div>
     </form>
@@ -588,4 +872,3 @@ const EditBit = () => {
 };
 
 export default EditBit;
-
