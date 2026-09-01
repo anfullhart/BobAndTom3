@@ -25,7 +25,7 @@ const AddBit = () => {
   const [keywords, setKeywords] = useState("");
 
   // ============================================================
-  // MULTIPLE SUBJECTS
+  // SUBJECTS
   // ============================================================
 
   const [subjects, setSubjects] = useState([""]);
@@ -43,15 +43,11 @@ const AddBit = () => {
   const removeSubject = (index) => {
     const updated = subjects.filter((_, i) => i !== index);
 
-    if (updated.length === 0) {
-      setSubjects([""]);
-    } else {
-      setSubjects(updated);
-    }
+    setSubjects(updated.length === 0 ? [""] : updated);
   };
 
   // ============================================================
-  // MULTIPLE CELEBRITIES
+  // CELEBRITIES
   // ============================================================
 
   const [celebrities, setCelebrities] = useState([""]);
@@ -69,15 +65,11 @@ const AddBit = () => {
   const removeCelebrity = (index) => {
     const updated = celebrities.filter((_, i) => i !== index);
 
-    if (updated.length === 0) {
-      setCelebrities([""]);
-    } else {
-      setCelebrities(updated);
-    }
+    setCelebrities(updated.length === 0 ? [""] : updated);
   };
 
   // ============================================================
-  // MULTIPLE HYPERLINKS
+  // HYPERLINKS
   // ============================================================
 
   const [hyperlinks, setHyperlinks] = useState([""]);
@@ -95,15 +87,11 @@ const AddBit = () => {
   const removeHyperlink = (index) => {
     const updated = hyperlinks.filter((_, i) => i !== index);
 
-    if (updated.length === 0) {
-      setHyperlinks([""]);
-    } else {
-      setHyperlinks(updated);
-    }
+    setHyperlinks(updated.length === 0 ? [""] : updated);
   };
 
   // ============================================================
-  // MULTIPLE ALBUMS
+  // ALBUMS
   // ============================================================
 
   const [albums, setAlbums] = useState([
@@ -137,16 +125,16 @@ const AddBit = () => {
   const removeAlbum = (index) => {
     const updated = albums.filter((_, i) => i !== index);
 
-    if (updated.length === 0) {
-      setAlbums([
-        {
-          album: "",
-          track: ""
-        }
-      ]);
-    } else {
-      setAlbums(updated);
-    }
+    setAlbums(
+      updated.length === 0
+        ? [
+            {
+              album: "",
+              track: ""
+            }
+          ]
+        : updated
+    );
   };
 
   // ============================================================
@@ -162,7 +150,7 @@ const AddBit = () => {
   const [albumList, setAlbumList] = useState([]);
 
   // ============================================================
-  // LOAD LOOKUP DATA
+  // LOAD LOOKUPS
   // ============================================================
 
   useEffect(() => {
@@ -206,7 +194,7 @@ const AddBit = () => {
   }, []);
 
   // ============================================================
-  // RESET FORM
+  // CLEAR FORM
   // ============================================================
 
   const clearForm = () => {
@@ -237,7 +225,7 @@ const AddBit = () => {
   };
 
   // ============================================================
-  // SUBMIT
+  // SUBMIT BIT
   // ============================================================
 
   const submitMedia = async () => {
@@ -246,23 +234,27 @@ const AddBit = () => {
       // Clean subjects
       // ----------------------------------------------------------
 
-      const cleanSubjects = subjects.filter(
-        (subject) =>
-          subject !== null &&
-          subject !== undefined &&
-          subject !== ""
-      );
+      const cleanSubjects = subjects
+        .filter(
+          (subject) =>
+            subject !== null &&
+            subject !== undefined &&
+            subject !== ""
+        )
+        .map((subject) => Number(subject));
 
       // ----------------------------------------------------------
       // Clean celebrities
       // ----------------------------------------------------------
 
-      const cleanCelebrities = celebrities.filter(
-        (celebrity) =>
-          celebrity !== null &&
-          celebrity !== undefined &&
-          celebrity !== ""
-      );
+      const cleanCelebrities = celebrities
+        .filter(
+          (celebrity) =>
+            celebrity !== null &&
+            celebrity !== undefined &&
+            celebrity !== ""
+        )
+        .map((celebrity) => Number(celebrity));
 
       // ----------------------------------------------------------
       // Clean hyperlinks
@@ -289,12 +281,17 @@ const AddBit = () => {
             album.album !== ""
         )
         .map((album) => ({
-          album: album.album,
-          track: album.track || ""
+          album: Number(album.album),
+          track:
+            album.track !== null &&
+            album.track !== undefined &&
+            album.track !== ""
+              ? Number(album.track)
+              : 0
         }));
 
       // ----------------------------------------------------------
-      // Show what we're sending
+      // Debug
       // ----------------------------------------------------------
 
       console.log("=================================");
@@ -330,29 +327,37 @@ const AddBit = () => {
           type,
           title,
 
-          category: category || null,
-          artist: artist || null,
+          category: category
+            ? Number(category)
+            : null,
+
+          artist: artist
+            ? Number(artist)
+            : null,
 
           date: date || null,
           time: time || null,
           autoNum: autoNum || null,
 
-          // Unlimited subjects
           subjects: cleanSubjects,
 
-          // Unlimited celebrities
-          // Backend puts each one into Celeb1_ID
           celebrities: cleanCelebrities,
 
-          sport: sport || null,
-          season: season || null,
+          sport: sport
+            ? Number(sport)
+            : null,
 
-          keywords: keywords || null,
+          season: season
+            ? Number(season)
+            : null,
 
-          // Unlimited hyperlinks
+          keywords:
+            keywords && keywords.trim() !== ""
+              ? keywords.trim()
+              : null,
+
           hyperlinks: cleanHyperlinks,
 
-          // Unlimited albums
           albums: cleanAlbums
         }
       );
@@ -375,7 +380,6 @@ const AddBit = () => {
       }
 
     } catch (error) {
-
       console.error("=================================");
       console.error("ERROR ADDING BIT");
       console.error("=================================");
@@ -440,7 +444,6 @@ const AddBit = () => {
             />
           </div>
 
-
           {/* TYPE */}
 
           <div className="form-row">
@@ -465,7 +468,6 @@ const AddBit = () => {
               </option>
             </select>
           </div>
-
 
           {/* CATEGORY */}
 
@@ -493,7 +495,6 @@ const AddBit = () => {
             </select>
           </div>
 
-
           {/* ARTIST */}
 
           <div className="form-row">
@@ -520,7 +521,6 @@ const AddBit = () => {
             </select>
           </div>
 
-
           {/* AIR DATE */}
 
           <div className="form-row">
@@ -534,7 +534,6 @@ const AddBit = () => {
               }
             />
           </div>
-
 
           {/* LENGTH / AUTOMATION */}
 
@@ -563,7 +562,6 @@ const AddBit = () => {
             />
 
           </div>
-
 
           {/* =================================================
               SUBJECTS
@@ -639,7 +637,6 @@ const AddBit = () => {
 
           </div>
 
-
           {/* =================================================
               CELEBRITIES
           ================================================== */}
@@ -714,7 +711,6 @@ const AddBit = () => {
 
           </div>
 
-
           {/* =================================================
               SPORT / SEASON
           ================================================== */}
@@ -747,7 +743,6 @@ const AddBit = () => {
 
             </select>
 
-
             <label>Season:</label>
 
             <select
@@ -776,7 +771,6 @@ const AddBit = () => {
 
           </div>
 
-
           {/* KEYWORDS */}
 
           <div className="form-row">
@@ -795,7 +789,6 @@ const AddBit = () => {
           </div>
 
         </div>
-
 
         {/* =====================================================
             HYPERLINKS
@@ -856,7 +849,6 @@ const AddBit = () => {
 
         </div>
 
-
         {/* =====================================================
             ALBUMS
         ====================================================== */}
@@ -904,7 +896,6 @@ const AddBit = () => {
 
               </select>
 
-
               <label>
                 Track:
               </label>
@@ -921,7 +912,6 @@ const AddBit = () => {
                 }
                 placeholder="Track #"
               />
-
 
               {albums.length > 1 && (
 
@@ -941,7 +931,6 @@ const AddBit = () => {
 
           ))}
 
-
           <button
             type="button"
             className="btn btn-primary"
@@ -953,7 +942,6 @@ const AddBit = () => {
         </div>
 
       </div>
-
 
       {/* =======================================================
           FORM ACTIONS
@@ -983,3 +971,4 @@ const AddBit = () => {
 };
 
 export default AddBit;
+
