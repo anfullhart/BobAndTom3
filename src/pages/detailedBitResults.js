@@ -18,17 +18,25 @@ const DetailedBitResults = () => {
 
   const [bit, setBit] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     if (!searchBitID) {
       console.error("No BitID provided.");
       setLoading(false);
+      setErrorMessage("No Bit ID was provided.");
       return;
     }
 
     const loadBit = async () => {
       try {
         setLoading(true);
+        setErrorMessage("");
+
+        console.log(
+          "Loading bit:",
+          `${API_URL}/api/get/bit/edit/${searchBitID}`
+        );
 
         const response = await Axios.get(
           `${API_URL}/api/get/bit/edit/${searchBitID}`
@@ -37,6 +45,7 @@ const DetailedBitResults = () => {
         console.log("Detailed bit data:", response.data);
 
         setBit(response.data);
+
       } catch (error) {
         console.error("Error loading bit details:", error);
 
@@ -45,13 +54,24 @@ const DetailedBitResults = () => {
             "Backend response:",
             error.response.data
           );
+
+          setErrorMessage(
+            error.response.data?.error ||
+            "Unable to load bit information."
+          );
+        } else {
+          setErrorMessage(
+            "Unable to connect to the server."
+          );
         }
+
       } finally {
         setLoading(false);
       }
     };
 
     loadBit();
+
   }, [searchBitID]);
 
   if (loading) {
@@ -93,10 +113,13 @@ const DetailedBitResults = () => {
       <div
         style={{
           padding: "40px",
-          color: "white"
+          color: "white",
+          textAlign: "center"
         }}
       >
-        <h2>Unable to load bit information.</h2>
+        <h2>
+          {errorMessage || "Unable to load bit information."}
+        </h2>
 
         <button
           className="btn btn-secondary"
@@ -150,16 +173,21 @@ const DetailedBitResults = () => {
             <label>Category:</label>
             <input
               type="text"
-              value={bit.categoryName || bit.category || ""}
+              value={
+                Array.isArray(bit.categories) &&
+                bit.categories.length > 0
+                  ? bit.categories.join(", ")
+                  : bit.category || ""
+              }
               readOnly
             />
           </div>
 
           <div className="form-row">
-            <label>Artist:</label>
+            <label>Artist ID:</label>
             <input
               type="text"
-              value={bit.artistName || bit.artist || ""}
+              value={bit.artist || ""}
               readOnly
             />
           </div>
@@ -194,78 +222,151 @@ const DetailedBitResults = () => {
           {/* SUBJECTS */}
 
           <div className="form-row">
+
             <label>Subjects:</label>
 
-            <div style={{ flex: 1 }}>
+            <div
+              style={{
+                flex: 1,
+                padding: "8px",
+                border: "1px solid #ccc",
+                minHeight: "38px"
+              }}
+            >
+
               {Array.isArray(bit.subjects) &&
               bit.subjects.length > 0 ? (
+
                 bit.subjects.map((subject, index) => (
+
                   <div key={index}>
-                    {subject.Subject ||
-                      subject.subject ||
-                      subject.Name ||
-                      subject}
+                    {subject}
                   </div>
+
                 ))
+
               ) : (
+
                 <div>None</div>
+
               )}
+
             </div>
+
           </div>
 
           {/* CELEBRITIES */}
 
           <div className="form-row">
+
             <label>Celebrities:</label>
 
-            <div style={{ flex: 1 }}>
-              <div>
-                {bit.celebrity1Name ||
-                  bit.celebrity1 ||
-                  "None"}
-              </div>
+            <div
+              style={{
+                flex: 1,
+                padding: "8px",
+                border: "1px solid #ccc",
+                minHeight: "38px"
+              }}
+            >
 
-              <div>
-                {bit.celebrity2Name ||
-                  bit.celebrity2 ||
-                  ""}
-              </div>
+              {Array.isArray(bit.celebrities) &&
+              bit.celebrities.length > 0 ? (
+
+                bit.celebrities.map((celebrity, index) => (
+
+                  <div key={index}>
+                    {celebrity}
+                  </div>
+
+                ))
+
+              ) : (
+
+                <div>None</div>
+
+              )}
+
             </div>
+
           </div>
 
-          {/* SPORT */}
+          {/* SPORTS */}
 
           <div className="form-row">
-            <label>Sport:</label>
-            <input
-              type="text"
-              value={
-                bit.sportName ||
-                bit.sport ||
-                ""
-              }
-              readOnly
-            />
+
+            <label>Sports:</label>
+
+            <div
+              style={{
+                flex: 1,
+                padding: "8px",
+                border: "1px solid #ccc",
+                minHeight: "38px"
+              }}
+            >
+
+              {Array.isArray(bit.sports) &&
+              bit.sports.length > 0 ? (
+
+                bit.sports.map((sport, index) => (
+
+                  <div key={index}>
+                    {sport}
+                  </div>
+
+                ))
+
+              ) : (
+
+                <div>None</div>
+
+              )}
+
+            </div>
+
           </div>
 
-          {/* SEASON */}
+          {/* SEASONS */}
 
           <div className="form-row">
-            <label>Season:</label>
-            <input
-              type="text"
-              value={
-                bit.seasonName ||
-                bit.season ||
-                ""
-              }
-              readOnly
-            />
+
+            <label>Seasons:</label>
+
+            <div
+              style={{
+                flex: 1,
+                padding: "8px",
+                border: "1px solid #ccc",
+                minHeight: "38px"
+              }}
+            >
+
+              {Array.isArray(bit.seasons) &&
+              bit.seasons.length > 0 ? (
+
+                bit.seasons.map((season, index) => (
+
+                  <div key={index}>
+                    {season}
+                  </div>
+
+                ))
+
+              ) : (
+
+                <div>None</div>
+
+              )}
+
+            </div>
+
           </div>
 
           {/* KEYWORDS */}
 
           <div className="form-row">
+
             <label>Keywords:</label>
 
             <input
@@ -273,6 +374,7 @@ const DetailedBitResults = () => {
               value={bit.keywords || ""}
               readOnly
             />
+
           </div>
 
         </div>
@@ -285,27 +387,32 @@ const DetailedBitResults = () => {
 
           {Array.isArray(bit.hyperlinks) &&
           bit.hyperlinks.length > 0 ? (
+
             bit.hyperlinks.map((link, index) => (
 
               <div
                 className="form-row"
                 key={index}
               >
+
                 <label>
                   Link {index + 1}:
                 </label>
 
                 <input
                   type="text"
-                  value={link}
+                  value={link || ""}
                   readOnly
                 />
 
               </div>
 
             ))
+
           ) : (
+
             <p>No hyperlinks.</p>
+
           )}
 
         </div>
@@ -332,11 +439,7 @@ const DetailedBitResults = () => {
 
                 <input
                   type="text"
-                  value={
-                    item.albumName ||
-                    item.album ||
-                    ""
-                  }
+                  value={item.album || ""}
                   readOnly
                 />
 
