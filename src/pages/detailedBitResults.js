@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Axios from "axios";
 
 const API_URL =
@@ -7,87 +7,76 @@ const API_URL =
   "https://bobandtombackend-production-fb6d.up.railway.app";
 
 const DetailedBitResults = () => {
-  const { type } = useParams();
-  const searchBitID = useLocation().state?.searchBitID;
+  const location = useLocation();
 
-  const [bitList, setBitList] = useState([]);
-  const [artist, setArtist] = useState([]);
-  const [category, setCategory] = useState([]);
-  const [subject, setSubject] = useState([]);
-  const [celebrity1, setCelebrity1] = useState([]);
-  const [celebrity2, setCelebrity2] = useState([]);
-  const [sport, setSport] = useState([]);
-  const [season, setSeason] = useState([]);
-  const [album, setAlbum] = useState([]);
-  const [hyperlink, setHyperlink] = useState([]);
-  const [keyword, setKeyword] = useState([]);
+  // Support both possible navigation state names
+  const searchBitID =
+    location.state?.searchBitID ||
+    location.state?.bitID;
+
+  const [bit, setBit] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  // ============================================================
+  // LOAD BIT INFORMATION
+  // ============================================================
 
   useEffect(() => {
-    if (!searchBitID) return;
+    if (!searchBitID) {
+      setError("No BitID was provided.");
+      setLoading(false);
+      return;
+    }
 
-    const fetchData = async () => {
+    const fetchBit = async () => {
       try {
-        const [
-          bitRes,
-          artistRes,
-          sportRes,
-          subjectRes,
-          celeb1Res,
-          celeb2Res,
-          seasonRes,
-          categoryRes,
-          albumRes,
-          hyperlinkRes,
-          keywordRes
-        ] = await Promise.all([
-          Axios.get(`${API_URL}/api/get/bit/info/${searchBitID}`),
-          Axios.get(`${API_URL}/api/get/artist/info/${searchBitID}`),
-          Axios.get(`${API_URL}/api/get/sport/info/${searchBitID}`),
-          Axios.get(`${API_URL}/api/get/subject/info/${searchBitID}`),
-          Axios.get(`${API_URL}/api/get/celeb1/info/${searchBitID}`),
-          Axios.get(`${API_URL}/api/get/celeb2/info/${searchBitID}`),
-          Axios.get(`${API_URL}/api/get/season/info/${searchBitID}`),
-          Axios.get(`${API_URL}/api/get/category/info/${searchBitID}`),
-          Axios.get(`${API_URL}/api/get/album/info/${searchBitID}`),
-          Axios.get(`${API_URL}/api/get/hyperlink/info/${searchBitID}`),
-          Axios.get(`${API_URL}/api/get/keyword/info/${searchBitID}`)
-        ]);
+        setLoading(true);
+        setError("");
 
-        setBitList(Array.isArray(bitRes.data) ? bitRes.data : []);
-        setArtist(Array.isArray(artistRes.data) ? artistRes.data : []);
-        setSport(Array.isArray(sportRes.data) ? sportRes.data : []);
-        setSubject(Array.isArray(subjectRes.data) ? subjectRes.data : []);
-        setCelebrity1(
-          Array.isArray(celeb1Res.data) ? celeb1Res.data : []
-        );
-        setCelebrity2(
-          Array.isArray(celeb2Res.data) ? celeb2Res.data : []
-        );
-        setSeason(Array.isArray(seasonRes.data) ? seasonRes.data : []);
-        setCategory(
-          Array.isArray(categoryRes.data) ? categoryRes.data : []
-        );
-        setAlbum(Array.isArray(albumRes.data) ? albumRes.data : []);
-
-        setHyperlink(
-          Array.isArray(hyperlinkRes.data)
-            ? hyperlinkRes.data
-            : []
+        const response = await Axios.get(
+          `${API_URL}/api/get/bit/edit/${searchBitID}`
         );
 
-        setKeyword(
-          Array.isArray(keywordRes.data)
-            ? keywordRes.data
-            : []
-        );
+        console.log("Detailed bit response:", response.data);
 
+        setBit(response.data);
       } catch (err) {
-        console.error("Failed to fetch detailed results", err);
+        console.error(
+          "Failed to fetch detailed bit:",
+          err
+        );
+
+        let errorMessage =
+          "Unable to load bit information.";
+
+        if (err.response) {
+          errorMessage =
+            err.response.data?.error ||
+            err.response.data?.message ||
+            errorMessage;
+        }
+
+        setError(errorMessage);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchData();
+    fetchBit();
   }, [searchBitID]);
+
+  // ============================================================
+  // STYLES
+  // ============================================================
+
+  const pageStyle = {
+    padding: "20px",
+    color: "white",
+    fontFamily: "Arial, sans-serif",
+    maxWidth: "1000px",
+    margin: "0 auto"
+  };
 
   const cardStyle = {
     backgroundColor: "#1c1c1c",
@@ -107,431 +96,481 @@ const DetailedBitResults = () => {
   };
 
   const itemStyle = {
-    marginBottom: "8px"
+    marginBottom: "12px"
   };
 
+  // ============================================================
+  // LOADING
+  // ============================================================
+
+  if (loading) {
+    return (
+      <div
+        style={{
+          padding: "40px",
+          textAlign: "center",
+          color: "white"
+        }}
+      >
+        <h2>Loading bit information...</h2>
+      </div>
+    );
+  }
+
+  // ============================================================
+  // ERROR
+  // ============================================================
+
+  if (error) {
+    return (
+      <div
+        style={{
+          padding: "40px",
+          textAlign: "center",
+          color: "white"
+        }}
+      >
+        <h2>Error</h2>
+
+        <p>{error}</p>
+      </div>
+    );
+  }
+
+  // ============================================================
+  // NO BIT
+  // ============================================================
+
+  if (!bit) {
+    return (
+      <div
+        style={{
+          padding: "40px",
+          textAlign: "center",
+          color: "white"
+        }}
+      >
+        <h2>No bit information found.</h2>
+      </div>
+    );
+  }
+
+  // ============================================================
+  // FORMAT DATE
+  // ============================================================
+
+  const formatDate = (dateValue) => {
+    if (!dateValue) return "N/A";
+
+    try {
+      const date = new Date(dateValue);
+
+      return date.toLocaleDateString();
+    } catch {
+      return dateValue;
+    }
+  };
+
+  // ============================================================
+  // PAGE
+  // ============================================================
+
   return (
-    <div
-      style={{
-        padding: "20px",
-        color: "white",
-        fontFamily: "Arial, sans-serif",
-        maxWidth: "900px",
-        margin: "0 auto"
-      }}
-    >
+    <div style={pageStyle}>
 
-      {/* ========================= */}
-      {/* BIT INFORMATION */}
-      {/* ========================= */}
+      {/* ========================================================
+          GENERAL INFORMATION
+      ========================================================= */}
 
-      {bitList.map((val) => (
-        <div key={val.BitID} style={cardStyle}>
+      <div style={cardStyle}>
+        <h2 style={{ marginTop: 0 }}>
+          Bit Information
+        </h2>
 
-          <h2 style={{ marginTop: 0 }}>
-            Bit Information
-          </h2>
+        <div style={itemStyle}>
+          <span style={labelStyle}>
+            Bit ID:
+          </span>
 
-          <div style={itemStyle}>
-            <span style={labelStyle}>ID:</span>
-            <span style={valueStyle}>
-              {val.BitID}
-            </span>
-          </div>
-
-          <div style={itemStyle}>
-            <span style={labelStyle}>Title:</span>
-            <span style={valueStyle}>
-              {val.Title}
-            </span>
-          </div>
-
-          <div style={itemStyle}>
-            <span style={labelStyle}>
-              Automation Number:
-            </span>
-
-            <span style={valueStyle}>
-              {val.ProphetNum}
-            </span>
-          </div>
-
-          <div style={itemStyle}>
-            <span style={labelStyle}>
-              Air Date:
-            </span>
-
-            <span style={valueStyle}>
-              {val.AirDate}
-            </span>
-          </div>
-
-          <div style={itemStyle}>
-            <span style={labelStyle}>
-              Elapsed Time:
-            </span>
-
-            <span style={valueStyle}>
-              {val.Time}
-            </span>
-          </div>
-
-          <div style={itemStyle}>
-            <span style={labelStyle}>
-              Media Type:
-            </span>
-
-            <span style={valueStyle}>
-              {val.Type}
-            </span>
-          </div>
-
+          <span style={valueStyle}>
+            {bit.bitID || bit.BitID || "N/A"}
+          </span>
         </div>
-      ))}
 
+        <div style={itemStyle}>
+          <span style={labelStyle}>
+            Title:
+          </span>
 
-      {/* ========================= */}
-      {/* ARTIST */}
-      {/* ========================= */}
-
-      {artist.length > 0 && (
-        <div style={cardStyle}>
-
-          <h3>Artist</h3>
-
-          {artist.map((val, idx) => (
-            <div key={idx} style={itemStyle}>
-
-              <span style={labelStyle}>
-                Artist:
-              </span>
-
-              <span style={valueStyle}>
-                {val.Artist || val.Name}
-              </span>
-
-            </div>
-          ))}
-
+          <span style={valueStyle}>
+            {bit.title || bit.Title || "N/A"}
+          </span>
         </div>
-      )}
 
+        <div style={itemStyle}>
+          <span style={labelStyle}>
+            Type:
+          </span>
 
-      {/* ========================= */}
-      {/* CATEGORY */}
-      {/* ========================= */}
-
-      {category.length > 0 && (
-        <div style={cardStyle}>
-
-          <h3>Categories</h3>
-
-          {category.map((val, idx) => (
-            <div key={idx} style={itemStyle}>
-
-              <span style={labelStyle}>
-                Category {idx + 1}:
-              </span>
-
-              <span style={valueStyle}>
-                {val.Category}
-              </span>
-
-            </div>
-          ))}
-
+          <span style={valueStyle}>
+            {bit.type || bit.Type || "N/A"}
+          </span>
         </div>
-      )}
 
+        <div style={itemStyle}>
+          <span style={labelStyle}>
+            Category:
+          </span>
 
-      {/* ========================= */}
-      {/* SUBJECTS */}
-      {/* ========================= */}
-
-      {subject.length > 0 && (
-        <div style={cardStyle}>
-
-          <h3>Subjects</h3>
-
-          {subject.map((val, idx) => (
-            <div key={idx} style={itemStyle}>
-
-              <span style={labelStyle}>
-                Subject {idx + 1}:
-              </span>
-
-              <span style={valueStyle}>
-                {val.Subject}
-              </span>
-
-            </div>
-          ))}
-
+          <span style={valueStyle}>
+            {bit.categoryName ||
+              bit.Category ||
+              bit.category ||
+              "N/A"}
+          </span>
         </div>
-      )}
 
+        <div style={itemStyle}>
+          <span style={labelStyle}>
+            Artist:
+          </span>
 
-      {/* ========================= */}
-      {/* CELEBRITY 1 */}
-      {/* ========================= */}
-
-      {celebrity1.length > 0 && (
-        <div style={cardStyle}>
-
-          <h3>Celebrity 1</h3>
-
-          {celebrity1.map((val, idx) => (
-            <div key={idx} style={itemStyle}>
-
-              <span style={labelStyle}>
-                Celebrity:
-              </span>
-
-              <span style={valueStyle}>
-                {val.Name}
-              </span>
-
-            </div>
-          ))}
-
+          <span style={valueStyle}>
+            {bit.artistName ||
+              bit.Artist ||
+              bit.artist ||
+              "N/A"}
+          </span>
         </div>
-      )}
 
+        <div style={itemStyle}>
+          <span style={labelStyle}>
+            Air Date:
+          </span>
 
-      {/* ========================= */}
-      {/* CELEBRITY 2 */}
-      {/* ========================= */}
-
-      {celebrity2.length > 0 && (
-        <div style={cardStyle}>
-
-          <h3>Celebrity 2</h3>
-
-          {celebrity2.map((val, idx) => (
-            <div key={idx} style={itemStyle}>
-
-              <span style={labelStyle}>
-                Celebrity:
-              </span>
-
-              <span style={valueStyle}>
-                {val.Name}
-              </span>
-
-            </div>
-          ))}
-
+          <span style={valueStyle}>
+            {formatDate(
+              bit.date ||
+              bit.AirDate
+            )}
+          </span>
         </div>
-      )}
 
+        <div style={itemStyle}>
+          <span style={labelStyle}>
+            Length:
+          </span>
 
-      {/* ========================= */}
-      {/* SPORTS */}
-      {/* ========================= */}
-
-      {sport.length > 0 && (
-        <div style={cardStyle}>
-
-          <h3>Sports</h3>
-
-          {sport.map((val, idx) => (
-            <div key={idx} style={itemStyle}>
-
-              <span style={labelStyle}>
-                Sport {idx + 1}:
-              </span>
-
-              <span style={valueStyle}>
-                {val.Sport}
-              </span>
-
-            </div>
-          ))}
-
+          <span style={valueStyle}>
+            {bit.time ||
+              bit.Time ||
+              "N/A"}
+          </span>
         </div>
-      )}
 
+        <div style={itemStyle}>
+          <span style={labelStyle}>
+            Automation Number:
+          </span>
 
-      {/* ========================= */}
-      {/* SEASONS */}
-      {/* ========================= */}
-
-      {season.length > 0 && (
-        <div style={cardStyle}>
-
-          <h3>Seasons</h3>
-
-          {season.map((val, idx) => (
-            <div key={idx} style={itemStyle}>
-
-              <span style={labelStyle}>
-                Season {idx + 1}:
-              </span>
-
-              <span style={valueStyle}>
-                {val.Season}
-              </span>
-
-            </div>
-          ))}
-
+          <span style={valueStyle}>
+            {bit.autoNum ||
+              bit.ProphetNum ||
+              "N/A"}
+          </span>
         </div>
-      )}
+      </div>
 
 
-      {/* ========================= */}
-      {/* KEYWORDS */}
-      {/* ========================= */}
+      {/* ========================================================
+          SUBJECTS
+      ========================================================= */}
 
-      {keyword.length > 0 && (
-        <div style={cardStyle}>
+      {Array.isArray(bit.subjects) &&
+        bit.subjects.length > 0 && (
 
-          <h3>Keywords</h3>
+          <div style={cardStyle}>
 
-          {keyword.map((val, idx) => (
-            <div key={idx} style={itemStyle}>
+            <h3>Subjects</h3>
 
-              <span style={labelStyle}>
-                Keyword {idx + 1}:
-              </span>
+            {bit.subjects.map(
+              (subject, index) => (
 
-              <span style={valueStyle}>
-                {val.Keyword || val.keyword || val.Keywords}
-              </span>
-
-            </div>
-          ))}
-
-        </div>
-      )}
-
-
-      {/* ========================= */}
-      {/* ALBUMS */}
-      {/* ========================= */}
-
-      {album.length > 0 && (
-        <div style={cardStyle}>
-
-          <h3>Albums</h3>
-
-          {album.map((val, idx) => (
-            <div
-              key={idx}
-              style={{
-                marginBottom: "20px",
-                paddingBottom: "15px",
-                borderBottom:
-                  idx !== album.length - 1
-                    ? "1px solid #444"
-                    : "none"
-              }}
-            >
-
-              <div style={itemStyle}>
-
-                <span style={labelStyle}>
-                  Album {idx + 1}:
-                </span>
-
-                <span style={valueStyle}>
-                  {val.Album_Name}
-                </span>
-
-              </div>
-
-              <div style={itemStyle}>
-
-                <span style={labelStyle}>
-                  Track:
-                </span>
-
-                <span style={valueStyle}>
-                  {val.Album_Track}
-                </span>
-
-              </div>
-
-              {/* Display Album ID if returned by API */}
-
-              {val.AlbumID !== undefined && (
-                <div style={itemStyle}>
+                <div
+                  key={index}
+                  style={itemStyle}
+                >
 
                   <span style={labelStyle}>
-                    Album ID:
+                    Subject {index + 1}:
                   </span>
 
                   <span style={valueStyle}>
-                    {val.AlbumID}
+                    {subject.Subject ||
+                      subject.subject ||
+                      subject.Name ||
+                      subject}
+                  </span>
+
+                </div>
+              )
+            )}
+
+          </div>
+        )}
+
+
+      {/* ========================================================
+          CELEBRITIES
+      ========================================================= */}
+
+      {(bit.celebrity1 ||
+        bit.celebrity1Name ||
+        bit.Celebrity1Name ||
+        bit.celebrity2 ||
+        bit.celebrity2Name ||
+        bit.Celebrity2Name) && (
+
+          <div style={cardStyle}>
+
+            <h3>Celebrities</h3>
+
+            {(bit.celebrity1Name ||
+              bit.Celebrity1Name ||
+              bit.celebrity1) && (
+
+                <div style={itemStyle}>
+
+                  <span style={labelStyle}>
+                    Celebrity 1:
+                  </span>
+
+                  <span style={valueStyle}>
+                    {bit.celebrity1Name ||
+                      bit.Celebrity1Name ||
+                      bit.celebrity1}
                   </span>
 
                 </div>
               )}
 
+            {(bit.celebrity2Name ||
+              bit.Celebrity2Name ||
+              bit.celebrity2) && (
+
+                <div style={itemStyle}>
+
+                  <span style={labelStyle}>
+                    Celebrity 2:
+                  </span>
+
+                  <span style={valueStyle}>
+                    {bit.celebrity2Name ||
+                      bit.Celebrity2Name ||
+                      bit.celebrity2}
+                  </span>
+
+                </div>
+              )}
+
+          </div>
+        )}
+
+
+      {/* ========================================================
+          SPORT
+      ========================================================= */}
+
+      {(bit.sport ||
+        bit.sportName ||
+        bit.Sport) && (
+
+          <div style={cardStyle}>
+
+            <h3>Sport</h3>
+
+            <div style={itemStyle}>
+
+              <span style={valueStyle}>
+                {bit.sportName ||
+                  bit.Sport ||
+                  bit.sport}
+              </span>
+
             </div>
-          ))}
 
-        </div>
-      )}
+          </div>
+        )}
 
 
-      {/* ========================= */}
-      {/* HYPERLINKS */}
-      {/* ========================= */}
+      {/* ========================================================
+          SEASON
+      ========================================================= */}
 
-      {hyperlink.length > 0 && (
+      {(bit.season ||
+        bit.seasonName ||
+        bit.Season) && (
+
+          <div style={cardStyle}>
+
+            <h3>Season</h3>
+
+            <div style={itemStyle}>
+
+              <span style={valueStyle}>
+                {bit.seasonName ||
+                  bit.Season ||
+                  bit.season}
+              </span>
+
+            </div>
+
+          </div>
+        )}
+
+
+      {/* ========================================================
+          KEYWORDS
+      ========================================================= */}
+
+      {bit.keywords && (
+
         <div style={cardStyle}>
 
-          <h3>Hyperlinks</h3>
+          <h3>Keywords</h3>
 
-          {hyperlink.map((link, idx) => {
-
-            const url =
-              typeof link === "string"
-                ? link
-                : link.URL ||
-                  link.Link ||
-                  link.Hyperlink ||
-                  link.url;
-
-            return (
-              <div
-                key={idx}
-                style={{
-                  marginBottom: "10px"
-                }}
-              >
-
-                <span style={labelStyle}>
-                  Link {idx + 1}:
-                </span>
-
-                {url && (
-                  <a
-                    href={url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      color: "lime",
-                      textDecoration: "underline",
-                      wordBreak: "break-all"
-                    }}
-                  >
-                    {url}
-                  </a>
-                )}
-
-              </div>
-            );
-
-          })}
+          <div style={valueStyle}>
+            {bit.keywords}
+          </div>
 
         </div>
       )}
+
+
+      {/* ========================================================
+          HYPERLINKS
+      ========================================================= */}
+
+      {Array.isArray(bit.hyperlinks) &&
+        bit.hyperlinks.length > 0 && (
+
+          <div style={cardStyle}>
+
+            <h3>Hyperlinks</h3>
+
+            {bit.hyperlinks.map(
+              (link, index) => {
+
+                const url =
+                  typeof link === "string"
+                    ? link
+                    : link.URL ||
+                      link.url ||
+                      link.Link ||
+                      link.Hyperlink;
+
+                if (!url) return null;
+
+                return (
+
+                  <div
+                    key={index}
+                    style={itemStyle}
+                  >
+
+                    <span style={labelStyle}>
+                      Link {index + 1}:
+                    </span>
+
+                    <a
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        color: "lime",
+                        textDecoration:
+                          "underline",
+                        wordBreak:
+                          "break-all"
+                      }}
+                    >
+                      {url}
+                    </a>
+
+                  </div>
+                );
+              }
+            )}
+
+          </div>
+        )}
+
+
+      {/* ========================================================
+          ALBUMS
+      ========================================================= */}
+
+      {Array.isArray(bit.albums) &&
+        bit.albums.length > 0 && (
+
+          <div style={cardStyle}>
+
+            <h3>Albums</h3>
+
+            {bit.albums.map(
+              (item, index) => (
+
+                <div
+                  key={index}
+                  style={{
+                    marginBottom: "20px",
+                    paddingBottom: "15px",
+                    borderBottom:
+                      index !==
+                      bit.albums.length - 1
+                        ? "1px solid #444"
+                        : "none"
+                  }}
+                >
+
+                  <div style={itemStyle}>
+
+                    <span style={labelStyle}>
+                      Album {index + 1}:
+                    </span>
+
+                    <span style={valueStyle}>
+                      {item.albumName ||
+                        item.Album_Name ||
+                        item.album ||
+                        "N/A"}
+                    </span>
+
+                  </div>
+
+                  <div style={itemStyle}>
+
+                    <span style={labelStyle}>
+                      Track:
+                    </span>
+
+                    <span style={valueStyle}>
+                      {item.track ||
+                        item.Album_Track ||
+                        "N/A"}
+                    </span>
+
+                  </div>
+
+                </div>
+              )
+            )}
+
+          </div>
+        )}
 
     </div>
   );
 };
 
 export default DetailedBitResults;
-
