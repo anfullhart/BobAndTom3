@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import Axios from "axios";
+import "./addBit.css";
 
 const API_URL =
   process.env.REACT_APP_API_URL ||
@@ -8,100 +9,50 @@ const API_URL =
 
 const DetailedBitResults = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
-  // Support both possible navigation state names
   const searchBitID =
     location.state?.searchBitID ||
-    location.state?.bitID;
+    location.state?.bitID ||
+    null;
 
   const [bit, setBit] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  // ============================================================
-  // LOAD BIT INFORMATION
-  // ============================================================
 
   useEffect(() => {
     if (!searchBitID) {
-      setError("No BitID was provided.");
+      console.error("No BitID provided.");
       setLoading(false);
       return;
     }
 
-    const fetchBit = async () => {
+    const loadBit = async () => {
       try {
         setLoading(true);
-        setError("");
 
         const response = await Axios.get(
           `${API_URL}/api/get/bit/edit/${searchBitID}`
         );
 
-        console.log("Detailed bit response:", response.data);
+        console.log("Detailed bit data:", response.data);
 
         setBit(response.data);
-      } catch (err) {
-        console.error(
-          "Failed to fetch detailed bit:",
-          err
-        );
+      } catch (error) {
+        console.error("Error loading bit details:", error);
 
-        let errorMessage =
-          "Unable to load bit information.";
-
-        if (err.response) {
-          errorMessage =
-            err.response.data?.error ||
-            err.response.data?.message ||
-            errorMessage;
+        if (error.response) {
+          console.error(
+            "Backend response:",
+            error.response.data
+          );
         }
-
-        setError(errorMessage);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchBit();
+    loadBit();
   }, [searchBitID]);
-
-  // ============================================================
-  // STYLES
-  // ============================================================
-
-  const pageStyle = {
-    padding: "20px",
-    color: "white",
-    fontFamily: "Arial, sans-serif",
-    maxWidth: "1000px",
-    margin: "0 auto"
-  };
-
-  const cardStyle = {
-    backgroundColor: "#1c1c1c",
-    padding: "20px",
-    borderRadius: "10px",
-    marginBottom: "20px",
-    boxShadow: "0px 4px 8px rgba(0,0,0,0.3)"
-  };
-
-  const labelStyle = {
-    fontWeight: "bold",
-    marginRight: "10px"
-  };
-
-  const valueStyle = {
-    color: "lime"
-  };
-
-  const itemStyle = {
-    marginBottom: "12px"
-  };
-
-  // ============================================================
-  // LOADING
-  // ============================================================
 
   if (loading) {
     return (
@@ -117,457 +68,315 @@ const DetailedBitResults = () => {
     );
   }
 
-  // ============================================================
-  // ERROR
-  // ============================================================
-
-  if (error) {
+  if (!searchBitID) {
     return (
       <div
         style={{
           padding: "40px",
-          textAlign: "center",
           color: "white"
         }}
       >
-        <h2>Error</h2>
+        <h2>No Bit ID was provided.</h2>
 
-        <p>{error}</p>
+        <button
+          className="btn btn-secondary"
+          onClick={() => navigate(-1)}
+        >
+          Go Back
+        </button>
       </div>
     );
   }
-
-  // ============================================================
-  // NO BIT
-  // ============================================================
 
   if (!bit) {
     return (
       <div
         style={{
           padding: "40px",
-          textAlign: "center",
           color: "white"
         }}
       >
-        <h2>No bit information found.</h2>
+        <h2>Unable to load bit information.</h2>
+
+        <button
+          className="btn btn-secondary"
+          onClick={() => navigate(-1)}
+        >
+          Go Back
+        </button>
       </div>
     );
   }
 
-  // ============================================================
-  // FORMAT DATE
-  // ============================================================
-
-  const formatDate = (dateValue) => {
-    if (!dateValue) return "N/A";
-
-    try {
-      const date = new Date(dateValue);
-
-      return date.toLocaleDateString();
-    } catch {
-      return dateValue;
-    }
-  };
-
-  // ============================================================
-  // PAGE
-  // ============================================================
-
   return (
-    <div style={pageStyle}>
+    <div className="add-bit-form">
 
-      {/* ========================================================
-          GENERAL INFORMATION
-      ========================================================= */}
+      <div className="form-columns">
 
-      <div style={cardStyle}>
-        <h2 style={{ marginTop: 0 }}>
-          Bit Information
-        </h2>
+        {/* GENERAL INFORMATION */}
 
-        <div style={itemStyle}>
-          <span style={labelStyle}>
-            Bit ID:
-          </span>
+        <div className="card">
 
-          <span style={valueStyle}>
-            {bit.bitID || bit.BitID || "N/A"}
-          </span>
-        </div>
+          <h2>General Info</h2>
 
-        <div style={itemStyle}>
-          <span style={labelStyle}>
-            Title:
-          </span>
+          <div className="form-row">
+            <label>Bit ID:</label>
+            <input
+              type="text"
+              value={bit.bitID || searchBitID}
+              readOnly
+            />
+          </div>
 
-          <span style={valueStyle}>
-            {bit.title || bit.Title || "N/A"}
-          </span>
-        </div>
+          <div className="form-row">
+            <label>Title:</label>
+            <input
+              type="text"
+              value={bit.title || ""}
+              readOnly
+            />
+          </div>
 
-        <div style={itemStyle}>
-          <span style={labelStyle}>
-            Type:
-          </span>
+          <div className="form-row">
+            <label>Type:</label>
+            <input
+              type="text"
+              value={bit.type || ""}
+              readOnly
+            />
+          </div>
 
-          <span style={valueStyle}>
-            {bit.type || bit.Type || "N/A"}
-          </span>
-        </div>
+          <div className="form-row">
+            <label>Category:</label>
+            <input
+              type="text"
+              value={bit.categoryName || bit.category || ""}
+              readOnly
+            />
+          </div>
 
-        <div style={itemStyle}>
-          <span style={labelStyle}>
-            Category:
-          </span>
+          <div className="form-row">
+            <label>Artist:</label>
+            <input
+              type="text"
+              value={bit.artistName || bit.artist || ""}
+              readOnly
+            />
+          </div>
 
-          <span style={valueStyle}>
-            {bit.categoryName ||
-              bit.Category ||
-              bit.category ||
-              "N/A"}
-          </span>
-        </div>
+          <div className="form-row">
+            <label>Air Date:</label>
+            <input
+              type="text"
+              value={bit.date || ""}
+              readOnly
+            />
+          </div>
 
-        <div style={itemStyle}>
-          <span style={labelStyle}>
-            Artist:
-          </span>
+          <div className="form-row">
+            <label>Length:</label>
+            <input
+              type="text"
+              value={bit.time || ""}
+              readOnly
+            />
+          </div>
 
-          <span style={valueStyle}>
-            {bit.artistName ||
-              bit.Artist ||
-              bit.artist ||
-              "N/A"}
-          </span>
-        </div>
+          <div className="form-row">
+            <label>Automation #:</label>
+            <input
+              type="text"
+              value={bit.autoNum || ""}
+              readOnly
+            />
+          </div>
 
-        <div style={itemStyle}>
-          <span style={labelStyle}>
-            Air Date:
-          </span>
+          {/* SUBJECTS */}
 
-          <span style={valueStyle}>
-            {formatDate(
-              bit.date ||
-              bit.AirDate
-            )}
-          </span>
-        </div>
+          <div className="form-row">
+            <label>Subjects:</label>
 
-        <div style={itemStyle}>
-          <span style={labelStyle}>
-            Length:
-          </span>
-
-          <span style={valueStyle}>
-            {bit.time ||
-              bit.Time ||
-              "N/A"}
-          </span>
-        </div>
-
-        <div style={itemStyle}>
-          <span style={labelStyle}>
-            Automation Number:
-          </span>
-
-          <span style={valueStyle}>
-            {bit.autoNum ||
-              bit.ProphetNum ||
-              "N/A"}
-          </span>
-        </div>
-      </div>
-
-
-      {/* ========================================================
-          SUBJECTS
-      ========================================================= */}
-
-      {Array.isArray(bit.subjects) &&
-        bit.subjects.length > 0 && (
-
-          <div style={cardStyle}>
-
-            <h3>Subjects</h3>
-
-            {bit.subjects.map(
-              (subject, index) => (
-
-                <div
-                  key={index}
-                  style={itemStyle}
-                >
-
-                  <span style={labelStyle}>
-                    Subject {index + 1}:
-                  </span>
-
-                  <span style={valueStyle}>
+            <div style={{ flex: 1 }}>
+              {Array.isArray(bit.subjects) &&
+              bit.subjects.length > 0 ? (
+                bit.subjects.map((subject, index) => (
+                  <div key={index}>
                     {subject.Subject ||
                       subject.subject ||
                       subject.Name ||
                       subject}
-                  </span>
-
-                </div>
-              )
-            )}
-
-          </div>
-        )}
-
-
-      {/* ========================================================
-          CELEBRITIES
-      ========================================================= */}
-
-      {(bit.celebrity1 ||
-        bit.celebrity1Name ||
-        bit.Celebrity1Name ||
-        bit.celebrity2 ||
-        bit.celebrity2Name ||
-        bit.Celebrity2Name) && (
-
-          <div style={cardStyle}>
-
-            <h3>Celebrities</h3>
-
-            {(bit.celebrity1Name ||
-              bit.Celebrity1Name ||
-              bit.celebrity1) && (
-
-                <div style={itemStyle}>
-
-                  <span style={labelStyle}>
-                    Celebrity 1:
-                  </span>
-
-                  <span style={valueStyle}>
-                    {bit.celebrity1Name ||
-                      bit.Celebrity1Name ||
-                      bit.celebrity1}
-                  </span>
-
-                </div>
+                  </div>
+                ))
+              ) : (
+                <div>None</div>
               )}
-
-            {(bit.celebrity2Name ||
-              bit.Celebrity2Name ||
-              bit.celebrity2) && (
-
-                <div style={itemStyle}>
-
-                  <span style={labelStyle}>
-                    Celebrity 2:
-                  </span>
-
-                  <span style={valueStyle}>
-                    {bit.celebrity2Name ||
-                      bit.Celebrity2Name ||
-                      bit.celebrity2}
-                  </span>
-
-                </div>
-              )}
-
-          </div>
-        )}
-
-
-      {/* ========================================================
-          SPORT
-      ========================================================= */}
-
-      {(bit.sport ||
-        bit.sportName ||
-        bit.Sport) && (
-
-          <div style={cardStyle}>
-
-            <h3>Sport</h3>
-
-            <div style={itemStyle}>
-
-              <span style={valueStyle}>
-                {bit.sportName ||
-                  bit.Sport ||
-                  bit.sport}
-              </span>
-
             </div>
-
           </div>
-        )}
 
+          {/* CELEBRITIES */}
 
-      {/* ========================================================
-          SEASON
-      ========================================================= */}
+          <div className="form-row">
+            <label>Celebrities:</label>
 
-      {(bit.season ||
-        bit.seasonName ||
-        bit.Season) && (
+            <div style={{ flex: 1 }}>
+              <div>
+                {bit.celebrity1Name ||
+                  bit.celebrity1 ||
+                  "None"}
+              </div>
 
-          <div style={cardStyle}>
-
-            <h3>Season</h3>
-
-            <div style={itemStyle}>
-
-              <span style={valueStyle}>
-                {bit.seasonName ||
-                  bit.Season ||
-                  bit.season}
-              </span>
-
+              <div>
+                {bit.celebrity2Name ||
+                  bit.celebrity2 ||
+                  ""}
+              </div>
             </div>
-
           </div>
-        )}
 
+          {/* SPORT */}
 
-      {/* ========================================================
-          KEYWORDS
-      ========================================================= */}
+          <div className="form-row">
+            <label>Sport:</label>
+            <input
+              type="text"
+              value={
+                bit.sportName ||
+                bit.sport ||
+                ""
+              }
+              readOnly
+            />
+          </div>
 
-      {bit.keywords && (
+          {/* SEASON */}
 
-        <div style={cardStyle}>
+          <div className="form-row">
+            <label>Season:</label>
+            <input
+              type="text"
+              value={
+                bit.seasonName ||
+                bit.season ||
+                ""
+              }
+              readOnly
+            />
+          </div>
 
-          <h3>Keywords</h3>
+          {/* KEYWORDS */}
 
-          <div style={valueStyle}>
-            {bit.keywords}
+          <div className="form-row">
+            <label>Keywords:</label>
+
+            <input
+              type="text"
+              value={bit.keywords || ""}
+              readOnly
+            />
           </div>
 
         </div>
-      )}
 
+        {/* HYPERLINKS */}
 
-      {/* ========================================================
-          HYPERLINKS
-      ========================================================= */}
+        <div className="card">
 
-      {Array.isArray(bit.hyperlinks) &&
-        bit.hyperlinks.length > 0 && (
+          <h2>Hyperlinks</h2>
 
-          <div style={cardStyle}>
+          {Array.isArray(bit.hyperlinks) &&
+          bit.hyperlinks.length > 0 ? (
+            bit.hyperlinks.map((link, index) => (
 
-            <h3>Hyperlinks</h3>
+              <div
+                className="form-row"
+                key={index}
+              >
+                <label>
+                  Link {index + 1}:
+                </label>
 
-            {bit.hyperlinks.map(
-              (link, index) => {
+                <input
+                  type="text"
+                  value={link}
+                  readOnly
+                />
 
-                const url =
-                  typeof link === "string"
-                    ? link
-                    : link.URL ||
-                      link.url ||
-                      link.Link ||
-                      link.Hyperlink;
+              </div>
 
-                if (!url) return null;
+            ))
+          ) : (
+            <p>No hyperlinks.</p>
+          )}
 
-                return (
+        </div>
 
-                  <div
-                    key={index}
-                    style={itemStyle}
-                  >
+        {/* ALBUMS */}
 
-                    <span style={labelStyle}>
-                      Link {index + 1}:
-                    </span>
+        <div className="card">
 
-                    <a
-                      href={url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{
-                        color: "lime",
-                        textDecoration:
-                          "underline",
-                        wordBreak:
-                          "break-all"
-                      }}
-                    >
-                      {url}
-                    </a>
+          <h2>Albums</h2>
 
-                  </div>
-                );
-              }
-            )}
+          {Array.isArray(bit.albums) &&
+          bit.albums.length > 0 ? (
 
-          </div>
-        )}
+            bit.albums.map((item, index) => (
 
+              <div
+                className="form-row"
+                key={index}
+              >
 
-      {/* ========================================================
-          ALBUMS
-      ========================================================= */}
+                <label>
+                  Album {index + 1}:
+                </label>
 
-      {Array.isArray(bit.albums) &&
-        bit.albums.length > 0 && (
+                <input
+                  type="text"
+                  value={
+                    item.albumName ||
+                    item.album ||
+                    ""
+                  }
+                  readOnly
+                />
 
-          <div style={cardStyle}>
+                <label>
+                  Track:
+                </label>
 
-            <h3>Albums</h3>
+                <input
+                  type="text"
+                  value={item.track || ""}
+                  readOnly
+                />
 
-            {bit.albums.map(
-              (item, index) => (
+              </div>
 
-                <div
-                  key={index}
-                  style={{
-                    marginBottom: "20px",
-                    paddingBottom: "15px",
-                    borderBottom:
-                      index !==
-                      bit.albums.length - 1
-                        ? "1px solid #444"
-                        : "none"
-                  }}
-                >
+            ))
 
-                  <div style={itemStyle}>
+          ) : (
 
-                    <span style={labelStyle}>
-                      Album {index + 1}:
-                    </span>
+            <p>No albums.</p>
 
-                    <span style={valueStyle}>
-                      {item.albumName ||
-                        item.Album_Name ||
-                        item.album ||
-                        "N/A"}
-                    </span>
+          )}
 
-                  </div>
+        </div>
 
-                  <div style={itemStyle}>
+      </div>
 
-                    <span style={labelStyle}>
-                      Track:
-                    </span>
+      {/* BACK BUTTON */}
 
-                    <span style={valueStyle}>
-                      {item.track ||
-                        item.Album_Track ||
-                        "N/A"}
-                    </span>
+      <div className="form-actions">
 
-                  </div>
+        <button
+          type="button"
+          className="btn btn-secondary"
+          onClick={() => navigate(-1)}
+        >
+          Back to Results
+        </button>
 
-                </div>
-              )
-            )}
-
-          </div>
-        )}
+      </div>
 
     </div>
   );
