@@ -485,4 +485,4 @@ const DetailedBitResults = () => {
   );
 };
 
-export default DetailedBitResults; can you edit this page so it displays the actual name of the fields such as celeb name and album name instead of the ID
+export default DetailedBitResults;
