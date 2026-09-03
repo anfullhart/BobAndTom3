@@ -20,104 +20,11 @@ const DetailedBitResults = () => {
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Lookup tables
-  const [celebrities, setCelebrities] = useState([]);
-  const [subjects, setSubjects] = useState([]);
-  const [artists, setArtists] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [sports, setSports] = useState([]);
-  const [seasons, setSeasons] = useState([]);
-  const [albums, setAlbums] = useState([]);
-
-  // ============================================================
-  // LOAD LOOKUP TABLES
-  // ============================================================
-
-  useEffect(() => {
-    const loadLookups = async () => {
-      try {
-        const [
-          celebrityResponse,
-          subjectResponse,
-          artistResponse,
-          categoryResponse,
-          sportResponse,
-          seasonResponse,
-          albumResponse
-        ] = await Promise.all([
-          Axios.get(`${API_URL}/api/get/celebrity`),
-          Axios.get(`${API_URL}/api/get/subject`),
-          Axios.get(`${API_URL}/api/get/artist`),
-          Axios.get(`${API_URL}/api/get/category`),
-          Axios.get(`${API_URL}/api/get/sport`),
-          Axios.get(`${API_URL}/api/get/season`),
-          Axios.get(`${API_URL}/api/get/album`)
-        ]);
-
-        setCelebrities(
-          Array.isArray(celebrityResponse.data)
-            ? celebrityResponse.data
-            : []
-        );
-
-        setSubjects(
-          Array.isArray(subjectResponse.data)
-            ? subjectResponse.data
-            : []
-        );
-
-        setArtists(
-          Array.isArray(artistResponse.data)
-            ? artistResponse.data
-            : []
-        );
-
-        setCategories(
-          Array.isArray(categoryResponse.data)
-            ? categoryResponse.data
-            : []
-        );
-
-        setSports(
-          Array.isArray(sportResponse.data)
-            ? sportResponse.data
-            : []
-        );
-
-        setSeasons(
-          Array.isArray(seasonResponse.data)
-            ? seasonResponse.data
-            : []
-        );
-
-        setAlbums(
-          Array.isArray(albumResponse.data)
-            ? albumResponse.data
-            : []
-        );
-
-      } catch (error) {
-        console.error(
-          "Error loading lookup tables:",
-          error
-        );
-      }
-    };
-
-    loadLookups();
-  }, []);
-
-  // ============================================================
-  // LOAD BIT
-  // ============================================================
-
   useEffect(() => {
     if (!searchBitID) {
       console.error("No BitID provided.");
-
       setLoading(false);
       setErrorMessage("No Bit ID was provided.");
-
       return;
     }
 
@@ -135,18 +42,12 @@ const DetailedBitResults = () => {
           `${API_URL}/api/get/bit/edit/${searchBitID}`
         );
 
-        console.log(
-          "Detailed bit data:",
-          response.data
-        );
+        console.log("Detailed bit data:", response.data);
 
         setBit(response.data);
 
       } catch (error) {
-        console.error(
-          "Error loading bit details:",
-          error
-        );
+        console.error("Error loading bit details:", error);
 
         if (error.response) {
           console.error(
@@ -156,7 +57,7 @@ const DetailedBitResults = () => {
 
           setErrorMessage(
             error.response.data?.error ||
-              "Unable to load bit information."
+            "Unable to load bit information."
           );
         } else {
           setErrorMessage(
@@ -173,77 +74,6 @@ const DetailedBitResults = () => {
 
   }, [searchBitID]);
 
-  // ============================================================
-  // HELPER FUNCTIONS
-  // ============================================================
-
-  const getCelebrityName = (id) => {
-    const found = celebrities.find(
-      (item) =>
-        String(item.CelebID) === String(id)
-    );
-
-    return found?.Name || id;
-  };
-
-  const getSubjectName = (id) => {
-    const found = subjects.find(
-      (item) =>
-        String(item.SubID) === String(id)
-    );
-
-    return found?.Subject || id;
-  };
-
-  const getArtistName = (id) => {
-    const found = artists.find(
-      (item) =>
-        String(item.ArtistID) === String(id)
-    );
-
-    return found?.Name || id;
-  };
-
-  const getCategoryName = (id) => {
-    const found = categories.find(
-      (item) =>
-        String(item.CatID) === String(id)
-    );
-
-    return found?.Category || id;
-  };
-
-  const getSportName = (id) => {
-    const found = sports.find(
-      (item) =>
-        String(item.SportID) === String(id)
-    );
-
-    return found?.Sport || id;
-  };
-
-  const getSeasonName = (id) => {
-    const found = seasons.find(
-      (item) =>
-        String(item.SeasonID) === String(id)
-    );
-
-    return found?.Season || id;
-  };
-
-  const getAlbumName = (id) => {
-    const found = albums.find(
-      (item) =>
-        String(item.AlbumID) === String(id)
-    );
-
-    return found?.Album_Name || id;
-  };
-
-  // ============================================================
-  // LOADING
-  // ============================================================
-
   if (loading) {
     return (
       <div
@@ -257,10 +87,6 @@ const DetailedBitResults = () => {
       </div>
     );
   }
-
-  // ============================================================
-  // NO BIT ID
-  // ============================================================
 
   if (!searchBitID) {
     return (
@@ -282,10 +108,6 @@ const DetailedBitResults = () => {
     );
   }
 
-  // ============================================================
-  // BIT FAILED TO LOAD
-  // ============================================================
-
   if (!bit) {
     return (
       <div
@@ -296,8 +118,7 @@ const DetailedBitResults = () => {
         }}
       >
         <h2>
-          {errorMessage ||
-            "Unable to load bit information."}
+          {errorMessage || "Unable to load bit information."}
         </h2>
 
         <button
@@ -310,28 +131,19 @@ const DetailedBitResults = () => {
     );
   }
 
-  // ============================================================
-  // RENDER
-  // ============================================================
-
   return (
     <div className="add-bit-form">
 
       <div className="form-columns">
 
-        {/* ======================================================
-            GENERAL INFORMATION
-        ======================================================= */}
+        {/* GENERAL INFORMATION */}
 
         <div className="card">
 
           <h2>General Info</h2>
 
-          {/* BIT ID */}
-
           <div className="form-row">
             <label>Bit ID:</label>
-
             <input
               type="text"
               value={bit.bitID || searchBitID}
@@ -339,11 +151,8 @@ const DetailedBitResults = () => {
             />
           </div>
 
-          {/* TITLE */}
-
           <div className="form-row">
             <label>Title:</label>
-
             <input
               type="text"
               value={bit.title || ""}
@@ -351,11 +160,8 @@ const DetailedBitResults = () => {
             />
           </div>
 
-          {/* TYPE */}
-
           <div className="form-row">
             <label>Type:</label>
-
             <input
               type="text"
               value={bit.type || ""}
@@ -363,103 +169,57 @@ const DetailedBitResults = () => {
             />
           </div>
 
-          {/* CATEGORIES */}
-
           <div className="form-row">
-
-            <label>Categories:</label>
-
-            <div
-              style={{
-                flex: 1,
-                padding: "8px",
-                border: "1px solid #ccc",
-                minHeight: "38px"
-              }}
-            >
-
-              {Array.isArray(bit.categories) &&
-              bit.categories.length > 0 ? (
-
-                bit.categories.map(
-                  (categoryID, index) => (
-
-                    <div key={index}>
-                      {getCategoryName(categoryID)}
-                    </div>
-
-                  )
-                )
-
-              ) : (
-
-                <div>None</div>
-
-              )}
-
-            </div>
-
-          </div>
-
-          {/* ARTIST */}
-
-          <div className="form-row">
-
-            <label>Artist:</label>
-
+            <label>Category:</label>
             <input
               type="text"
-              value={getArtistName(bit.artist)}
+              value={
+                Array.isArray(bit.categories) &&
+                bit.categories.length > 0
+                  ? bit.categories.join(", ")
+                  : bit.category || ""
+              }
               readOnly
             />
-
           </div>
 
-          {/* AIR DATE */}
+          <div className="form-row">
+            <label>Artist ID:</label>
+            <input
+              type="text"
+              value={bit.artist || ""}
+              readOnly
+            />
+          </div>
 
           <div className="form-row">
-
             <label>Air Date:</label>
-
             <input
               type="text"
               value={bit.date || ""}
               readOnly
             />
-
           </div>
 
-          {/* LENGTH */}
-
           <div className="form-row">
-
             <label>Length:</label>
-
             <input
               type="text"
               value={bit.time || ""}
               readOnly
             />
-
           </div>
 
-          {/* AUTOMATION NUMBER */}
-
           <div className="form-row">
-
             <label>Automation #:</label>
-
             <input
               type="text"
               value={bit.autoNum || ""}
               readOnly
             />
-
           </div>
 
-          {/* ====================================================
-              SUBJECTS
-          ===================================================== */}
+          {/* SUBJECTS */}
 
           <div className="form-row">
 
@@ -477,15 +237,13 @@ const DetailedBitResults = () => {
               {Array.isArray(bit.subjects) &&
               bit.subjects.length > 0 ? (
 
-                bit.subjects.map(
-                  (subjectID, index) => (
+                bit.subjects.map((subject, index) => (
 
-                    <div key={index}>
-                      {getSubjectName(subjectID)}
-                    </div>
+                  <div key={index}>
+                    {subject}
+                  </div>
 
-                  )
-                )
+                ))
 
               ) : (
 
@@ -497,9 +255,7 @@ const DetailedBitResults = () => {
 
           </div>
 
-          {/* ====================================================
-              CELEBRITIES
-          ===================================================== */}
+          {/* CELEBRITIES */}
 
           <div className="form-row">
 
@@ -517,15 +273,13 @@ const DetailedBitResults = () => {
               {Array.isArray(bit.celebrities) &&
               bit.celebrities.length > 0 ? (
 
-                bit.celebrities.map(
-                  (celebrityID, index) => (
+                bit.celebrities.map((celebrity, index) => (
 
-                    <div key={index}>
-                      {getCelebrityName(celebrityID)}
-                    </div>
+                  <div key={index}>
+                    {celebrity}
+                  </div>
 
-                  )
-                )
+                ))
 
               ) : (
 
@@ -537,9 +291,7 @@ const DetailedBitResults = () => {
 
           </div>
 
-          {/* ====================================================
-              SPORTS
-          ===================================================== */}
+          {/* SPORTS */}
 
           <div className="form-row">
 
@@ -557,15 +309,13 @@ const DetailedBitResults = () => {
               {Array.isArray(bit.sports) &&
               bit.sports.length > 0 ? (
 
-                bit.sports.map(
-                  (sportID, index) => (
+                bit.sports.map((sport, index) => (
 
-                    <div key={index}>
-                      {getSportName(sportID)}
-                    </div>
+                  <div key={index}>
+                    {sport}
+                  </div>
 
-                  )
-                )
+                ))
 
               ) : (
 
@@ -577,9 +327,7 @@ const DetailedBitResults = () => {
 
           </div>
 
-          {/* ====================================================
-              SEASONS
-          ===================================================== */}
+          {/* SEASONS */}
 
           <div className="form-row">
 
@@ -597,15 +345,13 @@ const DetailedBitResults = () => {
               {Array.isArray(bit.seasons) &&
               bit.seasons.length > 0 ? (
 
-                bit.seasons.map(
-                  (seasonID, index) => (
+                bit.seasons.map((season, index) => (
 
-                    <div key={index}>
-                      {getSeasonName(seasonID)}
-                    </div>
+                  <div key={index}>
+                    {season}
+                  </div>
 
-                  )
-                )
+                ))
 
               ) : (
 
@@ -617,9 +363,7 @@ const DetailedBitResults = () => {
 
           </div>
 
-          {/* ====================================================
-              KEYWORDS
-          ===================================================== */}
+          {/* KEYWORDS */}
 
           <div className="form-row">
 
@@ -635,9 +379,7 @@ const DetailedBitResults = () => {
 
         </div>
 
-        {/* ======================================================
-            HYPERLINKS
-        ======================================================= */}
+        {/* HYPERLINKS */}
 
         <div className="card">
 
@@ -646,27 +388,26 @@ const DetailedBitResults = () => {
           {Array.isArray(bit.hyperlinks) &&
           bit.hyperlinks.length > 0 ? (
 
-            bit.hyperlinks.map(
-              (link, index) => (
+            bit.hyperlinks.map((link, index) => (
 
-                <div
-                  className="form-row"
-                  key={index}
-                >
+              <div
+                className="form-row"
+                key={index}
+              >
 
-                  <label>
-                    Link {index + 1}:
-                  </label>
+                <label>
+                  Link {index + 1}:
+                </label>
 
-                  <input
-                    type="text"
-                    value={link || ""}
-                    readOnly
-                  />
+                <input
+                  type="text"
+                  value={link || ""}
+                  readOnly
+                />
 
-                </div>
+              </div>
 
-              )
+            ))
 
           ) : (
 
@@ -676,9 +417,7 @@ const DetailedBitResults = () => {
 
         </div>
 
-        {/* ======================================================
-            ALBUMS
-        ======================================================= */}
+        {/* ALBUMS */}
 
         <div className="card">
 
@@ -687,41 +426,36 @@ const DetailedBitResults = () => {
           {Array.isArray(bit.albums) &&
           bit.albums.length > 0 ? (
 
-            bit.albums.map(
-              (item, index) => (
+            bit.albums.map((item, index) => (
 
-                <div
-                  className="form-row"
-                  key={index}
-                >
+              <div
+                className="form-row"
+                key={index}
+              >
 
-                  <label>
-                    Album {index + 1}:
-                  </label>
+                <label>
+                  Album {index + 1}:
+                </label>
 
-                  <input
-                    type="text"
-                    value={
-                      getAlbumName(item.album)
-                    }
-                    readOnly
-                  />
+                <input
+                  type="text"
+                  value={item.album || ""}
+                  readOnly
+                />
 
-                  <label>
-                    Track:
-                  </label>
+                <label>
+                  Track:
+                </label>
 
-                  <input
-                    type="text"
-                    value={
-                      item.track || ""
-                    }
-                    readOnly
-                  />
+                <input
+                  type="text"
+                  value={item.track || ""}
+                  readOnly
+                />
 
-                </div>
+              </div>
 
-              )
+            ))
 
           ) : (
 
@@ -733,9 +467,7 @@ const DetailedBitResults = () => {
 
       </div>
 
-      {/* ========================================================
-          BACK BUTTON
-      ========================================================= */}
+      {/* BACK BUTTON */}
 
       <div className="form-actions">
 
@@ -753,4 +485,4 @@ const DetailedBitResults = () => {
   );
 };
 
-export default DetailedBitResults;
+export default DetailedBitResults; can you edit this page so it displays the actual name of the fields such as celeb name and album name instead of the ID
