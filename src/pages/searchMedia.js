@@ -452,5 +452,3 @@ const SearchMedia = () => {
 };
 
 export default SearchMedia;
-
-The next piece is the backend route—Title needs to be added there too, along with the new Celebrity/Sport/Season/Subject searches, for the searches to actually work.
