@@ -1,3 +1,4 @@
+javascript
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Axios from "axios";
@@ -18,34 +19,45 @@ const EditBit = () => {
 
   const [type, setType] = useState("Bit");
   const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("");
   const [artist, setArtist] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [autoNum, setAutoNum] = useState("");
 
   // ============================================================
-  // SUBJECTS
+  // UNLIMITED CATEGORIES
   // ============================================================
 
-  const [sub1, setSub1] = useState("");
-  const [sub2, setSub2] = useState("");
-  const [sub3, setSub3] = useState("");
-  const [sub4, setSub4] = useState("");
+  const [categories, setCategories] = useState([""]);
 
   // ============================================================
-  // CELEBRITIES
+  // UNLIMITED SUBJECTS
   // ============================================================
 
-  const [celebrity1, setCelebrity1] = useState("");
-  const [celebrity2, setCelebrity2] = useState("");
+  const [subjects, setSubjects] = useState([""]);
 
   // ============================================================
-  // SPORT / SEASON / KEYWORDS
+  // UNLIMITED CELEBRITIES
   // ============================================================
 
-  const [sport, setSport] = useState("");
-  const [season, setSeason] = useState("");
+  const [celebrities, setCelebrities] = useState([""]);
+
+  // ============================================================
+  // UNLIMITED SPORTS
+  // ============================================================
+
+  const [sports, setSports] = useState([""]);
+
+  // ============================================================
+  // UNLIMITED SEASONS
+  // ============================================================
+
+  const [seasons, setSeasons] = useState([""]);
+
+  // ============================================================
+  // KEYWORDS
+  // ============================================================
+
   const [keywords, setKeywords] = useState("");
 
   // ============================================================
@@ -136,44 +148,100 @@ const EditBit = () => {
 
         setType(bit.type || "Bit");
         setTitle(bit.title || "");
-        setCategory(bit.category ? String(bit.category) : "");
-        setArtist(bit.artist ? String(bit.artist) : "");
+        setArtist(
+          bit.artist !== undefined && bit.artist !== null
+            ? String(bit.artist)
+            : ""
+        );
         setDate(bit.date || "");
         setTime(bit.time || "");
         setAutoNum(bit.autoNum || "");
 
         // ======================================================
+        // CATEGORIES
+        // ======================================================
+
+        const loadedCategories = Array.isArray(bit.categories)
+          ? bit.categories
+          : bit.category
+          ? [bit.category]
+          : [];
+
+        setCategories(
+          loadedCategories.length > 0
+            ? loadedCategories.map((id) => String(id))
+            : [""]
+        );
+
+        // ======================================================
         // SUBJECTS
         // ======================================================
 
-        const subjects = Array.isArray(bit.subjects)
+        const loadedSubjects = Array.isArray(bit.subjects)
           ? bit.subjects
           : [];
 
-        setSub1(subjects[0] ? String(subjects[0]) : "");
-        setSub2(subjects[1] ? String(subjects[1]) : "");
-        setSub3(subjects[2] ? String(subjects[2]) : "");
-        setSub4(subjects[3] ? String(subjects[3]) : "");
+        setSubjects(
+          loadedSubjects.length > 0
+            ? loadedSubjects.map((id) => String(id))
+            : [""]
+        );
 
         // ======================================================
         // CELEBRITIES
         // ======================================================
 
-        setCelebrity1(
-          bit.celebrity1 ? String(bit.celebrity1) : ""
-        );
+        const loadedCelebrities = Array.isArray(bit.celebrities)
+          ? bit.celebrities
+          : [];
 
-        setCelebrity2(
-          bit.celebrity2 ? String(bit.celebrity2) : ""
+        setCelebrities(
+          loadedCelebrities.length > 0
+            ? loadedCelebrities.map((id) => String(id))
+            : [""]
         );
 
         // ======================================================
-        // SPORT / SEASON / KEYWORDS
+        // SPORTS
         // ======================================================
 
-        setSport(bit.sport ? String(bit.sport) : "");
-        setSeason(bit.season ? String(bit.season) : "");
-        setKeywords(bit.keywords || "");
+        const loadedSports = Array.isArray(bit.sports)
+          ? bit.sports
+          : bit.sport
+          ? [bit.sport]
+          : [];
+
+        setSports(
+          loadedSports.length > 0
+            ? loadedSports.map((id) => String(id))
+            : [""]
+        );
+
+        // ======================================================
+        // SEASONS
+        // ======================================================
+
+        const loadedSeasons = Array.isArray(bit.seasons)
+          ? bit.seasons
+          : bit.season
+          ? [bit.season]
+          : [];
+
+        setSeasons(
+          loadedSeasons.length > 0
+            ? loadedSeasons.map((id) => String(id))
+            : [""]
+        );
+
+        // ======================================================
+        // KEYWORDS
+        // ======================================================
+
+        if (Array.isArray(bit.keywords)) {
+          setKeywords(bit.keywords.join(", "));
+        } else {
+          setKeywords(bit.keywords || "");
+        }
 
         // ======================================================
         // HYPERLINKS
@@ -183,7 +251,9 @@ const EditBit = () => {
           Array.isArray(bit.hyperlinks) &&
           bit.hyperlinks.length > 0
         ) {
-          setHyperlinks(bit.hyperlinks);
+          setHyperlinks(
+            bit.hyperlinks.map((link) => String(link))
+          );
         } else {
           setHyperlinks([""]);
         }
@@ -198,10 +268,16 @@ const EditBit = () => {
         ) {
           setAlbums(
             bit.albums.map((item) => ({
-              album: item.album
-                ? String(item.album)
-                : "",
-              track: item.track || ""
+              album:
+                item.album !== undefined &&
+                item.album !== null
+                  ? String(item.album)
+                  : "",
+              track:
+                item.track !== undefined &&
+                item.track !== null
+                  ? String(item.track)
+                  : ""
             }))
           );
         } else {
@@ -236,6 +312,126 @@ const EditBit = () => {
   }, [searchBitID]);
 
   // ============================================================
+  // CATEGORY HELPERS
+  // ============================================================
+
+  const updateCategory = (index, value) => {
+    const updated = [...categories];
+    updated[index] = value;
+    setCategories(updated);
+  };
+
+  const addCategory = () => {
+    setCategories([...categories, ""]);
+  };
+
+  const removeCategory = (index) => {
+    const updated = categories.filter(
+      (_, i) => i !== index
+    );
+
+    setCategories(
+      updated.length > 0 ? updated : [""]
+    );
+  };
+
+  // ============================================================
+  // SUBJECT HELPERS
+  // ============================================================
+
+  const updateSubject = (index, value) => {
+    const updated = [...subjects];
+    updated[index] = value;
+    setSubjects(updated);
+  };
+
+  const addSubject = () => {
+    setSubjects([...subjects, ""]);
+  };
+
+  const removeSubject = (index) => {
+    const updated = subjects.filter(
+      (_, i) => i !== index
+    );
+
+    setSubjects(
+      updated.length > 0 ? updated : [""]
+    );
+  };
+
+  // ============================================================
+  // CELEBRITY HELPERS
+  // ============================================================
+
+  const updateCelebrity = (index, value) => {
+    const updated = [...celebrities];
+    updated[index] = value;
+    setCelebrities(updated);
+  };
+
+  const addCelebrity = () => {
+    setCelebrities([...celebrities, ""]);
+  };
+
+  const removeCelebrity = (index) => {
+    const updated = celebrities.filter(
+      (_, i) => i !== index
+    );
+
+    setCelebrities(
+      updated.length > 0 ? updated : [""]
+    );
+  };
+
+  // ============================================================
+  // SPORT HELPERS
+  // ============================================================
+
+  const updateSport = (index, value) => {
+    const updated = [...sports];
+    updated[index] = value;
+    setSports(updated);
+  };
+
+  const addSport = () => {
+    setSports([...sports, ""]);
+  };
+
+  const removeSport = (index) => {
+    const updated = sports.filter(
+      (_, i) => i !== index
+    );
+
+    setSports(
+      updated.length > 0 ? updated : [""]
+    );
+  };
+
+  // ============================================================
+  // SEASON HELPERS
+  // ============================================================
+
+  const updateSeason = (index, value) => {
+    const updated = [...seasons];
+    updated[index] = value;
+    setSeasons(updated);
+  };
+
+  const addSeason = () => {
+    setSeasons([...seasons, ""]);
+  };
+
+  const removeSeason = (index) => {
+    const updated = seasons.filter(
+      (_, i) => i !== index
+    );
+
+    setSeasons(
+      updated.length > 0 ? updated : [""]
+    );
+  };
+
+  // ============================================================
   // HYPERLINK HELPERS
   // ============================================================
 
@@ -246,10 +442,7 @@ const EditBit = () => {
   };
 
   const addHyperlink = () => {
-    setHyperlinks([
-      ...hyperlinks,
-      ""
-    ]);
+    setHyperlinks([...hyperlinks, ""]);
   };
 
   const removeHyperlink = (index) => {
@@ -257,11 +450,9 @@ const EditBit = () => {
       (_, i) => i !== index
     );
 
-    if (updated.length === 0) {
-      setHyperlinks([""]);
-    } else {
-      setHyperlinks(updated);
-    }
+    setHyperlinks(
+      updated.length > 0 ? updated : [""]
+    );
   };
 
   // ============================================================
@@ -294,27 +485,16 @@ const EditBit = () => {
       (_, i) => i !== index
     );
 
-    if (updated.length === 0) {
-      setAlbums([
-        {
-          album: "",
-          track: ""
-        }
-      ]);
-    } else {
-      setAlbums(updated);
-    }
-  };
-
-  // ============================================================
-  // SUBJECT HELPER
-  // ============================================================
-
-  const updateSubject = (index, value) => {
-    if (index === 0) setSub1(value);
-    if (index === 1) setSub2(value);
-    if (index === 2) setSub3(value);
-    if (index === 3) setSub4(value);
+    setAlbums(
+      updated.length > 0
+        ? updated
+        : [
+            {
+              album: "",
+              track: ""
+            }
+          ]
+    );
   };
 
   // ============================================================
@@ -325,46 +505,108 @@ const EditBit = () => {
     e.preventDefault();
 
     try {
-      const subjectValues = [
-        sub1,
-        sub2,
-        sub3,
-        sub4
-      ].filter(Boolean);
+      // ========================================================
+      // CLEAN ALL ARRAYS
+      // ========================================================
 
-      const cleanedHyperlinks = hyperlinks.filter(
-        (link) =>
-          link &&
-          link.trim() !== ""
-      );
+      const cleanedCategories = [
+        ...new Set(
+          categories.filter(
+            (value) =>
+              value !== null &&
+              value !== undefined &&
+              String(value).trim() !== ""
+          )
+        )
+      ];
 
-      const cleanedAlbums = albums.filter(
-        (item) =>
-          item &&
-          item.album
-      );
+      const cleanedSubjects = [
+        ...new Set(
+          subjects.filter(
+            (value) =>
+              value !== null &&
+              value !== undefined &&
+              String(value).trim() !== ""
+          )
+        )
+      ];
+
+      const cleanedCelebrities = [
+        ...new Set(
+          celebrities.filter(
+            (value) =>
+              value !== null &&
+              value !== undefined &&
+              String(value).trim() !== ""
+          )
+        )
+      ];
+
+      const cleanedSports = [
+        ...new Set(
+          sports.filter(
+            (value) =>
+              value !== null &&
+              value !== undefined &&
+              String(value).trim() !== ""
+          )
+        )
+      ];
+
+      const cleanedSeasons = [
+        ...new Set(
+          seasons.filter(
+            (value) =>
+              value !== null &&
+              value !== undefined &&
+              String(value).trim() !== ""
+          )
+        )
+      ];
+
+      const cleanedHyperlinks = hyperlinks
+        .filter(
+          (link) =>
+            link &&
+            String(link).trim() !== ""
+        )
+        .map((link) => String(link).trim());
+
+      const cleanedAlbums = albums
+        .filter(
+          (item) =>
+            item &&
+            item.album !== null &&
+            item.album !== undefined &&
+            String(item.album).trim() !== ""
+        )
+        .map((item) => ({
+          album: item.album,
+          track: item.track || ""
+        }));
+
+      // ========================================================
+      // PAYLOAD
+      // ========================================================
 
       const payload = {
         bitID: searchBitID,
 
         type,
         title,
-        category: category || null,
+
         artist: artist || null,
+
         date: date || null,
         time: time || null,
         autoNum: autoNum || null,
 
-        subjects: subjectValues,
-
-        celebrity1:
-          celebrity1 || null,
-
-        celebrity2:
-          celebrity2 || null,
-
-        sport: sport || null,
-        season: season || null,
+        // NEW UNLIMITED RELATIONSHIPS
+        categories: cleanedCategories,
+        subjects: cleanedSubjects,
+        celebrities: cleanedCelebrities,
+        sports: cleanedSports,
+        seasons: cleanedSeasons,
 
         keywords: keywords || "",
 
@@ -427,7 +669,6 @@ const EditBit = () => {
 
   const handleCancel = (e) => {
     e.preventDefault();
-
     navigate(-1);
   };
 
@@ -443,7 +684,9 @@ const EditBit = () => {
           textAlign: "center"
         }}
       >
-        <h2>Loading bit information...</h2>
+        <h2>
+          Loading bit information...
+        </h2>
       </div>
     );
   }
@@ -463,6 +706,8 @@ const EditBit = () => {
         <div className="card">
           <h2>General Info</h2>
 
+          {/* TITLE */}
+
           <div className="form-row">
             <label>Title:</label>
 
@@ -475,6 +720,8 @@ const EditBit = () => {
               placeholder="Media Title"
             />
           </div>
+
+          {/* TYPE */}
 
           <div className="form-row">
             <label>Type:</label>
@@ -499,31 +746,78 @@ const EditBit = () => {
             </select>
           </div>
 
+          {/* CATEGORIES */}
+
           <div className="form-row">
-            <label>Category:</label>
+            <label>
+              Categories:
+            </label>
 
-            <select
-              value={category}
-              onChange={(e) =>
-                setCategory(e.target.value)
-              }
-            >
-              <option value="">
-                -- Select Category --
-              </option>
-
-              {categoryList.map(
-                (val) => (
-                  <option
-                    key={val.CatID}
-                    value={val.CatID}
+            <div style={{ width: "100%" }}>
+              {categories.map(
+                (category, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      display: "flex",
+                      gap: "8px",
+                      marginBottom: "8px"
+                    }}
                   >
-                    {val.Category}
-                  </option>
+                    <select
+                      value={category}
+                      onChange={(e) =>
+                        updateCategory(
+                          index,
+                          e.target.value
+                        )
+                      }
+                      style={{
+                        flex: 1
+                      }}
+                    >
+                      <option value="">
+                        -- Select Category --
+                      </option>
+
+                      {categoryList.map(
+                        (val) => (
+                          <option
+                            key={val.CatID}
+                            value={val.CatID}
+                          >
+                            {val.Category}
+                          </option>
+                        )
+                      )}
+                    </select>
+
+                    {categories.length > 1 && (
+                      <button
+                        type="button"
+                        className="btn btn-danger"
+                        onClick={() =>
+                          removeCategory(index)
+                        }
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
                 )
               )}
-            </select>
+
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={addCategory}
+              >
+                + Add Category
+              </button>
+            </div>
           </div>
+
+          {/* ARTIST */}
 
           <div className="form-row">
             <label>Artist:</label>
@@ -551,8 +845,12 @@ const EditBit = () => {
             </select>
           </div>
 
+          {/* AIR DATE */}
+
           <div className="form-row">
-            <label>Air Date:</label>
+            <label>
+              Air Date:
+            </label>
 
             <input
               type="date"
@@ -563,8 +861,12 @@ const EditBit = () => {
             />
           </div>
 
+          {/* LENGTH + AUTOMATION */}
+
           <div className="form-row">
-            <label>Length:</label>
+            <label>
+              Length:
+            </label>
 
             <input
               type="text"
@@ -596,40 +898,68 @@ const EditBit = () => {
               Subjects:
             </label>
 
-            {[
-              sub1,
-              sub2,
-              sub3,
-              sub4
-            ].map(
-              (sub, index) => (
-                <select
-                  key={index}
-                  value={sub}
-                  onChange={(e) =>
-                    updateSubject(
-                      index,
-                      e.target.value
-                    )
-                  }
-                >
-                  <option value="">
-                    -- Select Subject --
-                  </option>
-
-                  {subjectList.map(
-                    (val) => (
-                      <option
-                        key={val.SubID}
-                        value={val.SubID}
-                      >
-                        {val.Subject}
+            <div style={{ width: "100%" }}>
+              {subjects.map(
+                (subject, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      display: "flex",
+                      gap: "8px",
+                      marginBottom: "8px"
+                    }}
+                  >
+                    <select
+                      value={subject}
+                      onChange={(e) =>
+                        updateSubject(
+                          index,
+                          e.target.value
+                        )
+                      }
+                      style={{
+                        flex: 1
+                      }}
+                    >
+                      <option value="">
+                        -- Select Subject --
                       </option>
-                    )
-                  )}
-                </select>
-              )
-            )}
+
+                      {subjectList.map(
+                        (val) => (
+                          <option
+                            key={val.SubID}
+                            value={val.SubID}
+                          >
+                            {val.Subject}
+                          </option>
+                        )
+                      )}
+                    </select>
+
+                    {subjects.length > 1 && (
+                      <button
+                        type="button"
+                        className="btn btn-danger"
+                        onClick={() =>
+                          removeSubject(index)
+                        }
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                )
+              )}
+
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={addSubject}
+              >
+                + Add Subject
+              </button>
+            </div>
           </div>
 
           {/* CELEBRITIES */}
@@ -639,109 +969,210 @@ const EditBit = () => {
               Celebrities:
             </label>
 
-            <select
-              value={celebrity1}
-              onChange={(e) =>
-                setCelebrity1(
-                  e.target.value
-                )
-              }
-            >
-              <option value="">
-                -- Select Celebrity --
-              </option>
-
-              {celebList.map(
-                (val) => (
-                  <option
-                    key={val.CelebID}
-                    value={val.CelebID}
+            <div style={{ width: "100%" }}>
+              {celebrities.map(
+                (celebrity, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      display: "flex",
+                      gap: "8px",
+                      marginBottom: "8px"
+                    }}
                   >
-                    {val.Name}
-                  </option>
+                    <select
+                      value={celebrity}
+                      onChange={(e) =>
+                        updateCelebrity(
+                          index,
+                          e.target.value
+                        )
+                      }
+                      style={{
+                        flex: 1
+                      }}
+                    >
+                      <option value="">
+                        -- Select Celebrity --
+                      </option>
+
+                      {celebList.map(
+                        (val) => (
+                          <option
+                            key={val.CelebID}
+                            value={val.CelebID}
+                          >
+                            {val.Name}
+                          </option>
+                        )
+                      )}
+                    </select>
+
+                    {celebrities.length > 1 && (
+                      <button
+                        type="button"
+                        className="btn btn-danger"
+                        onClick={() =>
+                          removeCelebrity(index)
+                        }
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
                 )
               )}
-            </select>
 
-            <select
-              value={celebrity2}
-              onChange={(e) =>
-                setCelebrity2(
-                  e.target.value
-                )
-              }
-            >
-              <option value="">
-                -- Select Celebrity --
-              </option>
-
-              {celebList.map(
-                (val) => (
-                  <option
-                    key={val.CelebID}
-                    value={val.CelebID}
-                  >
-                    {val.Name}
-                  </option>
-                )
-              )}
-            </select>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={addCelebrity}
+              >
+                + Add Celebrity
+              </button>
+            </div>
           </div>
 
-          {/* SPORT / SEASON */}
+          {/* SPORTS */}
 
           <div className="form-row">
             <label>
-              Sport:
+              Sports:
             </label>
 
-            <select
-              value={sport}
-              onChange={(e) =>
-                setSport(e.target.value)
-              }
-            >
-              <option value="">
-                -- Select Sport --
-              </option>
-
-              {sportList.map(
-                (val) => (
-                  <option
-                    key={val.SportID}
-                    value={val.SportID}
+            <div style={{ width: "100%" }}>
+              {sports.map(
+                (sport, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      display: "flex",
+                      gap: "8px",
+                      marginBottom: "8px"
+                    }}
                   >
-                    {val.Sport}
-                  </option>
+                    <select
+                      value={sport}
+                      onChange={(e) =>
+                        updateSport(
+                          index,
+                          e.target.value
+                        )
+                      }
+                      style={{
+                        flex: 1
+                      }}
+                    >
+                      <option value="">
+                        -- Select Sport --
+                      </option>
+
+                      {sportList.map(
+                        (val) => (
+                          <option
+                            key={val.SportID}
+                            value={val.SportID}
+                          >
+                            {val.Sport}
+                          </option>
+                        )
+                      )}
+                    </select>
+
+                    {sports.length > 1 && (
+                      <button
+                        type="button"
+                        className="btn btn-danger"
+                        onClick={() =>
+                          removeSport(index)
+                        }
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
                 )
               )}
-            </select>
 
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={addSport}
+              >
+                + Add Sport
+              </button>
+            </div>
+          </div>
+
+          {/* SEASONS */}
+
+          <div className="form-row">
             <label>
-              Season:
+              Seasons:
             </label>
 
-            <select
-              value={season}
-              onChange={(e) =>
-                setSeason(e.target.value)
-              }
-            >
-              <option value="">
-                -- Select Season --
-              </option>
-
-              {seasonList.map(
-                (val) => (
-                  <option
-                    key={val.SeasonID}
-                    value={val.SeasonID}
+            <div style={{ width: "100%" }}>
+              {seasons.map(
+                (season, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      display: "flex",
+                      gap: "8px",
+                      marginBottom: "8px"
+                    }}
                   >
-                    {val.Season}
-                  </option>
+                    <select
+                      value={season}
+                      onChange={(e) =>
+                        updateSeason(
+                          index,
+                          e.target.value
+                        )
+                      }
+                      style={{
+                        flex: 1
+                      }}
+                    >
+                      <option value="">
+                        -- Select Season --
+                      </option>
+
+                      {seasonList.map(
+                        (val) => (
+                          <option
+                            key={val.SeasonID}
+                            value={val.SeasonID}
+                          >
+                            {val.Season}
+                          </option>
+                        )
+                      )}
+                    </select>
+
+                    {seasons.length > 1 && (
+                      <button
+                        type="button"
+                        className="btn btn-danger"
+                        onClick={() =>
+                          removeSeason(index)
+                        }
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
                 )
               )}
-            </select>
+
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={addSeason}
+              >
+                + Add Season
+              </button>
+            </div>
           </div>
 
           {/* KEYWORDS */}
@@ -793,15 +1224,12 @@ const EditBit = () => {
                   placeholder="Enter link"
                 />
 
-                {hyperlinks.length >
-                  1 && (
+                {hyperlinks.length > 1 && (
                   <button
                     type="button"
                     className="btn btn-danger"
                     onClick={() =>
-                      removeHyperlink(
-                        index
-                      )
+                      removeHyperlink(index)
                     }
                   >
                     Remove
@@ -855,13 +1283,9 @@ const EditBit = () => {
                     (val) => (
                       <option
                         key={val.AlbumID}
-                        value={
-                          val.AlbumID
-                        }
+                        value={val.AlbumID}
                       >
-                        {
-                          val.Album_Name
-                        }
+                        {val.Album_Name}
                       </option>
                     )
                   )}
@@ -884,15 +1308,12 @@ const EditBit = () => {
                   placeholder="Track #"
                 />
 
-                {albums.length >
-                  1 && (
+                {albums.length > 1 && (
                   <button
                     type="button"
                     className="btn btn-danger"
                     onClick={() =>
-                      removeAlbum(
-                        index
-                      )
+                      removeAlbum(index)
                     }
                   >
                     Remove
