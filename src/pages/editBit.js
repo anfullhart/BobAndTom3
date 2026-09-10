@@ -503,7 +503,7 @@ const EditBit = () => {
           })}
 
           {renderIdList({
-            label: "Celebritiy",
+            label: "Celebrity",
             items: celebrities,
             helpers: celebrityHelpers,
             options: celebList,
