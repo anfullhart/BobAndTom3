@@ -88,7 +88,7 @@ const Entry = () => {
           onMouseEnter={(e) => (e.target.style.backgroundColor = "grey")}
           onMouseLeave={(e) => (e.target.style.backgroundColor = "black")}
         >
-          New Artist
+          Edit Artists
         </Link>
 
         
