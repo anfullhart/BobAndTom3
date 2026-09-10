@@ -1,125 +1,126 @@
-import * as React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Axios from 'axios';
+import Axios from "axios";
+import "./searchRunSheet.css";
 
 const API_URL =
   process.env.REACT_APP_API_URL ||
   "https://bobandtombackend-production-fb6d.up.railway.app";
 
+const isoToMMDDYYYY = (iso) => {
+  if (!iso) return "";
+  const [year, month, day] = iso.split("-");
+  return `${month}-${day}-${year}`;
+};
+
 const SearchRunSheet = () => {
   const navigate = useNavigate();
 
   const [artistList, setArtistList] = useState([]);
-  const [searchType, setSearchType] = useState(''); 
-  const [searchKeyword, setSearchKeyword] = useState('');
-  const [searchDate, setSearchDate] = useState('');
-  const [searchArtist, setSearchArtist] = useState('');
+  const [searchType, setSearchType] = useState("");
+  const [searchValue, setSearchValue] = useState("");
 
-  // Fetch artist list on mount
   useEffect(() => {
     Axios.get(`${API_URL}/api/get/artist`)
       .then((response) => setArtistList(response.data))
-      .catch((err) => console.error(err));
+      .catch((err) => console.error("Error loading artists:", err));
   }, []);
 
-  // Handle form submission (Enter key or button)
+  const handleTypeChange = (e) => {
+    setSearchType(e.target.value);
+    setSearchValue("");
+  };
+
   const handleSubmit = (e) => {
-    e.preventDefault(); // Prevent page reload
-    navigate('/logResults', {
+    e.preventDefault();
+
+    if (!searchType || !searchValue) {
+      window.alert("Please select a search type and enter a value.");
+      return;
+    }
+
+    const finalValue =
+      searchType === "Date" ? isoToMMDDYYYY(searchValue) : searchValue;
+
+    navigate("/logResults", {
       state: {
-        searchDate,
-        searchKeyword,
-        searchArtist,
-        searchType
-      }
+        searchDate: searchType === "Date" ? finalValue : "",
+        searchKeyword: searchType === "Keyword" ? finalValue : "",
+        searchArtist: searchType === "Artist" ? finalValue : "",
+        searchType,
+      },
     });
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "200px",
-        marginTop:'20px'
-      }}    
-    >
-      <div>
+    <div className="search-run-sheet-page">
+      <div className="search-card">
+        <div className="page-header">
+          <h1>Search Run Sheets</h1>
+          <p>Find a past run sheet by date, artist, or keyword.</p>
+        </div>
+
         <form onSubmit={handleSubmit}>
-          <div>
-            <label
-              htmlFor="search"
-              style={{
-                backgroundColor: 'black',
-                color:'white',
-                fontSize:'20px',
-                padding:'40px 60px 70px',
-                margin:'10px 0px',
-                borderRadius:'15px'
-              }}
-            >
-              Search Run Sheets by:
-              <select
-                style={{ marginLeft:'10px', width:'auto', height:'25px' }}
-                size="1"
-                onChange={(e) => setSearchType(e.target.value)}
-              >
-                <option value="-"> - </option>
-                <option value="Date">Date (MM-DD-YYYY)</option>
-                <option value="Artist">Artist</option>
-                <option value="keyword">Keyword</option>
-              </select>
-
-              {searchType === "Artist" ? (
-                <select
-                  name="ddlArtist"
-                  size="1"
-                  style={{ marginLeft: "10px", width:'520px', height:'45px', fontSize:'15px' }}
-                  onChange={(e) => {
-                    setSearchKeyword(e.target.value);
-                    setSearchArtist(e.target.value);
-                    setSearchDate(e.target.value);
-                  }}
-                >
-                  {artistList.map((val, key) => (
-                    <option key={key} value={val.ArtistID}>
-                      {val.Name}
-                    </option>
-                  ))}
-                </select>
-              ) : (
-                <input
-                  type="text"
-                  size="50"
-                  onChange={(e) => {
-                    setSearchKeyword(e.target.value);
-                    setSearchArtist(e.target.value);
-                    setSearchDate(e.target.value);
-                  }}
-                  style={{ marginLeft: "10px", padding: "5px" }}
-                />
-              )}
-
-              <button
-                type="submit"
-                style={{
-                  marginLeft:'5px',
-                  marginBottom:'5px',
-                  cursor: 'pointer',
-                  padding: '5px 10px',
-                  backgroundColor: '#0d6efd',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '5px',
-                  fontWeight: 'bold'
-                }}
-              >
-                Search
-              </button>
-            </label>
+          <div className="field">
+            <label htmlFor="searchType">Search by</label>
+            <select id="searchType" value={searchType} onChange={handleTypeChange}>
+              <option value="">Select a search type</option>
+              <option value="Date">Date</option>
+              <option value="Artist">Artist</option>
+              <option value="Keyword">Keyword</option>
+            </select>
           </div>
+
+          {searchType === "Date" && (
+            <div className="field">
+              <label htmlFor="date">Date</label>
+              <input
+                id="date"
+                type="date"
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+              />
+            </div>
+          )}
+
+          {searchType === "Artist" && (
+            <div className="field">
+              <label htmlFor="artist">Artist</label>
+              <select
+                id="artist"
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+              >
+                <option value="">Select artist</option>
+                {artistList.map((val) => (
+                  <option key={val.ArtistID} value={val.ArtistID}>
+                    {val.Name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {searchType === "Keyword" && (
+            <div className="field">
+              <label htmlFor="keyword">Keyword</label>
+              <input
+                id="keyword"
+                type="text"
+                placeholder="Enter keyword"
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+              />
+            </div>
+          )}
+
+          {!searchType && (
+            <p className="hint">Pick a search type above to continue.</p>
+          )}
+
+          <button type="submit" className="btn btn-primary" disabled={!searchType}>
+            Search
+          </button>
         </form>
       </div>
     </div>
