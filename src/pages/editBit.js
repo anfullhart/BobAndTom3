@@ -483,7 +483,7 @@ const EditBit = () => {
           </div>
 
           {renderIdList({
-            label: "Categories",
+            label: "Category",
             items: categories,
             helpers: categoryHelpers,
             options: categoryList,
@@ -503,7 +503,7 @@ const EditBit = () => {
           })}
 
           {renderIdList({
-            label: "Celebrities",
+            label: "Celebritiy",
             items: celebrities,
             helpers: celebrityHelpers,
             options: celebList,
