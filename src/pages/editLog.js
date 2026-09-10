@@ -2,6 +2,7 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 import Axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
+import "./editLog.css";
 
 const API_URL =
   process.env.REACT_APP_API_URL ||
@@ -15,8 +16,8 @@ const EditLog = () => {
   const [logDate, setLogDate] = useState("");
   const [values, setValues] = useState([]);
   const [deletedRows, setDeletedRows] = useState([]); // TRACK DELETED ROWS
+  const [loading, setLoading] = useState(true);
 
-  
   useEffect(() => {
     loadArtists();
     loadLogData();
@@ -29,7 +30,10 @@ const EditLog = () => {
   };
 
   const loadLogData = () => {
-    if (!RS_ID) return;
+    if (!RS_ID) {
+      setLoading(false);
+      return;
+    }
 
     Axios.get(`${API_URL}/api/get/runSheet/${RS_ID}`)
       .then((res) => {
@@ -46,8 +50,12 @@ const EditLog = () => {
         } else {
           setValues([]);
         }
+        setLoading(false);
       })
-      .catch((err) => console.error("Log load error:", err));
+      .catch((err) => {
+        console.error("Log load error:", err);
+        setLoading(false);
+      });
   };
 
   const handleChange = (index, field, value) => {
@@ -76,6 +84,19 @@ const EditLog = () => {
     const row = values[index];
     if (row.L_ID) setDeletedRows((prev) => [...prev, row.L_ID]);
     setValues((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleInsertRow = (index) => {
+    const newRow = {
+      L_ID: null,
+      bTime: "",
+      bitDesc: "",
+      ArtistID: ""
+    };
+
+    const updated = [...values];
+    updated.splice(index + 1, 0, newRow);
+    setValues(updated);
   };
 
   const handleConfirmEdits = async (e) => {
@@ -111,248 +132,135 @@ const EditLog = () => {
     navigate("/searchrunsheet", { replace: true });
   };
 
-  return (
-  <div
-    style={{
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      minHeight: "100vh",
-      padding: "20px",
-      boxSizing: "border-box",
-    }}
-  >
-    <form
-      style={{
-        width: "100%",
-        maxWidth: "1100px",
-      }}
-    >
-     {/* DATE */}
-<div
-  style={{
-    display: "flex",
-    justifyContent: "center",
-    width: "100%",
-    marginBottom: "20px",
-  }}
->
-  <div
-    style={{
-      backgroundColor: "#fff",
-      color: "#000",
-      width: "100%",
-      maxWidth: "320px",
-      borderRadius: "12px",
-      border: "3px solid black",
-      padding: "12px",
-      textAlign: "center",
-      fontWeight: "bold",
-    }}
-  >
-    Run Sheet Date:
+  if (loading) {
+    return (
+      <div className="edit-log-page">
+        <p className="loading-state">Loading run sheet…</p>
+      </div>
+    );
+  }
 
-    <input
-      value={logDate}
-      onChange={(e) => setLogDate(e.target.value)}
-      placeholder="MM-DD-YYYY"
-      style={{
-        marginTop: "10px",
-        width: "100%",
-        padding: "8px",
-        fontSize: "18px",
-        fontWeight: "bold",
-        color: "#d32f2f",
-        backgroundColor: "#fff5f5",
-        border: "2px solid #d32f2f",
-        borderRadius: "8px",
-        textAlign: "center",
-        outline: "none",
-      }}
-      onFocus={(e) => {
-        e.target.style.boxShadow = "0 0 8px rgba(211,47,47,.6)";
-      }}
-      onBlur={(e) => {
-        e.target.style.boxShadow = "none";
-      }}
-    />
-  </div>
-</div>
-      {/* TABLE */}
-      <div
-        style={{
-          backgroundColor: "black",
-          color: "white",
-          fontSize: "15px",
-          padding: "20px",
-          borderRadius: "15px",
-          width: "100%",
-          maxWidth: "1100px",
-          overflowX: "auto",
-        }}
-      >
-        {/* Table headers */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "90px 1fr 220px 35px 35px",
-            gap: "10px",
-            alignItems: "center",
-            fontWeight: "bold",
-            marginBottom: "15px",
-          }}
-        >
-          <span>Time</span>
-          <span>Description</span>
-          <span>Artist</span>
-          <span></span>
-          <span></span>
+  return (
+    <div className="edit-log-page">
+      <form className="edit-log-form">
+        <div className="page-header">
+          <h1>Edit Run Sheet</h1>
+          <p>{values.length} {values.length === 1 ? "row" : "rows"} on this sheet.</p>
         </div>
 
-        {values.map((row, index) => (
-          <div
-            key={index}
-            style={{
-              display: "grid",
-              gridTemplateColumns: "90px 1fr 220px 35px 35px",
-              gap: "10px",
-              alignItems: "center",
-              marginBottom: "10px",
-            }}
-          >
-            <input
-              type="text"
-              placeholder="00:00:00"
-              value={row.bTime}
-              onChange={(e) => handleChange(index, "bTime", e.target.value)}
-            />
+        {/* DATE */}
+        <div className="field date-field">
+          <label htmlFor="logDate">Run sheet date</label>
+          <input
+            id="logDate"
+            type="text"
+            value={logDate}
+            onChange={(e) => setLogDate(e.target.value)}
+            placeholder="MM-DD-YYYY"
+          />
+        </div>
 
-            <input
-              type="text"
-              placeholder="Description"
-              value={row.bitDesc}
-              onChange={(e) => handleChange(index, "bitDesc", e.target.value)}
-            />
+        {/* TABLE */}
+        <div className="log-table">
+          <div className="log-row log-header">
+            <span className="col-index" />
+            <span>Time</span>
+            <span>Description</span>
+            <span>Artist</span>
+            <span className="col-action" />
+            <span className="col-action" />
+          </div>
 
-            <select
-              value={row.ArtistID}
-              onChange={(e) => handleChange(index, "ArtistID", e.target.value)}
-            >
-              <option value="">Choose Artist</option>
-              {artistList.map((a) => (
-                <option key={a.ArtistID} value={a.ArtistID}>
-                  {a.Name}
-                </option>
-              ))}
-            </select>
+          {values.map((row, index) => (
+            <div className="log-row" key={index}>
+              <span className="col-index">{index + 1}</span>
 
-            {/* Delete */}
-            <button
-              type="button"
-              onClick={() => handleDeleteRow(index)}
-              style={{
-                fontWeight: "bold",
-                fontSize: "18px",
-                color: "#fff",
-                backgroundColor: "#dc3545",
-                border: "none",
-                borderRadius: "50%",
-                cursor: "pointer",
-                height: "28px",
-                width: "28px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                paddingBottom: "4px",
-              }}
-              title="Delete Row"
-            >
-              −
+              <input
+                type="text"
+                placeholder="00:00:00"
+                value={row.bTime}
+                aria-label={`Row ${index + 1} time`}
+                onChange={(e) => handleChange(index, "bTime", e.target.value)}
+              />
+
+              <input
+                type="text"
+                placeholder="Description"
+                value={row.bitDesc}
+                aria-label={`Row ${index + 1} description`}
+                onChange={(e) => handleChange(index, "bitDesc", e.target.value)}
+              />
+
+              <select
+                value={row.ArtistID}
+                aria-label={`Row ${index + 1} artist`}
+                onChange={(e) => handleChange(index, "ArtistID", e.target.value)}
+              >
+                <option value="">Choose artist</option>
+                {artistList.map((a) => (
+                  <option key={a.ArtistID} value={a.ArtistID}>
+                    {a.Name}
+                  </option>
+                ))}
+              </select>
+
+              <button
+                type="button"
+                className="row-btn row-btn-remove"
+                onClick={() => handleDeleteRow(index)}
+                title="Delete row"
+                aria-label={`Delete row ${index + 1}`}
+              >
+                −
+              </button>
+
+              <button
+                type="button"
+                className="row-btn row-btn-add"
+                onClick={() => handleInsertRow(index)}
+                title="Add row below"
+                aria-label={`Add row below row ${index + 1}`}
+              >
+                +
+              </button>
+            </div>
+          ))}
+
+          {values.length === 0 && (
+            <p className="empty-state">No rows yet. Use "+ 3 rows" below to get started.</p>
+          )}
+        </div>
+
+        {/* ACTION BUTTONS */}
+        <div className="edit-log-actions">
+          <div className="edit-log-actions-left">
+            <button type="button" className="add-btn" onClick={handleAdd3Rows}>
+              + 3 rows
             </button>
 
-            {/* Insert */}
             <button
               type="button"
-              onClick={() => {
-                const newRow = {
-                  L_ID: null,
-                  bTime: "",
-                  bitDesc: "",
-                  ArtistID: "",
-                };
-
-                const updated = [...values];
-                updated.splice(index + 1, 0, newRow);
-                setValues(updated);
-              }}
-              style={{
-                fontWeight: "bold",
-                fontSize: "18px",
-                color: "#fff",
-                backgroundColor: "#28a745",
-                border: "none",
-                borderRadius: "50%",
-                cursor: "pointer",
-                height: "28px",
-                width: "28px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                paddingBottom: "4px",
-              }}
-              title="Add Row Below"
+              className="add-btn"
+              onClick={handleRemove1Row}
+              disabled={values.length === 0}
             >
-              +
+              − 1 row
             </button>
           </div>
-        ))}
-      </div>
 
-      {/* ACTION BUTTONS */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          flexWrap: "wrap",
-          gap: "10px",
-          marginTop: "20px",
-        }}
-      >
-        <button
-          type="button"
-          className="btn btn-warning"
-          onClick={handleRemove1Row}
-        >
-          − 1 Row
-        </button>
+          <div className="edit-log-actions-right">
+            <button type="button" className="btn btn-ghost" onClick={handleCancelEdits}>
+              Cancel
+            </button>
 
-        <button
-          type="button"
-          className="btn btn-warning"
-          onClick={handleAdd3Rows}
-        >
-          + 3 Rows
-        </button>
-
-        <button
-          type="button"
-          className="btn btn-danger"
-          onClick={handleCancelEdits}
-        >
-          Cancel
-        </button>
-
-        <button
-          type="button"
-          className="btn btn-success"
-          onClick={handleConfirmEdits}
-        >
-          Confirm Edits
-        </button>
-      </div>
-    </form>
-  </div>
-);
+            <button type="button" className="btn btn-primary" onClick={handleConfirmEdits}>
+              Confirm edits
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  );
 };
 
 export default EditLog;
