@@ -1,10 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Axios from "axios";
+import "./searchMedia.css";
 
 const API_URL =
   process.env.REACT_APP_API_URL ||
   "https://bobandtombackend-production-fb6d.up.railway.app";
+
+const SEARCH_TYPES = [
+  { value: "Bit ID", label: "Bit ID" },
+  { value: "Title", label: "Title" },
+  { value: "Keyword", label: "Keyword" },
+  { value: "Celebrity", label: "Celebrity" },
+  { value: "Artist", label: "Artist" },
+  { value: "Date", label: "Date" },
+  { value: "Automation #", label: "Automation #" },
+  { value: "Sport", label: "Sport" },
+  { value: "Season", label: "Season" },
+  { value: "Subject", label: "Subject" },
+];
 
 const SearchMedia = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -79,165 +93,81 @@ const SearchMedia = () => {
   };
 
   return (
-    <div
-      style={{
-        width: "100%",
-        display: "flex",
-        justifyContent: "center",
-        marginTop: "50px",
-      }}
-    >
-      <div
-        style={{
-          width: "500px",
-          maxWidth: "90%",
-        }}
-      >
-        <h2 style={{ textAlign: "center", marginBottom: "30px" }}>
-          Search Media
-        </h2>
+    <div className="search-media-page">
+      <div className="search-card">
+        <div className="page-header">
+          <h1>Search Media</h1>
+          <p>Find a bit by ID, title, or any tag attached to it.</p>
+        </div>
 
         <form onSubmit={handleSubmit}>
-          {/* Search Type */}
-          <div style={{ marginBottom: "20px" }}>
-            <label
-              htmlFor="searchType"
-              style={{
-                display: "block",
-                marginBottom: "8px",
-                fontWeight: "bold",
-              }}
-            >
-              Search By:
-            </label>
+          <div className="field">
+            <label htmlFor="searchType">Search by</label>
 
             <select
               id="searchType"
               value={searchType}
               onChange={handleSearchTypeChange}
-              className="form-control"
-              style={{ width: "100%" }}
             >
-              <option value="">Select Search Type</option>
-              <option value="Bit ID">Bit ID</option>
-              <option value="Title">Title</option>
-              <option value="Keyword">Keyword</option>
-              <option value="Celebrity">Celebrity</option>
-              <option value="Artist">Artist</option>
-              <option value="Date">Date</option>
-              <option value="Automation #">Automation #</option>
-              <option value="Sport">Sport</option>
-              <option value="Season">Season</option>
-              <option value="Subject">Subject</option>
+              <option value="">Select a search type</option>
+              {SEARCH_TYPES.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
             </select>
           </div>
 
-          {/* Bit ID */}
           {searchType === "Bit ID" && (
-            <div style={{ marginBottom: "20px" }}>
-              <label
-                htmlFor="bitID"
-                style={{
-                  display: "block",
-                  marginBottom: "8px",
-                  fontWeight: "bold",
-                }}
-              >
-                Bit ID:
-              </label>
-
+            <div className="field">
+              <label htmlFor="bitID">Bit ID</label>
               <input
                 id="bitID"
                 type="number"
-                placeholder="Enter Bit ID"
+                placeholder="Enter bit ID"
                 value={searchBitID}
                 onChange={(e) => setSearchBitID(e.target.value)}
-                className="form-control"
-                style={{ width: "100%" }}
               />
             </div>
           )}
 
-          {/* Title */}
           {searchType === "Title" && (
-            <div style={{ marginBottom: "20px" }}>
-              <label
-                htmlFor="title"
-                style={{
-                  display: "block",
-                  marginBottom: "8px",
-                  fontWeight: "bold",
-                }}
-              >
-                Title:
-              </label>
-
+            <div className="field">
+              <label htmlFor="title">Title</label>
               <input
                 id="title"
                 type="text"
                 placeholder="Enter title"
                 value={searchKeyword}
                 onChange={(e) => setSearchKeyword(e.target.value)}
-                className="form-control"
-                style={{ width: "100%" }}
               />
             </div>
           )}
 
-          {/* Keyword */}
           {searchType === "Keyword" && (
-            <div style={{ marginBottom: "20px" }}>
-              <label
-                htmlFor="keyword"
-                style={{
-                  display: "block",
-                  marginBottom: "8px",
-                  fontWeight: "bold",
-                }}
-              >
-                Keyword:
-              </label>
-
+            <div className="field">
+              <label htmlFor="keyword">Keyword</label>
               <input
                 id="keyword"
                 type="text"
                 placeholder="Enter keyword"
                 value={searchKeyword}
                 onChange={(e) => setSearchKeyword(e.target.value)}
-                className="form-control"
-                style={{ width: "100%" }}
               />
             </div>
           )}
 
-          {/* Celebrity */}
           {searchType === "Celebrity" && (
-            <div style={{ marginBottom: "20px" }}>
-              <label
-                htmlFor="celebrity"
-                style={{
-                  display: "block",
-                  marginBottom: "8px",
-                  fontWeight: "bold",
-                }}
-              >
-                Celebrity:
-              </label>
-
+            <div className="field">
+              <label htmlFor="celebrity">Celebrity</label>
               <select
                 id="celebrity"
                 value={searchKeyword}
                 onChange={(e) => setSearchKeyword(e.target.value)}
-                className="form-control"
-                style={{ width: "100%" }}
               >
-                <option value="">Select Celebrity</option>
-
+                <option value="">Select celebrity</option>
                 {celebrities.map((celebrity) => (
-                  <option
-                    key={celebrity.CelebID}
-                    value={celebrity.CelebID}
-                  >
+                  <option key={celebrity.CelebID} value={celebrity.CelebID}>
                     {celebrity.Name}
                   </option>
                 ))}
@@ -245,34 +175,17 @@ const SearchMedia = () => {
             </div>
           )}
 
-          {/* Artist */}
           {searchType === "Artist" && (
-            <div style={{ marginBottom: "20px" }}>
-              <label
-                htmlFor="artist"
-                style={{
-                  display: "block",
-                  marginBottom: "8px",
-                  fontWeight: "bold",
-                }}
-              >
-                Artist:
-              </label>
-
+            <div className="field">
+              <label htmlFor="artist">Artist</label>
               <select
                 id="artist"
                 value={searchKeyword}
                 onChange={(e) => setSearchKeyword(e.target.value)}
-                className="form-control"
-                style={{ width: "100%" }}
               >
-                <option value="">Select Artist</option>
-
+                <option value="">Select artist</option>
                 {artists.map((artist) => (
-                  <option
-                    key={artist.ArtistID}
-                    value={artist.ArtistID}
-                  >
+                  <option key={artist.ArtistID} value={artist.ArtistID}>
                     {artist.Name}
                   </option>
                 ))}
@@ -280,85 +193,42 @@ const SearchMedia = () => {
             </div>
           )}
 
-          {/* Date */}
           {searchType === "Date" && (
-            <div style={{ marginBottom: "20px" }}>
-              <label
-                htmlFor="date"
-                style={{
-                  display: "block",
-                  marginBottom: "8px",
-                  fontWeight: "bold",
-                }}
-              >
-                Date:
-              </label>
-
+            <div className="field">
+              <label htmlFor="date">Date</label>
               <input
                 id="date"
                 type="date"
                 value={searchKeyword}
                 onChange={(e) => setSearchKeyword(e.target.value)}
-                className="form-control"
-                style={{ width: "100%" }}
               />
             </div>
           )}
 
-          {/* Automation Number */}
           {searchType === "Automation #" && (
-            <div style={{ marginBottom: "20px" }}>
-              <label
-                htmlFor="automation"
-                style={{
-                  display: "block",
-                  marginBottom: "8px",
-                  fontWeight: "bold",
-                }}
-              >
-                Automation #:
-              </label>
-
+            <div className="field">
+              <label htmlFor="automation">Automation #</label>
               <input
                 id="automation"
                 type="text"
-                placeholder="Enter Automation #"
+                placeholder="Enter automation #"
                 value={searchKeyword}
                 onChange={(e) => setSearchKeyword(e.target.value)}
-                className="form-control"
-                style={{ width: "100%" }}
               />
             </div>
           )}
 
-          {/* Sport */}
           {searchType === "Sport" && (
-            <div style={{ marginBottom: "20px" }}>
-              <label
-                htmlFor="sport"
-                style={{
-                  display: "block",
-                  marginBottom: "8px",
-                  fontWeight: "bold",
-                }}
-              >
-                Sport:
-              </label>
-
+            <div className="field">
+              <label htmlFor="sport">Sport</label>
               <select
                 id="sport"
                 value={searchKeyword}
                 onChange={(e) => setSearchKeyword(e.target.value)}
-                className="form-control"
-                style={{ width: "100%" }}
               >
-                <option value="">Select Sport</option>
-
+                <option value="">Select sport</option>
                 {sports.map((sport) => (
-                  <option
-                    key={sport.SportID}
-                    value={sport.SportID}
-                  >
+                  <option key={sport.SportID} value={sport.SportID}>
                     {sport.Sport}
                   </option>
                 ))}
@@ -366,34 +236,17 @@ const SearchMedia = () => {
             </div>
           )}
 
-          {/* Season */}
           {searchType === "Season" && (
-            <div style={{ marginBottom: "20px" }}>
-              <label
-                htmlFor="season"
-                style={{
-                  display: "block",
-                  marginBottom: "8px",
-                  fontWeight: "bold",
-                }}
-              >
-                Season:
-              </label>
-
+            <div className="field">
+              <label htmlFor="season">Season</label>
               <select
                 id="season"
                 value={searchKeyword}
                 onChange={(e) => setSearchKeyword(e.target.value)}
-                className="form-control"
-                style={{ width: "100%" }}
               >
-                <option value="">Select Season</option>
-
+                <option value="">Select season</option>
                 {seasons.map((season) => (
-                  <option
-                    key={season.SeasonID}
-                    value={season.SeasonID}
-                  >
+                  <option key={season.SeasonID} value={season.SeasonID}>
                     {season.Season}
                   </option>
                 ))}
@@ -401,34 +254,17 @@ const SearchMedia = () => {
             </div>
           )}
 
-          {/* Subject */}
           {searchType === "Subject" && (
-            <div style={{ marginBottom: "20px" }}>
-              <label
-                htmlFor="subject"
-                style={{
-                  display: "block",
-                  marginBottom: "8px",
-                  fontWeight: "bold",
-                }}
-              >
-                Subject:
-              </label>
-
+            <div className="field">
+              <label htmlFor="subject">Subject</label>
               <select
                 id="subject"
                 value={searchKeyword}
                 onChange={(e) => setSearchKeyword(e.target.value)}
-                className="form-control"
-                style={{ width: "100%" }}
               >
-                <option value="">Select Subject</option>
-
+                <option value="">Select subject</option>
                 {subjects.map((subject) => (
-                  <option
-                    key={subject.SubID}
-                    value={subject.SubID}
-                  >
+                  <option key={subject.SubID} value={subject.SubID}>
                     {subject.Subject}
                   </option>
                 ))}
@@ -436,15 +272,13 @@ const SearchMedia = () => {
             </div>
           )}
 
-          {/* Search Button */}
-          <div style={{ textAlign: "center", marginTop: "25px" }}>
-            <button
-              type="submit"
-              className="btn btn-primary"
-            >
-              Search
-            </button>
-          </div>
+          {!searchType && (
+            <p className="hint">Pick a search type above to continue.</p>
+          )}
+
+          <button type="submit" className="btn btn-primary" disabled={!searchType}>
+            Search
+          </button>
         </form>
       </div>
     </div>
