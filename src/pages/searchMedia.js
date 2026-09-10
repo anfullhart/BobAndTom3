@@ -97,7 +97,6 @@ const SearchMedia = () => {
       <div className="search-card">
         <div className="page-header">
           <h1>Search Media</h1>
-          <p>Find a bit by ID, title, or any tag attached to it.</p>
         </div>
 
         <form onSubmit={handleSubmit}>
