@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Axios from "axios";
+import "./adminDashboard.css";
 
 const API_URL =
   process.env.REACT_APP_API_URL ||
@@ -9,6 +10,7 @@ const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
 
   const [form, setForm] = useState({
     username: "",
@@ -59,6 +61,11 @@ const AdminDashboard = () => {
     setEditUserId(null);
   };
 
+  const passwordsMismatch =
+    form.password.length > 0 &&
+    form.confirmPassword.length > 0 &&
+    form.password !== form.confirmPassword;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -66,6 +73,8 @@ const AdminDashboard = () => {
       window.alert("Passwords do not match.");
       return;
     }
+
+    setSaving(true);
 
     try {
       const payload = {
@@ -78,41 +87,34 @@ const AdminDashboard = () => {
       }
 
       if (editUserId) {
-        await Axios.put(
-          `${API_URL}/api/admin/users/${editUserId}`,
-          payload,
-          {
-            withCredentials: true,
-          }
-        );
+        await Axios.put(`${API_URL}/api/admin/users/${editUserId}`, payload, {
+          withCredentials: true,
+        });
 
-        window.alert("User updated successfully!");
+        window.alert("User updated successfully.");
       } else {
         if (!form.password.trim()) {
           window.alert("Password is required for new users.");
+          setSaving(false);
           return;
         }
 
-        await Axios.post(
-          `${API_URL}/api/admin/users`,
-          payload,
-          {
-            withCredentials: true,
-          }
-        );
+        await Axios.post(`${API_URL}/api/admin/users`, payload, {
+          withCredentials: true,
+        });
 
-        window.alert("User added successfully!");
+        window.alert("User added successfully.");
       }
 
       clearForm();
       fetchUsers();
-
     } catch (err) {
       console.error(err);
       setError("Failed to save user.");
+    } finally {
+      setSaving(false);
     }
   };
-
 
   const handleEdit = (user) => {
     setEditUserId(user.userid);
@@ -125,289 +127,148 @@ const AdminDashboard = () => {
     });
   };
 
-
   const handleDelete = async (userid) => {
     if (!window.confirm("Are you sure you want to delete this user?")) {
       return;
     }
 
     try {
-      await Axios.delete(
-        `${API_URL}/api/admin/users/${userid}`,
-        {
-          withCredentials: true,
-        }
-      );
+      await Axios.delete(`${API_URL}/api/admin/users/${userid}`, {
+        withCredentials: true,
+      });
 
       fetchUsers();
-
     } catch (err) {
       console.error(err);
       setError("Failed to delete user.");
     }
   };
 
-
-  if (loading) {
-    return (
-      <div
-        style={{
-          color: "white",
-          textAlign: "center",
-          marginTop: "100px",
-        }}
-      >
-        <h3>Loading users...</h3>
-      </div>
-    );
-  }
-
-
-  if (error) {
-    return (
-      <div
-        style={{
-          textAlign: "center",
-          marginTop: "100px",
-        }}
-      >
-        <div className="alert alert-danger">
-          {error}
-        </div>
-      </div>
-    );
-  }
-
-
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        padding: "40px 20px",
-        minHeight: "100vh",
-        boxSizing: "border-box",
-      }}
-    >
+    <div className="admin-page">
+      <div className="admin-dashboard">
+        <div className="page-header">
+          <h1>User Administration</h1>
+          <p>Add, edit, or remove accounts and manage their roles.</p>
+        </div>
 
-      <div
-        style={{
-          backgroundColor: "#1b1b1b",
-          color: "white",
-          width: "100%",
-          maxWidth: "1100px",
-          padding: "30px",
-          borderRadius: "15px",
-          boxShadow: "0 8px 20px rgba(0,0,0,.45)",
-        }}
-      >
+        <form className="user-form" onSubmit={handleSubmit}>
+          <div className="field">
+            <label htmlFor="username">
+              Username <span className="required">*</span>
+            </label>
+            <input
+              id="username"
+              name="username"
+              placeholder="e.g. jsmith"
+              value={form.username}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-        <h2
-          style={{
-            textAlign: "center",
-            marginBottom: "30px",
-          }}
-        >
-          User Administration
-        </h2>
+          <div className="field">
+            <label htmlFor="password">
+              {editUserId ? "New password" : "Password"}
+              {!editUserId && <span className="required"> *</span>}
+              {editUserId && <span className="optional"> (optional)</span>}
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              placeholder={editUserId ? "Leave blank to keep current" : "Password"}
+              value={form.password}
+              onChange={handleChange}
+            />
+          </div>
 
+          <div className="field">
+            <label htmlFor="confirmPassword">Confirm password</label>
+            <input
+              id="confirmPassword"
+              name="confirmPassword"
+              type="password"
+              placeholder="Confirm password"
+              value={form.confirmPassword}
+              onChange={handleChange}
+              className={passwordsMismatch ? "input-error" : ""}
+            />
+            {passwordsMismatch && (
+              <span className="field-error">Passwords don't match.</span>
+            )}
+          </div>
 
-        <form
-          onSubmit={handleSubmit}
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            alignItems: "center",
-            gap: "15px",
-            marginBottom: "30px",
-          }}
-        >
+          <div className="field">
+            <label htmlFor="role">Role</label>
+            <select id="role" name="role" value={form.role} onChange={handleChange}>
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+              <option value="owner">Owner</option>
+            </select>
+          </div>
 
-          <input
-            className="form-control"
-            name="username"
-            placeholder="Username"
-            value={form.username}
-            onChange={handleChange}
-            style={{
-              flex: "1 1 200px",
-            }}
-            required
-          />
-
-
-          <input
-            className="form-control"
-            name="password"
-            type="password"
-            placeholder={
-              editUserId
-                ? "New password (optional)"
-                : "Password"
-            }
-            value={form.password}
-            onChange={handleChange}
-            style={{
-              flex: "1 1 200px",
-            }}
-          />
-
-
-          <input
-            className="form-control"
-            name="confirmPassword"
-            type="password"
-            placeholder="Confirm password"
-            value={form.confirmPassword}
-            onChange={handleChange}
-            style={{
-              flex: "1 1 200px",
-            }}
-          />
-
-
-          <select
-            className="form-select"
-            name="role"
-            value={form.role}
-            onChange={handleChange}
-            style={{
-              flex: "1 1 150px",
-            }}
-          >
-            <option value="user">
-              User
-            </option>
-
-            <option value="admin">
-              Admin
-            </option>
-
-            <option value="owner">
-              Owner
-            </option>
-
-          </select>
-
-
-          <div
-            style={{
-              display: "flex",
-              gap: "10px",
-              marginLeft: "auto",
-            }}
-          >
-
+          <div className="form-actions">
             {editUserId && (
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={clearForm}
-              >
-                Cancel Edit
+              <button type="button" className="btn btn-ghost" onClick={clearForm}>
+                Cancel edit
               </button>
             )}
 
-
-            <button
-              type="submit"
-              className={
-                editUserId
-                  ? "btn btn-warning"
-                  : "btn btn-success"
-              }
-            >
-              {editUserId
-                ? "Update User"
-                : "Add User"}
+            <button type="submit" className="btn btn-primary" disabled={saving}>
+              {saving
+                ? "Saving…"
+                : editUserId
+                ? "Update user"
+                : "Add user"}
             </button>
-
           </div>
-
         </form>
 
+        {error && <div className="alert-banner">{error}</div>}
 
-
-        <div
-          style={{
-            overflowX: "auto",
-          }}
-        >
-
-          <table className="table table-dark table-striped table-hover">
-
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Username</th>
-                <th>Role</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-
-
-            <tbody>
-
-              {users.map((user) => (
-
-                <tr key={user.userid}>
-
-                  <td>
-                    {user.userid}
-                  </td>
-
-                  <td>
-                    {user.login}
-                  </td>
-
-                  <td>
-                    <span
-                      className={
-                        user.role === "owner"
-                          ? "badge bg-danger"
-                          : user.role === "admin"
-                          ? "badge bg-warning text-dark"
-                          : "badge bg-secondary"
-                      }
-                    >
-                      {user.role}
-                    </span>
-                  </td>
-
-
-                  <td>
-
-                    <button
-                      className="btn btn-primary btn-sm me-2"
-                      onClick={() => handleEdit(user)}
-                    >
-                      Edit
-                    </button>
-
-
-                    <button
-                      className="btn btn-danger btn-sm"
-                      onClick={() =>
-                        handleDelete(user.userid)
-                      }
-                    >
-                      Delete
-                    </button>
-
-                  </td>
-
+        <div className="table-wrap">
+          {loading ? (
+            <p className="loading-state">Loading users…</p>
+          ) : users.length === 0 ? (
+            <p className="empty-state">No users yet. Add one above to get started.</p>
+          ) : (
+            <table className="user-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Username</th>
+                  <th>Role</th>
+                  <th>Actions</th>
                 </tr>
+              </thead>
 
-              ))}
-
-            </tbody>
-
-          </table>
-
+              <tbody>
+                {users.map((user) => (
+                  <tr key={user.userid} className={editUserId === user.userid ? "row-editing" : ""}>
+                    <td>{user.userid}</td>
+                    <td>{user.login}</td>
+                    <td>
+                      <span className={`badge badge-${user.role}`}>{user.role}</span>
+                    </td>
+                    <td className="actions-cell">
+                      <button className="btn btn-sm btn-outline" onClick={() => handleEdit(user)}>
+                        Edit
+                      </button>
+                      <button
+                        className="btn btn-sm btn-danger"
+                        onClick={() => handleDelete(user.userid)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
-
       </div>
-
     </div>
   );
 };
