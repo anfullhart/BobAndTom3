@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 
@@ -11,482 +11,439 @@ const SearchMedia = () => {
   const [searchBitID, setSearchBitID] = useState("");
   const [searchType, setSearchType] = useState("");
 
-  // Lookup lists
-  const [celebList, setCelebList] = useState([]);
-  const [artistList, setArtistList] = useState([]);
-  const [sportList, setSportList] = useState([]);
-  const [seasonList, setSeasonList] = useState([]);
-  const [subjectList, setSubjectList] = useState([]);
+  const [celebrities, setCelebrities] = useState([]);
+  const [artists, setArtists] = useState([]);
+  const [sports, setSports] = useState([]);
+  const [seasons, setSeasons] = useState([]);
+  const [subjects, setSubjects] = useState([]);
 
   const navigate = useNavigate();
 
-  // ============================================================
-  // LOAD SEARCH DROPDOWNS
-  // ============================================================
-
   useEffect(() => {
-    const loadLookupLists = async () => {
+    const loadLookupData = async () => {
       try {
         const [
-          celebRes,
-          artistRes,
-          sportRes,
-          seasonRes,
-          subjectRes
+          celebrityResponse,
+          artistResponse,
+          sportResponse,
+          seasonResponse,
+          subjectResponse,
         ] = await Promise.all([
           Axios.get(`${API_URL}/api/get/celebrity`),
           Axios.get(`${API_URL}/api/get/artist`),
           Axios.get(`${API_URL}/api/get/sport`),
           Axios.get(`${API_URL}/api/get/season`),
-          Axios.get(`${API_URL}/api/get/subject`)
+          Axios.get(`${API_URL}/api/get/subject`),
         ]);
 
-        setCelebList(celebRes.data || []);
-        setArtistList(artistRes.data || []);
-        setSportList(sportRes.data || []);
-        setSeasonList(seasonRes.data || []);
-        setSubjectList(subjectRes.data || []);
+        setCelebrities(celebrityResponse.data);
+        setArtists(artistResponse.data);
+        setSports(sportResponse.data);
+        setSeasons(seasonResponse.data);
+        setSubjects(subjectResponse.data);
       } catch (error) {
-        console.error(
-          "Error loading search dropdowns:",
-          error
-        );
-
-        if (error.response) {
-          console.error(
-            "Backend response:",
-            error.response.data
-          );
-        }
+        console.error("Error loading search options:", error);
       }
     };
 
-    loadLookupLists();
+    loadLookupData();
   }, []);
 
-  // ============================================================
-  // SEARCH TYPE CHANGED
-  // ============================================================
-
   const handleSearchTypeChange = (e) => {
-    const newType = e.target.value;
-
-    setSearchType(newType);
-
-    // Clear the old search value when changing
-    // to a different type.
+    setSearchType(e.target.value);
     setSearchKeyword("");
     setSearchBitID("");
   };
 
-  // ============================================================
-  // SEARCH VALUE CHANGED
-  // ============================================================
-
-  const handleSearchValueChange = (e) => {
-    const value = e.target.value;
-
-    setSearchKeyword(value);
-
-    // Keep searchBitID populated for compatibility
-    // with the existing results page.
-    setSearchBitID(value);
-  };
-
-  // ============================================================
-  // FORM SUBMIT
-  // ============================================================
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!searchType || searchType === "-") {
-      window.alert("Please select a search type.");
-      return;
+    let searchValue = searchKeyword;
+
+    if (searchType === "Bit ID") {
+      searchValue = searchBitID;
     }
 
-    if (!searchKeyword) {
-      window.alert("Please enter or select a search value.");
+    if (!searchType || !searchValue) {
+      alert("Please select a search type and enter a search value.");
       return;
     }
 
     navigate("/results", {
       state: {
-        bitID: searchBitID,
-        keyword: searchKeyword,
-        type: searchType
-      }
+        bitID: searchValue,
+        keyword: searchValue,
+        type: searchType,
+      },
     });
   };
-
-  // ============================================================
-  // DETERMINE WHICH INPUT TO DISPLAY
-  // ============================================================
-
-  const renderSearchInput = () => {
-    // ----------------------------------------------------------
-    // BIT ID
-    // ----------------------------------------------------------
-
-    if (searchType === "Bit ID") {
-      return (
-        <input
-          type="number"
-          value={searchKeyword}
-          onChange={handleSearchValueChange}
-          placeholder="Enter Bit ID"
-          style={{
-            marginLeft: "10px",
-            padding: "5px",
-            width: "300px"
-          }}
-        />
-      );
-    }
-
-    // ----------------------------------------------------------
-    // KEYWORD
-    // ----------------------------------------------------------
-
-    if (searchType === "Keyword") {
-      return (
-        <input
-          type="text"
-          value={searchKeyword}
-          onChange={handleSearchValueChange}
-          placeholder="Enter keyword"
-          style={{
-            marginLeft: "10px",
-            padding: "5px",
-            width: "300px"
-          }}
-        />
-      );
-    }
-
-    // ----------------------------------------------------------
-    // CELEBRITY
-    // ----------------------------------------------------------
-
-    if (searchType === "Celebrity") {
-      return (
-        <select
-          value={searchKeyword}
-          onChange={handleSearchValueChange}
-          style={{
-            marginLeft: "10px",
-            padding: "5px",
-            width: "300px",
-            height: "30px"
-          }}
-        >
-          <option value="">
-            -- Select Celebrity --
-          </option>
-
-          {celebList.map((celebrity) => (
-            <option
-              key={celebrity.CelebID}
-              value={celebrity.CelebID}
-            >
-              {celebrity.Name}
-            </option>
-          ))}
-        </select>
-      );
-    }
-
-    // ----------------------------------------------------------
-    // DATE
-    // ----------------------------------------------------------
-
-    if (searchType === "Date") {
-      return (
-        <input
-          type="date"
-          value={searchKeyword}
-          onChange={handleSearchValueChange}
-          style={{
-            marginLeft: "10px",
-            padding: "5px",
-            width: "200px",
-            height: "30px"
-          }}
-        />
-      );
-    }
-
-    // ----------------------------------------------------------
-    // AUTOMATION NUMBER
-    // ----------------------------------------------------------
-
-    if (searchType === "Automation #") {
-      return (
-        <input
-          type="text"
-          value={searchKeyword}
-          onChange={handleSearchValueChange}
-          placeholder="Enter Automation #"
-          style={{
-            marginLeft: "10px",
-            padding: "5px",
-            width: "300px"
-          }}
-        />
-      );
-    }
-
-    // ----------------------------------------------------------
-    // ARTIST
-    // ----------------------------------------------------------
-
-    if (searchType === "Artist") {
-      return (
-        <select
-          value={searchKeyword}
-          onChange={handleSearchValueChange}
-          style={{
-            marginLeft: "10px",
-            padding: "5px",
-            width: "300px",
-            height: "30px"
-          }}
-        >
-          <option value="">
-            -- Select Artist --
-          </option>
-
-          {artistList.map((artist) => (
-            <option
-              key={artist.ArtistID}
-              value={artist.ArtistID}
-            >
-              {artist.Name}
-            </option>
-          ))}
-        </select>
-      );
-    }
-
-    // ----------------------------------------------------------
-    // SPORT
-    // ----------------------------------------------------------
-
-    if (searchType === "Sport") {
-      return (
-        <select
-          value={searchKeyword}
-          onChange={handleSearchValueChange}
-          style={{
-            marginLeft: "10px",
-            padding: "5px",
-            width: "300px",
-            height: "30px"
-          }}
-        >
-          <option value="">
-            -- Select Sport --
-          </option>
-
-          {sportList.map((sport) => (
-            <option
-              key={sport.SportID}
-              value={sport.SportID}
-            >
-              {sport.Sport}
-            </option>
-          ))}
-        </select>
-      );
-    }
-
-    // ----------------------------------------------------------
-    // SEASON
-    // ----------------------------------------------------------
-
-    if (searchType === "Season") {
-      return (
-        <select
-          value={searchKeyword}
-          onChange={handleSearchValueChange}
-          style={{
-            marginLeft: "10px",
-            padding: "5px",
-            width: "300px",
-            height: "30px"
-          }}
-        >
-          <option value="">
-            -- Select Season --
-          </option>
-
-          {seasonList.map((season) => (
-            <option
-              key={season.SeasonID}
-              value={season.SeasonID}
-            >
-              {season.Season}
-            </option>
-          ))}
-        </select>
-      );
-    }
-
-    // ----------------------------------------------------------
-    // SUBJECT
-    // ----------------------------------------------------------
-
-    if (searchType === "Subject") {
-      return (
-        <select
-          value={searchKeyword}
-          onChange={handleSearchValueChange}
-          style={{
-            marginLeft: "10px",
-            padding: "5px",
-            width: "300px",
-            height: "30px"
-          }}
-        >
-          <option value="">
-            -- Select Subject --
-          </option>
-
-          {subjectList.map((subject) => (
-            <option
-              key={subject.SubID}
-              value={subject.SubID}
-            >
-              {subject.Subject}
-            </option>
-          ))}
-        </select>
-      );
-    }
-
-    // ----------------------------------------------------------
-    // DEFAULT
-    // ----------------------------------------------------------
-
-    return (
-      <input
-        type="text"
-        disabled
-        placeholder="Select a search type"
-        style={{
-          marginLeft: "10px",
-          padding: "5px",
-          width: "300px"
-        }}
-      />
-    );
-  };
-
-  // ============================================================
-  // PAGE
-  // ============================================================
 
   return (
     <div
       style={{
+        width: "100%",
         display: "flex",
         justifyContent: "center",
-        alignItems: "center",
-        height: "200px",
-        marginTop: "50px"
+        marginTop: "50px",
       }}
     >
-      <div>
+      <div
+        style={{
+          width: "500px",
+          maxWidth: "90%",
+        }}
+      >
+        <h2 style={{ textAlign: "center", marginBottom: "30px" }}>
+          Search Media
+        </h2>
+
         <form onSubmit={handleSubmit}>
-          <div>
+          {/* Search Type */}
+          <div style={{ marginBottom: "20px" }}>
             <label
-              htmlFor="search"
+              htmlFor="searchType"
               style={{
-                backgroundColor: "black",
-                color: "white",
-                fontSize: "20px",
-                padding: "40px 60px 70px",
-                margin: "10px 0px",
-                borderRadius: "15px"
+                display: "block",
+                marginBottom: "8px",
+                fontWeight: "bold",
               }}
             >
-              Search Media Entries by:
+              Search By:
+            </label>
 
-              {/* SEARCH TYPE */}
+            <select
+              id="searchType"
+              value={searchType}
+              onChange={handleSearchTypeChange}
+              className="form-control"
+              style={{ width: "100%" }}
+            >
+              <option value="">Select Search Type</option>
+              <option value="Bit ID">Bit ID</option>
+              <option value="Title">Title</option>
+              <option value="Keyword">Keyword</option>
+              <option value="Celebrity">Celebrity</option>
+              <option value="Artist">Artist</option>
+              <option value="Date">Date</option>
+              <option value="Automation #">Automation #</option>
+              <option value="Sport">Sport</option>
+              <option value="Season">Season</option>
+              <option value="Subject">Subject</option>
+            </select>
+          </div>
+
+          {/* Bit ID */}
+          {searchType === "Bit ID" && (
+            <div style={{ marginBottom: "20px" }}>
+              <label
+                htmlFor="bitID"
+                style={{
+                  display: "block",
+                  marginBottom: "8px",
+                  fontWeight: "bold",
+                }}
+              >
+                Bit ID:
+              </label>
+
+              <input
+                id="bitID"
+                type="number"
+                placeholder="Enter Bit ID"
+                value={searchBitID}
+                onChange={(e) => setSearchBitID(e.target.value)}
+                className="form-control"
+                style={{ width: "100%" }}
+              />
+            </div>
+          )}
+
+          {/* Title */}
+          {searchType === "Title" && (
+            <div style={{ marginBottom: "20px" }}>
+              <label
+                htmlFor="title"
+                style={{
+                  display: "block",
+                  marginBottom: "8px",
+                  fontWeight: "bold",
+                }}
+              >
+                Title:
+              </label>
+
+              <input
+                id="title"
+                type="text"
+                placeholder="Enter title"
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+                className="form-control"
+                style={{ width: "100%" }}
+              />
+            </div>
+          )}
+
+          {/* Keyword */}
+          {searchType === "Keyword" && (
+            <div style={{ marginBottom: "20px" }}>
+              <label
+                htmlFor="keyword"
+                style={{
+                  display: "block",
+                  marginBottom: "8px",
+                  fontWeight: "bold",
+                }}
+              >
+                Keyword:
+              </label>
+
+              <input
+                id="keyword"
+                type="text"
+                placeholder="Enter keyword"
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+                className="form-control"
+                style={{ width: "100%" }}
+              />
+            </div>
+          )}
+
+          {/* Celebrity */}
+          {searchType === "Celebrity" && (
+            <div style={{ marginBottom: "20px" }}>
+              <label
+                htmlFor="celebrity"
+                style={{
+                  display: "block",
+                  marginBottom: "8px",
+                  fontWeight: "bold",
+                }}
+              >
+                Celebrity:
+              </label>
 
               <select
-                value={searchType}
-                onChange={handleSearchTypeChange}
-                style={{
-                  marginLeft: "10px",
-                  width: "auto",
-                  height: "25px"
-                }}
-                size="1"
+                id="celebrity"
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+                className="form-control"
+                style={{ width: "100%" }}
               >
-                <option value="-">
-                  -
-                </option>
+                <option value="">Select Celebrity</option>
 
-                <option value="Bit ID">
-                  Bit ID
-                </option>
-
-                <option value="Keyword">
-                  Keyword
-                </option>
-
-                <option value="Celebrity">
-                  Celebrity
-                </option>
-
-                <option value="Artist">
-                  Artist
-                </option>
-
-                <option value="Date">
-                  Date
-                </option>
-
-                <option value="Automation #">
-                  Automation #
-                </option>
-
-                <option value="Sport">
-                  Sport
-                </option>
-
-                <option value="Season">
-                  Season
-                </option>
-
-                <option value="Subject">
-                  Subject
-                </option>
+                {celebrities.map((celebrity) => (
+                  <option
+                    key={celebrity.CelebID}
+                    value={celebrity.CelebID}
+                  >
+                    {celebrity.Name}
+                  </option>
+                ))}
               </select>
+            </div>
+          )}
 
-              {/* SEARCH INPUT */}
-
-              {renderSearchInput()}
-
-              {/* SEARCH BUTTON */}
-
-              <button
-                type="submit"
+          {/* Artist */}
+          {searchType === "Artist" && (
+            <div style={{ marginBottom: "20px" }}>
+              <label
+                htmlFor="artist"
                 style={{
-                  marginLeft: "5px",
-                  marginBottom: "5px",
-                  cursor: "pointer",
-                  padding: "5px 10px",
-                  backgroundColor: "#0d6efd",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "5px"
+                  display: "block",
+                  marginBottom: "8px",
+                  fontWeight: "bold",
                 }}
               >
-                Search
-              </button>
-            </label>
+                Artist:
+              </label>
+
+              <select
+                id="artist"
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+                className="form-control"
+                style={{ width: "100%" }}
+              >
+                <option value="">Select Artist</option>
+
+                {artists.map((artist) => (
+                  <option
+                    key={artist.ArtistID}
+                    value={artist.ArtistID}
+                  >
+                    {artist.Name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {/* Date */}
+          {searchType === "Date" && (
+            <div style={{ marginBottom: "20px" }}>
+              <label
+                htmlFor="date"
+                style={{
+                  display: "block",
+                  marginBottom: "8px",
+                  fontWeight: "bold",
+                }}
+              >
+                Date:
+              </label>
+
+              <input
+                id="date"
+                type="date"
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+                className="form-control"
+                style={{ width: "100%" }}
+              />
+            </div>
+          )}
+
+          {/* Automation Number */}
+          {searchType === "Automation #" && (
+            <div style={{ marginBottom: "20px" }}>
+              <label
+                htmlFor="automation"
+                style={{
+                  display: "block",
+                  marginBottom: "8px",
+                  fontWeight: "bold",
+                }}
+              >
+                Automation #:
+              </label>
+
+              <input
+                id="automation"
+                type="text"
+                placeholder="Enter Automation #"
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+                className="form-control"
+                style={{ width: "100%" }}
+              />
+            </div>
+          )}
+
+          {/* Sport */}
+          {searchType === "Sport" && (
+            <div style={{ marginBottom: "20px" }}>
+              <label
+                htmlFor="sport"
+                style={{
+                  display: "block",
+                  marginBottom: "8px",
+                  fontWeight: "bold",
+                }}
+              >
+                Sport:
+              </label>
+
+              <select
+                id="sport"
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+                className="form-control"
+                style={{ width: "100%" }}
+              >
+                <option value="">Select Sport</option>
+
+                {sports.map((sport) => (
+                  <option
+                    key={sport.SportID}
+                    value={sport.SportID}
+                  >
+                    {sport.Sport}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {/* Season */}
+          {searchType === "Season" && (
+            <div style={{ marginBottom: "20px" }}>
+              <label
+                htmlFor="season"
+                style={{
+                  display: "block",
+                  marginBottom: "8px",
+                  fontWeight: "bold",
+                }}
+              >
+                Season:
+              </label>
+
+              <select
+                id="season"
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+                className="form-control"
+                style={{ width: "100%" }}
+              >
+                <option value="">Select Season</option>
+
+                {seasons.map((season) => (
+                  <option
+                    key={season.SeasonID}
+                    value={season.SeasonID}
+                  >
+                    {season.Season}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {/* Subject */}
+          {searchType === "Subject" && (
+            <div style={{ marginBottom: "20px" }}>
+              <label
+                htmlFor="subject"
+                style={{
+                  display: "block",
+                  marginBottom: "8px",
+                  fontWeight: "bold",
+                }}
+              >
+                Subject:
+              </label>
+
+              <select
+                id="subject"
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+                className="form-control"
+                style={{ width: "100%" }}
+              >
+                <option value="">Select Subject</option>
+
+                {subjects.map((subject) => (
+                  <option
+                    key={subject.SubID}
+                    value={subject.SubID}
+                  >
+                    {subject.Subject}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {/* Search Button */}
+          <div style={{ textAlign: "center", marginTop: "25px" }}>
+            <button
+              type="submit"
+              className="btn btn-primary"
+            >
+              Search
+            </button>
           </div>
         </form>
       </div>
@@ -496,3 +453,4 @@ const SearchMedia = () => {
 
 export default SearchMedia;
 
+The next piece is the backend route—Title needs to be added there too, along with the new Celebrity/Sport/Season/Subject searches, for the searches to actually work.
