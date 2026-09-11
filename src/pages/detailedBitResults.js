@@ -1,616 +1,616 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Axios from "axios";
-import "./addBit.css";
+import "./DetailedBitResults.css";
 
 const API_URL =
-process.env.REACT_APP_API_URL ||
-"https://bobandtombackend-production-fb6d.up.railway.app";
+  process.env.REACT_APP_API_URL ||
+  "https://bobandtombackend-production-fb6d.up.railway.app";
 
 const DetailedBitResults = () => {
-const location = useLocation();
-const navigate = useNavigate();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-const searchBitID =
-location.state?.searchBitID ||
-location.state?.bitID ||
-null;
+  const searchBitID =
+    location.state?.searchBitID ||
+    location.state?.bitID ||
+    null;
 
-const [bit, setBit] = useState(null);
-const [loading, setLoading] = useState(true);
-const [errorMessage, setErrorMessage] = useState("");
+  const [bit, setBit] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
 
-useEffect(() => {
-if (!searchBitID) {
-console.error("No BitID provided.");
-setLoading(false);
-setErrorMessage("No Bit ID was provided.");
-return;
-}
-
-const loadBit = async () => {
-  try {
-    setLoading(true);
-    setErrorMessage("");
-
-    const url =
-      `${API_URL}/api/get/bit/full/${searchBitID}`;
-
-    console.log("Loading complete bit:", url);
-
-    const response = await Axios.get(url);
-
-    console.log(
-      "Complete bit data:",
-      response.data
-    );
-
-    setBit(response.data);
-
-  } catch (error) {
-
-    console.error(
-      "Error loading bit details:",
-      error
-    );
-
-    if (error.response) {
-
-      console.error(
-        "Backend response:",
-        error.response.data
-      );
-
-      setErrorMessage(
-        error.response.data?.error ||
-        "Unable to load bit information."
-      );
-
-    } else {
-
-      setErrorMessage(
-        "Unable to connect to the server."
-      );
-
+  useEffect(() => {
+    if (!searchBitID) {
+      console.error("No BitID provided.");
+      setLoading(false);
+      setErrorMessage("No Bit ID was provided.");
+      return;
     }
 
-  } finally {
+    const loadBit = async () => {
+      try {
+        setLoading(true);
+        setErrorMessage("");
 
-    setLoading(false);
+        const url = `${API_URL}/api/get/bit/full/${searchBitID}`;
 
+        console.log("Loading complete bit:", url);
+
+        const response = await Axios.get(url);
+
+        console.log("Complete bit data:", response.data);
+
+        setBit(response.data);
+      } catch (error) {
+        console.error("Error loading bit details:", error);
+
+        if (error.response) {
+          console.error(
+            "Backend response:",
+            error.response.data
+          );
+
+          setErrorMessage(
+            error.response.data?.error ||
+              "Unable to load bit information."
+          );
+        } else {
+          setErrorMessage(
+            "Unable to connect to the server."
+          );
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadBit();
+  }, [searchBitID]);
+
+  // ============================================================
+  // HELPERS
+  // ============================================================
+
+  const displayValue = (value) => {
+    if (
+      value === null ||
+      value === undefined ||
+      value === ""
+    ) {
+      return "None";
+    }
+
+    return value;
+  };
+
+  const displayList = (items) => {
+    if (!Array.isArray(items) || items.length === 0) {
+      return (
+        <span className="dbr-empty">
+          None
+        </span>
+      );
+    }
+
+    return (
+      <div className="dbr-tags">
+        {items.map((item, index) => (
+          <span
+            className="dbr-tag"
+            key={index}
+          >
+            {item}
+          </span>
+        ))}
+      </div>
+    );
+  };
+
+  // ============================================================
+  // LOADING
+  // ============================================================
+
+  if (loading) {
+    return (
+      <div className="dbr-page">
+        <div className="dbr-message-card">
+
+          <div className="dbr-spinner"></div>
+
+          <h2>
+            Loading bit information...
+          </h2>
+
+          <p>
+            Please wait while we retrieve the bit details.
+          </p>
+
+        </div>
+      </div>
+    );
   }
-};
 
-loadBit();
+  // ============================================================
+  // NO BIT ID
+  // ============================================================
 
-}, [searchBitID]);
+  if (!searchBitID) {
+    return (
+      <div className="dbr-page">
+        <div className="dbr-message-card">
 
-// ============================================================
-// LOADING
-// ============================================================
+          <div className="dbr-message-icon">
+            !
+          </div>
 
-if (loading) {
+          <h2>
+            No Bit ID was provided
+          </h2>
 
-return (
-  <div
-    style={{
-      padding: "40px",
-      textAlign: "center",
-      color: "white"
-    }}
-  >
-    <h2>
-      Loading bit information...
-    </h2>
-  </div>
-);
+          <p>
+            We couldn't determine which bit you wanted to view.
+          </p>
 
-}
+          <button
+            type="button"
+            className="dbr-button"
+            onClick={() => navigate(-1)}
+          >
+            ← Go Back
+          </button>
 
-// ============================================================
-// NO BIT ID
-// ============================================================
+        </div>
+      </div>
+    );
+  }
 
-if (!searchBitID) {
+  // ============================================================
+  // ERROR
+  // ============================================================
 
-return (
-  <div
-    style={{
-      padding: "40px",
-      color: "white",
-      textAlign: "center"
-    }}
-  >
+  if (!bit) {
+    return (
+      <div className="dbr-page">
+        <div className="dbr-message-card">
 
-    <h2>
-      No Bit ID was provided.
-    </h2>
+          <div className="dbr-message-icon">
+            !
+          </div>
 
-    <button
-      className="btn btn-secondary"
-      onClick={() => navigate(-1)}
-    >
-      Go Back
-    </button>
+          <h2>
+            {errorMessage ||
+              "Unable to load bit information."}
+          </h2>
 
-  </div>
-);
+          <p>
+            There was a problem retrieving this bit.
+          </p>
 
-}
+          <button
+            type="button"
+            className="dbr-button"
+            onClick={() => navigate(-1)}
+          >
+            ← Back to Results
+          </button>
 
-// ============================================================
-// ERROR
-// ============================================================
+        </div>
+      </div>
+    );
+  }
 
-if (!bit) {
+  // ============================================================
+  // PAGE
+  // ============================================================
 
-return (
-  <div
-    style={{
-      padding: "40px",
-      color: "white",
-      textAlign: "center"
-    }}
-  >
-
-    <h2>
-      {errorMessage ||
-        "Unable to load bit information."}
-    </h2>
-
-    <button
-      className="btn btn-secondary"
-      onClick={() => navigate(-1)}
-    >
-      Go Back
-    </button>
-
-  </div>
-);
-
-}
-
-// ============================================================
-// HELPER FOR LISTS
-// ============================================================
-
-const displayList = (items) => {
-
-if (!Array.isArray(items) || items.length === 0) {
   return (
-    <div>
-      None
+    <div className="dbr-page">
+
+      {/* ========================================================
+          PAGE HEADER
+      ======================================================== */}
+
+      <div className="dbr-header">
+
+        <div className="dbr-header-left">
+
+          <div className="dbr-eyebrow">
+            BIT DETAILS
+          </div>
+
+          <h1 className="dbr-title">
+            {displayValue(bit.title)}
+          </h1>
+
+          <div className="dbr-header-badges">
+
+            <span className="dbr-id-badge">
+              Bit ID: {displayValue(bit.bitID)}
+            </span>
+
+            {bit.type && (
+              <span className="dbr-type-badge">
+                {bit.type}
+              </span>
+            )}
+
+          </div>
+
+        </div>
+
+        <button
+          type="button"
+          className="dbr-back-button"
+          onClick={() => navigate(-1)}
+        >
+          ← Back to Results
+        </button>
+
+      </div>
+
+
+      {/* ========================================================
+          BASIC INFORMATION
+      ======================================================== */}
+
+      <section className="dbr-card">
+
+        <div className="dbr-card-header">
+
+          <div>
+            <h2>
+              Bit Information
+            </h2>
+
+            <p>
+              General information about this bit.
+            </p>
+          </div>
+
+        </div>
+
+        <div className="dbr-info-grid">
+
+          <div className="dbr-info-item">
+            <span className="dbr-label">
+              Bit ID
+            </span>
+
+            <span className="dbr-value dbr-monospace">
+              {displayValue(bit.bitID)}
+            </span>
+          </div>
+
+          <div className="dbr-info-item">
+            <span className="dbr-label">
+              Title
+            </span>
+
+            <span className="dbr-value">
+              {displayValue(bit.title)}
+            </span>
+          </div>
+
+          <div className="dbr-info-item">
+            <span className="dbr-label">
+              Type
+            </span>
+
+            <span className="dbr-value">
+              {displayValue(bit.type)}
+            </span>
+          </div>
+
+          <div className="dbr-info-item">
+            <span className="dbr-label">
+              Artist
+            </span>
+
+            <span className="dbr-value">
+              {displayValue(bit.artist)}
+            </span>
+          </div>
+
+          <div className="dbr-info-item">
+            <span className="dbr-label">
+              Air Date
+            </span>
+
+            <span className="dbr-value">
+              {displayValue(bit.date)}
+            </span>
+          </div>
+
+          <div className="dbr-info-item">
+            <span className="dbr-label">
+              Length
+            </span>
+
+            <span className="dbr-value">
+              {displayValue(bit.time)}
+            </span>
+          </div>
+
+          <div className="dbr-info-item">
+            <span className="dbr-label">
+              Automation Number
+            </span>
+
+            <span className="dbr-value">
+              {displayValue(bit.autoNum)}
+            </span>
+          </div>
+
+          <div className="dbr-info-item">
+            <span className="dbr-label">
+              Keywords
+            </span>
+
+            <span className="dbr-value">
+              {displayValue(bit.keywords)}
+            </span>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      {/* ========================================================
+          CLASSIFICATION
+      ======================================================== */}
+
+      <section className="dbr-card">
+
+        <div className="dbr-card-header">
+
+          <div>
+            <h2>
+              Classification
+            </h2>
+
+            <p>
+              Categories and other information associated
+              with this bit.
+            </p>
+          </div>
+
+        </div>
+
+
+        <div className="dbr-list-section">
+
+          <div className="dbr-list-label">
+            Categories
+          </div>
+
+          <div className="dbr-list-content">
+            {displayList(bit.categories)}
+          </div>
+
+        </div>
+
+
+        <div className="dbr-list-section">
+
+          <div className="dbr-list-label">
+            Subjects
+          </div>
+
+          <div className="dbr-list-content">
+            {displayList(bit.subjects)}
+          </div>
+
+        </div>
+
+
+        <div className="dbr-list-section">
+
+          <div className="dbr-list-label">
+            Celebrities
+          </div>
+
+          <div className="dbr-list-content">
+            {displayList(bit.celebrities)}
+          </div>
+
+        </div>
+
+
+        <div className="dbr-list-section">
+
+          <div className="dbr-list-label">
+            Sports
+          </div>
+
+          <div className="dbr-list-content">
+            {displayList(bit.sports)}
+          </div>
+
+        </div>
+
+
+        <div className="dbr-list-section">
+
+          <div className="dbr-list-label">
+            Seasons
+          </div>
+
+          <div className="dbr-list-content">
+            {displayList(bit.seasons)}
+          </div>
+
+        </div>
+
+      </section>
+
+
+      {/* ========================================================
+          HYPERLINKS
+      ======================================================== */}
+
+      <section className="dbr-card">
+
+        <div className="dbr-card-header">
+
+          <div>
+            <h2>
+              Hyperlinks
+            </h2>
+
+            <p>
+              External resources associated with this bit.
+            </p>
+          </div>
+
+        </div>
+
+        {Array.isArray(bit.hyperlinks) &&
+        bit.hyperlinks.length > 0 ? (
+
+          <div className="dbr-links">
+
+            {bit.hyperlinks.map((link, index) => (
+
+              <div
+                className="dbr-link-row"
+                key={index}
+              >
+
+                <div className="dbr-link-number">
+                  {index + 1}
+                </div>
+
+                <a
+                  href={link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="dbr-link"
+                >
+                  {link}
+                </a>
+
+                <span className="dbr-external-icon">
+                  ↗
+                </span>
+
+              </div>
+
+            ))}
+
+          </div>
+
+        ) : (
+
+          <div className="dbr-empty-section">
+            No hyperlinks associated with this bit.
+          </div>
+
+        )}
+
+      </section>
+
+
+      {/* ========================================================
+          ALBUMS
+      ======================================================== */}
+
+      <section className="dbr-card">
+
+        <div className="dbr-card-header">
+
+          <div>
+            <h2>
+              Albums
+            </h2>
+
+            <p>
+              Albums and tracks associated with this bit.
+            </p>
+          </div>
+
+        </div>
+
+        {Array.isArray(bit.albums) &&
+        bit.albums.length > 0 ? (
+
+          <div className="dbr-albums">
+
+            {bit.albums.map((item, index) => (
+
+              <div
+                className="dbr-album-row"
+                key={index}
+              >
+
+                <div className="dbr-album-number">
+                  {index + 1}
+                </div>
+
+                <div className="dbr-album-details">
+
+                  <div className="dbr-album-field">
+
+                    <span className="dbr-album-label">
+                      Album
+                    </span>
+
+                    <span className="dbr-album-value">
+                      {displayValue(item.album)}
+                    </span>
+
+                  </div>
+
+                  <div className="dbr-album-field">
+
+                    <span className="dbr-album-label">
+                      Track
+                    </span>
+
+                    <span className="dbr-album-value">
+                      {displayValue(item.track)}
+                    </span>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            ))}
+
+          </div>
+
+        ) : (
+
+          <div className="dbr-empty-section">
+            No albums associated with this bit.
+          </div>
+
+        )}
+
+      </section>
+
+
+      {/* ========================================================
+          BOTTOM BUTTON
+      ======================================================== */}
+
+      <div className="dbr-footer">
+
+        <button
+          type="button"
+          className="dbr-button"
+          onClick={() => navigate(-1)}
+        >
+          ← Back to Results
+        </button>
+
+      </div>
+
     </div>
   );
-}
-
-return items.map((item, index) => (
-  <div key={index}>
-    {item}
-  </div>
-));
-
-};
-
-return (
-
-<div className="add-bit-form">
-
-  <div className="form-columns">
-
-
-    {/* ======================================================
-        GENERAL INFORMATION
-    ====================================================== */}
-
-    <div className="card">
-
-      <h2>
-        Bit Information
-      </h2>
-
-
-      <div className="form-row">
-
-        <label>
-          Bit ID:
-        </label>
-
-        <input
-          type="text"
-          value={bit.bitID || ""}
-          readOnly
-        />
-
-      </div>
-
-
-      <div className="form-row">
-
-        <label>
-          Title:
-        </label>
-
-        <input
-          type="text"
-          value={bit.title || ""}
-          readOnly
-        />
-
-      </div>
-
-
-      <div className="form-row">
-
-        <label>
-          Type:
-        </label>
-
-        <input
-          type="text"
-          value={bit.type || ""}
-          readOnly
-        />
-
-      </div>
-
-
-      {/* ====================================================
-          ARTIST NAME
-      ==================================================== */}
-
-      <div className="form-row">
-
-        <label>
-          Artist:
-        </label>
-
-        <input
-          type="text"
-          value={bit.artist || "None"}
-          readOnly
-        />
-
-      </div>
-
-
-      {/* ====================================================
-          CATEGORIES
-      ==================================================== */}
-
-      <div className="form-row">
-
-        <label>
-          Categories:
-        </label>
-
-        <div
-          style={{
-            flex: 1,
-            padding: "8px",
-            border: "1px solid #ccc",
-            minHeight: "38px"
-          }}
-        >
-          {displayList(bit.categories)}
-        </div>
-
-      </div>
-
-
-      {/* ====================================================
-          AIR DATE
-      ==================================================== */}
-
-      <div className="form-row">
-
-        <label>
-          Air Date:
-        </label>
-
-        <input
-          type="text"
-          value={bit.date || ""}
-          readOnly
-        />
-
-      </div>
-
-
-      {/* ====================================================
-          LENGTH
-      ==================================================== */}
-
-      <div className="form-row">
-
-        <label>
-          Length:
-        </label>
-
-        <input
-          type="text"
-          value={bit.time || ""}
-          readOnly
-        />
-
-      </div>
-
-
-      {/* ====================================================
-          AUTOMATION NUMBER
-      ==================================================== */}
-
-      <div className="form-row">
-
-        <label>
-          Automation #:
-        </label>
-
-        <input
-          type="text"
-          value={bit.autoNum || ""}
-          readOnly
-        />
-
-      </div>
-
-
-      {/* ====================================================
-          SUBJECTS
-      ==================================================== */}
-
-      <div className="form-row">
-
-        <label>
-          Subjects:
-        </label>
-
-        <div
-          style={{
-            flex: 1,
-            padding: "8px",
-            border: "1px solid #ccc",
-            minHeight: "38px"
-          }}
-        >
-          {displayList(bit.subjects)}
-        </div>
-
-      </div>
-
-
-      {/* ====================================================
-          CELEBRITIES
-      ==================================================== */}
-
-      <div className="form-row">
-
-        <label>
-          Celebrities:
-        </label>
-
-        <div
-          style={{
-            flex: 1,
-            padding: "8px",
-            border: "1px solid #ccc",
-            minHeight: "38px"
-          }}
-        >
-          {displayList(bit.celebrities)}
-        </div>
-
-      </div>
-
-
-      {/* ====================================================
-          SPORTS
-      ==================================================== */}
-
-      <div className="form-row">
-
-        <label>
-          Sports:
-        </label>
-
-        <div
-          style={{
-            flex: 1,
-            padding: "8px",
-            border: "1px solid #ccc",
-            minHeight: "38px"
-          }}
-        >
-          {displayList(bit.sports)}
-        </div>
-
-      </div>
-
-
-      {/* ====================================================
-          SEASONS
-      ==================================================== */}
-
-      <div className="form-row">
-
-        <label>
-          Seasons:
-        </label>
-
-        <div
-          style={{
-            flex: 1,
-            padding: "8px",
-            border: "1px solid #ccc",
-            minHeight: "38px"
-          }}
-        >
-          {displayList(bit.seasons)}
-        </div>
-
-      </div>
-
-
-      {/* ====================================================
-          KEYWORDS
-      ==================================================== */}
-
-      <div className="form-row">
-
-        <label>
-          Keywords:
-        </label>
-
-        <input
-          type="text"
-          value={bit.keywords || "None"}
-          readOnly
-        />
-
-      </div>
-
-    </div>
-
-
-    {/* ======================================================
-        HYPERLINKS
-    ====================================================== */}
-
-    <div className="card">
-
-      <h2>
-        Hyperlinks
-      </h2>
-
-      {Array.isArray(bit.hyperlinks) &&
-      bit.hyperlinks.length > 0 ? (
-
-        bit.hyperlinks.map((link, index) => (
-
-          <div
-            className="form-row"
-            key={index}
-          >
-
-            <label>
-              Link {index + 1}:
-            </label>
-
-            <input
-              type="text"
-              value={link || ""}
-              readOnly
-            />
-
-          </div>
-
-        ))
-
-      ) : (
-
-        <p>
-          No hyperlinks.
-        </p>
-
-      )}
-
-    </div>
-
-
-    {/* ======================================================
-        ALBUMS
-    ====================================================== */}
-
-    <div className="card">
-
-      <h2>
-        Albums
-      </h2>
-
-      {Array.isArray(bit.albums) &&
-      bit.albums.length > 0 ? (
-
-        bit.albums.map((item, index) => (
-
-          <div
-            key={index}
-            style={{
-              marginBottom: "20px",
-              paddingBottom: "15px",
-              borderBottom:
-                index !== bit.albums.length - 1
-                  ? "1px solid #444"
-                  : "none"
-            }}
-          >
-
-            <div className="form-row">
-
-              <label>
-                Album {index + 1}:
-              </label>
-
-              <input
-                type="text"
-                value={item.album || ""}
-                readOnly
-              />
-
-            </div>
-
-
-            <div className="form-row">
-
-              <label>
-                Track:
-              </label>
-
-              <input
-                type="text"
-                value={item.track || ""}
-                readOnly
-              />
-
-            </div>
-
-          </div>
-
-        ))
-
-      ) : (
-
-        <p>
-          No albums.
-        </p>
-
-      )}
-
-    </div>
-
-
-  </div>
-
-
-  {/* ========================================================
-      BACK BUTTON
-  ======================================================== */}
-
-  <div className="form-actions">
-
-    <button
-      type="button"
-      className="btn btn-secondary"
-      onClick={() => navigate(-1)}
-    >
-      Back to Results
-    </button>
-
-  </div>
-
-</div>
-
-);
-
 };
 
 export default DetailedBitResults;
