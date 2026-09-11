@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Axios from "axios";
-import "./DetailedBitResults.css";
+import "./detailedBitResults.css";
 
 const API_URL =
   process.env.REACT_APP_API_URL ||
