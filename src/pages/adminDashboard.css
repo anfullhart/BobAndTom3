@@ -1,9 +1,14 @@
+/* ============================================================
+   ADMIN PAGE
+============================================================ */
+
 .admin-page {
   display: flex;
   justify-content: center;
   padding: 40px 20px;
   min-height: 100vh;
   box-sizing: border-box;
+
   --accent: #d7a33d;
   --accent-text: #16130a;
   --danger: #dc3545;
@@ -12,7 +17,7 @@
 
 .admin-dashboard {
   background-color: #1b1b1b;
-  color: white;
+  color: #fff;
   width: 100%;
   max-width: 1100px;
   padding: 30px;
@@ -20,6 +25,7 @@
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
   font-family: Arial, sans-serif;
 }
+
 
 /* ============================================================
    HEADER
@@ -41,6 +47,7 @@
   color: #9a9a9a;
   font-size: 0.9rem;
 }
+
 
 /* ============================================================
    FORM
@@ -86,8 +93,9 @@
   border-radius: 5px;
   border: 1px solid #3a3a3a;
   background-color: #2c2c2c;
-  color: white;
+  color: #fff;
   font-size: 0.9375rem;
+  box-sizing: border-box;
 }
 
 .user-form input:focus,
@@ -114,88 +122,151 @@
   padding-top: 20px;
 }
 
+
 /* ============================================================
-   BUTTONS
+   BASE BUTTON
+   IMPORTANT:
+   These rules intentionally use !important where Bootstrap
+   was overriding the action-button sizing.
 ============================================================ */
 
-.btn {
-  padding: 9px 16px;
-  border-radius: 5px;
-  border: 1px solid transparent;
+.admin-dashboard .btn {
+  display: inline-block !important;
+  box-sizing: border-box !important;
+  width: auto !important;
+  min-width: 0 !important;
+
+  border: 1px solid transparent !important;
+  border-radius: 5px !important;
+
   cursor: pointer;
-  font-size: 0.9375rem;
-  transition: 0.15s ease;
+  font-family: Arial, sans-serif !important;
+  font-size: 0.9375rem !important;
+  font-weight: 500 !important;
+  line-height: 1.2 !important;
+
+  padding: 9px 16px !important;
+  margin: 0 !important;
+
+  text-align: center;
+  text-decoration: none;
+
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    filter 0.15s ease;
 }
 
-.btn-primary {
-  background-color: var(--accent);
-  color: var(--accent-text);
-  font-weight: 600;
+
+/* ============================================================
+   PRIMARY BUTTON
+============================================================ */
+
+.admin-dashboard .btn-primary {
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
+  color: var(--accent-text) !important;
+  font-weight: 600 !important;
 }
 
-.btn-primary:hover:not(:disabled) {
+.admin-dashboard .btn-primary:hover:not(:disabled) {
   filter: brightness(1.08);
 }
 
-.btn-primary:disabled {
-  background-color: #3a3a3a;
-  color: #888;
+.admin-dashboard .btn-primary:disabled {
+  background-color: #3a3a3a !important;
+  border-color: #3a3a3a !important;
+  color: #888 !important;
   cursor: not-allowed;
 }
 
-.btn-ghost {
-  background-color: transparent;
-  border-color: #444;
-  color: #ccc;
+
+/* ============================================================
+   GHOST BUTTON
+============================================================ */
+
+.admin-dashboard .btn-ghost {
+  background-color: transparent !important;
+  border-color: #444 !important;
+  color: #ccc !important;
 }
 
-.btn-ghost:hover {
-  border-color: #888;
-  color: white;
+.admin-dashboard .btn-ghost:hover {
+  background-color: transparent !important;
+  border-color: #888 !important;
+  color: #fff !important;
 }
+
 
 /* ============================================================
    TABLE ACTION BUTTONS
 ============================================================ */
 
-.btn-sm {
-  padding: 5px 10px;
-  font-size: 0.75rem;
-  margin: 0;
-  line-height: 1.2;
+/*
+   These are deliberately very specific.
+
+   Bootstrap has its own .btn and .btn-sm rules and one of the
+   rules shown in DevTools was setting:
+
+       width: 100%;
+
+   That is why the buttons can initially appear huge.
+
+   The rules below guarantee that Edit/Delete stay compact.
+*/
+
+.admin-dashboard .user-table .actions-cell .btn.btn-sm {
+  display: inline-block !important;
+
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+
+  height: auto !important;
+
+  padding: 5px 10px !important;
+  margin: 0 4px 0 0 !important;
+
+  border-radius: 5px !important;
+
+  font-size: 0.75rem !important;
+  font-weight: 500 !important;
+  line-height: 1.2 !important;
+
+  vertical-align: middle !important;
 }
 
-.btn-outline {
-  background-color: transparent;
-  border-color: var(--accent);
-  color: var(--accent);
+
+/* EDIT */
+
+.admin-dashboard .user-table .actions-cell .btn-outline {
+  background-color: transparent !important;
+  border: 1px solid var(--accent) !important;
+  color: var(--accent) !important;
 }
 
-.btn-outline:hover {
-  background-color: var(--accent);
-  color: var(--accent-text);
+.admin-dashboard .user-table .actions-cell .btn-outline:hover {
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
+  color: var(--accent-text) !important;
 }
 
-.btn-danger {
-  background-color: var(--danger);
-  color: white;
+
+/* DELETE */
+
+.admin-dashboard .user-table .actions-cell .btn-danger {
+  background-color: var(--danger) !important;
+  border: 1px solid var(--danger) !important;
+  color: #fff !important;
 }
 
-.btn-danger:hover {
-  background-color: #a71d2a;
+.admin-dashboard .user-table .actions-cell .btn-danger:hover {
+  background-color: #a71d2a !important;
+  border-color: #a71d2a !important;
 }
 
-/* Keep action buttons compact and together */
-.actions-cell {
-  width: 1%;
-  white-space: nowrap;
-  text-align: right !important;
-}
-
-.actions-cell .btn {
-  display: inline-block;
-  width: auto;
-}
 
 /* ============================================================
    ALERT / STATES
@@ -217,6 +288,7 @@
   color: #9a9a9a;
   padding: 30px 0;
 }
+
 
 /* ============================================================
    TABLE
@@ -240,7 +312,7 @@
 .user-table td {
   padding: 12px 15px;
   text-align: left;
-  color: white;
+  color: #fff;
 }
 
 .user-table th {
@@ -262,6 +334,23 @@
   outline-offset: -1px;
 }
 
+
+/* ============================================================
+   ACTIONS CELL
+============================================================ */
+
+.admin-dashboard .user-table .actions-cell {
+  width: 1% !important;
+  white-space: nowrap !important;
+  text-align: right !important;
+}
+
+.admin-dashboard .user-table .actions-cell .btn {
+  display: inline-block !important;
+  width: auto !important;
+}
+
+
 /* ============================================================
    ROLE BADGES
 ============================================================ */
@@ -276,7 +365,7 @@
 
 .badge-owner {
   background-color: var(--danger);
-  color: white;
+  color: #fff;
 }
 
 .badge-admin {
@@ -288,6 +377,7 @@
   background-color: #555;
   color: #ddd;
 }
+
 
 /* ============================================================
    RESPONSIVE
@@ -320,7 +410,7 @@
     text-align: left !important;
   }
 
-  .actions-cell .btn {
-    margin-right: 4px;
+  .admin-dashboard .user-table .actions-cell .btn {
+    margin-right: 4px !important;
   }
 }
