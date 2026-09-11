@@ -3,27 +3,52 @@
 ============================================================ */
 
 .admin-page {
+  --admin-accent: #d7a33d;
+  --admin-accent-dark: #b88625;
+  --admin-accent-text: #16130a;
+
+  --admin-danger: #dc3545;
+  --admin-danger-dark: #b02a37;
+
+  --admin-bg: #1b1b1b;
+  --admin-surface: #222;
+  --admin-surface-light: #2a2a2a;
+  --admin-border: #3a3a3a;
+  --admin-text: #fff;
+  --admin-muted: #9a9a9a;
+
   display: flex;
   justify-content: center;
-  padding: 40px 20px;
-  min-height: 100vh;
-  box-sizing: border-box;
 
-  --accent: #d7a33d;
-  --accent-text: #16130a;
-  --danger: #dc3545;
-  --border-focus: #d7a33d;
+  width: 100%;
+  min-height: 100vh;
+
+  padding: 40px 20px;
+
+  box-sizing: border-box;
 }
 
-.admin-dashboard {
-  background-color: #1b1b1b;
-  color: #fff;
+
+/* ============================================================
+   MAIN DASHBOARD
+============================================================ */
+
+.admin-page .admin-dashboard {
   width: 100%;
   max-width: 1100px;
+
   padding: 30px;
+
+  background-color: var(--admin-bg);
+  color: var(--admin-text);
+
   border-radius: 15px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.45);
+
   font-family: Arial, sans-serif;
+
   box-sizing: border-box;
 }
 
@@ -32,20 +57,28 @@
    HEADER
 ============================================================ */
 
-.admin-page-header {
+.admin-page .admin-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
   margin-bottom: 24px;
-  text-align: center;
 }
 
-.admin-page-header h1 {
+.admin-page .admin-page-header h1 {
   margin: 0 0 6px;
+
   color: #f1f1f1;
+
   font-size: 1.5rem;
+  font-weight: 600;
 }
 
-.admin-page-header p {
+.admin-page .admin-page-header p {
   margin: 0;
-  color: #9a9a9a;
+
+  color: var(--admin-muted);
+
   font-size: 0.9rem;
 }
 
@@ -54,90 +87,206 @@
    USER FORM
 ============================================================ */
 
-.admin-user-form {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: 15px;
-  margin-bottom: 20px;
-  background-color: #1c1c1c;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-}
-
-.admin-field {
+.admin-page .admin-user-form {
   display: flex;
   flex-direction: column;
-  flex: 1 1 200px;
-  min-width: 180px;
-}
 
-.admin-field label {
-  font-size: 0.8125rem;
-  color: #b0b0b0;
-  margin-bottom: 6px;
-}
+  width: 100%;
 
-.admin-required {
-  color: var(--danger);
-}
+  margin-bottom: 20px;
+  padding: 20px;
 
-.admin-optional {
-  color: #777;
-  font-weight: normal;
-}
+  background-color: var(--admin-surface);
 
-.admin-user-form input,
-.admin-user-form select {
-  padding: 9px 10px;
-  border-radius: 5px;
-  border: 1px solid #3a3a3a;
-  background-color: #2c2c2c;
-  color: #fff;
-  font-size: 0.9375rem;
+  border: 1px solid #303030;
+  border-radius: 10px;
+
+  box-shadow:
+    0 0 10px rgba(255, 255, 255, 0.05);
+
   box-sizing: border-box;
 }
 
-.admin-user-form input:focus,
-.admin-user-form select:focus {
-  outline: none;
-  border-color: var(--border-focus);
+.admin-page .admin-user-form-editing {
+  border-color: var(--admin-accent);
+
+  box-shadow:
+    0 0 0 1px rgba(215, 163, 61, 0.15),
+    0 0 10px rgba(255, 255, 255, 0.05);
 }
 
-.admin-input-error {
-  border-color: var(--danger) !important;
+
+/* ============================================================
+   FORM HEADING
+============================================================ */
+
+.admin-page .admin-form-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  margin-bottom: 18px;
 }
 
-.admin-field-error {
-  margin-top: 4px;
+.admin-page .admin-form-heading h2 {
+  margin: 0;
+
+  color: #f1f1f1;
+
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.admin-page .admin-editing-label {
+  color: var(--admin-accent);
+
   font-size: 0.75rem;
-  color: var(--danger);
+  font-weight: 500;
+}
+
+
+/* ============================================================
+   FORM FIELDS
+============================================================ */
+
+.admin-page .admin-form-fields {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 15px;
+}
+
+.admin-page .admin-field {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+}
+
+.admin-page .admin-field label {
+  margin-bottom: 6px;
+
+  color: #b0b0b0;
+
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.admin-page .admin-required {
+  color: var(--admin-danger);
+}
+
+.admin-page .admin-optional {
+  color: #777;
+
+  font-weight: normal;
+}
+
+
+/* ============================================================
+   INPUTS
+============================================================ */
+
+.admin-page .admin-user-form input,
+.admin-page .admin-user-form select {
+  width: 100%;
+  min-width: 0;
+
+  padding: 9px 10px;
+
+  background-color: #2c2c2c;
+  color: #fff;
+
+  border: 1px solid var(--admin-border);
+  border-radius: 5px;
+
+  font-family: Arial, sans-serif;
+  font-size: 0.9375rem;
+
+  box-sizing: border-box;
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.admin-page .admin-user-form input::placeholder {
+  color: #777;
+}
+
+.admin-page .admin-user-form input:hover,
+.admin-page .admin-user-form select:hover {
+  border-color: #505050;
+}
+
+.admin-page .admin-user-form input:focus,
+.admin-page .admin-user-form select:focus {
+  outline: none;
+
+  border-color: var(--admin-accent);
+
+  box-shadow:
+    0 0 0 2px rgba(215, 163, 61, 0.12);
+}
+
+.admin-page .admin-input-error {
+  border-color: var(--admin-danger) !important;
+}
+
+.admin-page .admin-input-error:focus {
+  border-color: var(--admin-danger) !important;
+
+  box-shadow:
+    0 0 0 2px rgba(220, 53, 69, 0.12) !important;
+}
+
+.admin-page .admin-field-error {
+  margin-top: 5px;
+
+  color: #f18b94;
+
+  font-size: 0.75rem;
+}
+
+
+/* ============================================================
+   FORM ACTIONS
+============================================================ */
+
+.admin-page .admin-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  gap: 10px;
+
+  margin-top: 18px;
 }
 
 
 /* ============================================================
    FORM BUTTONS
+   These selectors deliberately use unique admin classes.
+   They do NOT depend on Bootstrap's .btn classes.
 ============================================================ */
 
-.admin-form-actions {
-  display: flex;
-  gap: 10px;
-  align-items: flex-end;
-  margin-left: auto;
-  padding-top: 20px;
-}
-
-.admin-button {
+.admin-page .admin-button {
   display: inline-flex !important;
   align-items: center;
   justify-content: center;
 
-  box-sizing: border-box !important;
+  flex: 0 0 auto !important;
 
   width: auto !important;
   min-width: 0 !important;
   max-width: max-content !important;
+
+  height: auto !important;
 
   padding: 9px 16px !important;
   margin: 0 !important;
@@ -146,14 +295,15 @@
   border-radius: 5px !important;
 
   font-family: Arial, sans-serif !important;
-  font-size: 0.9375rem !important;
-  font-weight: 500 !important;
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
   line-height: 1.2 !important;
+
+  white-space: nowrap !important;
 
   cursor: pointer;
 
-  text-align: center;
-  text-decoration: none;
+  box-sizing: border-box !important;
 
   transition:
     color 0.15s ease,
@@ -165,41 +315,51 @@
 
 
 /* ============================================================
-   PRIMARY BUTTON
+   PRIMARY FORM BUTTON
 ============================================================ */
 
-.admin-button-primary {
-  background-color: var(--accent) !important;
-  border-color: var(--accent) !important;
-  color: var(--accent-text) !important;
-  font-weight: 600 !important;
+.admin-page .admin-button-primary {
+  background-color: var(--admin-accent) !important;
+  border-color: var(--admin-accent) !important;
+
+  color: var(--admin-accent-text) !important;
 }
 
-.admin-button-primary:hover:not(:disabled) {
-  filter: brightness(1.08);
+.admin-page .admin-button-primary:hover:not(:disabled) {
+  background-color: #e2b04c !important;
+  border-color: #e2b04c !important;
 }
 
-.admin-button-primary:disabled {
+.admin-page .admin-button-primary:active:not(:disabled) {
+  background-color: var(--admin-accent-dark) !important;
+  border-color: var(--admin-accent-dark) !important;
+}
+
+.admin-page .admin-button-primary:disabled {
   background-color: #3a3a3a !important;
   border-color: #3a3a3a !important;
+
   color: #888 !important;
+
   cursor: not-allowed;
 }
 
 
 /* ============================================================
-   CANCEL BUTTON
+   SECONDARY / CANCEL BUTTON
 ============================================================ */
 
-.admin-button-cancel {
+.admin-page .admin-button-secondary {
   background-color: transparent !important;
-  border-color: #444 !important;
+  border-color: #4a4a4a !important;
+
   color: #ccc !important;
 }
 
-.admin-button-cancel:hover {
-  background-color: #2a2a2a !important;
-  border-color: #888 !important;
+.admin-page .admin-button-secondary:hover:not(:disabled) {
+  background-color: #2d2d2d !important;
+  border-color: #666 !important;
+
   color: #fff !important;
 }
 
@@ -208,14 +368,82 @@
    ALERT
 ============================================================ */
 
-.admin-alert {
-  background-color: rgba(220, 53, 69, 0.15);
-  border: 1px solid var(--danger);
-  color: #f5b5bb;
-  padding: 12px 16px;
-  border-radius: 8px;
+.admin-page .admin-alert {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
   margin-bottom: 20px;
-  font-size: 0.9rem;
+  padding: 11px 14px;
+
+  background-color: rgba(220, 53, 69, 0.12);
+
+  border: 1px solid rgba(220, 53, 69, 0.6);
+  border-radius: 8px;
+
+  color: #f5b5bb;
+
+  font-size: 0.875rem;
+
+  box-sizing: border-box;
+}
+
+.admin-page .admin-alert-close {
+  flex: 0 0 auto;
+
+  padding: 0;
+
+  background: transparent;
+  border: 0;
+
+  color: #f5b5bb;
+
+  font-size: 1.25rem;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+.admin-page .admin-alert-close:hover {
+  color: #fff;
+}
+
+
+/* ============================================================
+   USERS SECTION
+============================================================ */
+
+.admin-page .admin-users-section {
+  width: 100%;
+}
+
+.admin-page .admin-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 12px;
+}
+
+.admin-page .admin-section-header h2 {
+  display: inline;
+
+  margin: 0;
+
+  color: #f1f1f1;
+
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.admin-page .admin-user-count {
+  margin-left: 8px;
+
+  color: #777;
+
+  font-size: 0.75rem;
 }
 
 
@@ -223,20 +451,60 @@
    TABLE WRAPPER
 ============================================================ */
 
-.admin-table-wrap {
+.admin-page .admin-table-wrap {
+  width: 100%;
+
   overflow-x: auto;
+
+  border: 1px solid #303030;
+  border-radius: 10px;
+
+  box-sizing: border-box;
 }
 
 
 /* ============================================================
-   TABLE STATES
+   LOADING / EMPTY STATES
 ============================================================ */
 
-.admin-loading,
-.admin-empty {
+.admin-page .admin-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  min-height: 130px;
+
+  color: var(--admin-muted);
+
+  font-size: 0.875rem;
+
   text-align: center;
-  color: #9a9a9a;
-  padding: 30px 0;
+}
+
+.admin-page .admin-empty-title {
+  color: #ddd;
+
+  font-weight: 600;
+}
+
+.admin-page .admin-spinner {
+  width: 22px;
+  height: 22px;
+
+  border: 2px solid #444;
+  border-top-color: var(--admin-accent);
+  border-radius: 50%;
+
+  animation: admin-spin 0.8s linear infinite;
+}
+
+@keyframes admin-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 
@@ -244,60 +512,172 @@
    USERS TABLE
 ============================================================ */
 
-.admin-user-table {
+.admin-page .admin-user-table {
   width: 100%;
+
   border-collapse: collapse;
+
   background-color: #1c1c1c;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+
   table-layout: auto;
 }
 
-.admin-user-table th,
-.admin-user-table td {
+.admin-page .admin-user-table th,
+.admin-page .admin-user-table td {
   padding: 12px 15px;
-  text-align: left;
+
   color: #fff;
+
+  text-align: left;
+
+  box-sizing: border-box;
 }
 
-.admin-user-table th {
+.admin-page .admin-user-table th {
   background-color: #333;
-  font-size: 0.8125rem;
+
   color: #ccc;
+
+  font-size: 0.8125rem;
+  font-weight: 600;
+
+  white-space: nowrap;
 }
 
-.admin-user-table tbody tr:nth-child(even) {
-  background-color: #2a2a2a;
+.admin-page .admin-user-table td {
+  font-size: 0.875rem;
+
+  border-top: 1px solid #303030;
 }
 
-.admin-user-table tbody tr:hover {
-  background-color: #3a3a3a;
+.admin-page .admin-user-table tbody tr:nth-child(even) {
+  background-color: #242424;
 }
 
-.admin-row-editing {
-  outline: 1px solid var(--accent);
-  outline-offset: -1px;
+.admin-page .admin-user-table tbody tr:hover {
+  background-color: #303030;
 }
 
 
 /* ============================================================
-   ACTIONS CELL
+   ID / USERNAME
+============================================================ */
+
+.admin-page .admin-id-column,
+.admin-page .admin-id-cell {
+  width: 70px;
+
+  color: #888 !important;
+}
+
+.admin-page .admin-username-cell {
+  font-weight: 500;
+}
+
+
+/* ============================================================
+   EDITING ROW
+============================================================ */
+
+.admin-page .admin-row-editing {
+  background-color: rgba(215, 163, 61, 0.08) !important;
+
+  box-shadow:
+    inset 3px 0 0 var(--admin-accent);
+}
+
+
+/* ============================================================
+   ROLE BADGES
+============================================================ */
+
+.admin-page .admin-role-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 4px 10px;
+
+  border-radius: 999px;
+
+  font-size: 0.72rem;
+  font-weight: 600;
+
+  line-height: 1;
+  text-transform: capitalize;
+
+  white-space: nowrap;
+}
+
+.admin-page .admin-role-owner {
+  background-color: rgba(220, 53, 69, 0.18);
+
+  color: #ff858f;
+
+  border: 1px solid rgba(220, 53, 69, 0.4);
+}
+
+.admin-page .admin-role-admin {
+  background-color: rgba(215, 163, 61, 0.18);
+
+  color: #e6b957;
+
+  border: 1px solid rgba(215, 163, 61, 0.4);
+}
+
+.admin-page .admin-role-user {
+  background-color: #3a3a3a;
+
+  color: #ccc;
+
+  border: 1px solid #4a4a4a;
+}
+
+
+/* ============================================================
+   ACTIONS COLUMN
 ============================================================ */
 
 /*
    IMPORTANT:
-   These selectors specifically target the buttons used by
-   AdminDashboard.jsx.
+   The buttons below intentionally use:
+   
+       width: auto
+       flex: 0 0 auto
+       max-width: max-content
 
-   The !important rules prevent Bootstrap or other global
-   button styles from changing them to width: 100%.
+   This prevents global/Bootstrap button rules from making
+   Edit/Delete stretch across the entire table cell.
 */
 
-.admin-dashboard .admin-actions-cell {
-  width: 1% !important;
-  white-space: nowrap !important;
+.admin-page .admin-actions-header {
+  width: 1%;
+
   text-align: right !important;
+}
+
+.admin-page .admin-actions-cell {
+  width: 1% !important;
+
+  padding-left: 15px !important;
+  padding-right: 15px !important;
+
+  text-align: right !important;
+
+  white-space: nowrap !important;
+}
+
+.admin-page .admin-action-buttons {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 6px;
+
+  width: auto !important;
+  max-width: max-content !important;
+
+  white-space: nowrap !important;
 }
 
 
@@ -305,12 +685,12 @@
    EDIT / DELETE BUTTONS
 ============================================================ */
 
-.admin-dashboard .admin-actions-cell .admin-action-button {
+.admin-page .admin-action-button {
   display: inline-flex !important;
   align-items: center;
   justify-content: center;
 
-  box-sizing: border-box !important;
+  flex: 0 0 auto !important;
 
   width: auto !important;
   min-width: 0 !important;
@@ -319,18 +699,32 @@
   height: auto !important;
 
   padding: 5px 10px !important;
-  margin: 0 4px 0 0 !important;
+  margin: 0 !important;
 
   border-radius: 5px !important;
 
   font-family: Arial, sans-serif !important;
   font-size: 0.75rem !important;
-  font-weight: 500 !important;
+  font-weight: 600 !important;
   line-height: 1.2 !important;
 
-  vertical-align: middle !important;
+  white-space: nowrap !important;
+
+  box-sizing: border-box !important;
 
   cursor: pointer;
+
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.admin-page .admin-action-button:disabled {
+  opacity: 0.55;
+
+  cursor: not-allowed;
 }
 
 
@@ -338,16 +732,21 @@
    EDIT BUTTON
 ============================================================ */
 
-.admin-dashboard .admin-actions-cell .admin-edit-button {
+.admin-page .admin-edit-button {
   background-color: transparent !important;
-  border: 1px solid var(--accent) !important;
-  color: var(--accent) !important;
+
+  border: 1px solid var(--admin-accent) !important;
+
+  color: var(--admin-accent) !important;
 }
 
-.admin-dashboard .admin-actions-cell .admin-edit-button:hover {
-  background-color: var(--accent) !important;
-  border-color: var(--accent) !important;
-  color: var(--accent-text) !important;
+.admin-page .admin-edit-button:hover:not(:disabled) {
+  background-color: var(--admin-accent) !important;
+
+  color: var(--admin-accent-text) !important;
+
+  box-shadow:
+    0 2px 6px rgba(215, 163, 61, 0.2);
 }
 
 
@@ -355,43 +754,21 @@
    DELETE BUTTON
 ============================================================ */
 
-.admin-dashboard .admin-actions-cell .admin-delete-button {
-  background-color: var(--danger) !important;
-  border: 1px solid var(--danger) !important;
+.admin-page .admin-delete-button {
+  background-color: var(--admin-danger) !important;
+
+  border: 1px solid var(--admin-danger) !important;
+
   color: #fff !important;
 }
 
-.admin-dashboard .admin-actions-cell .admin-delete-button:hover {
-  background-color: #a71d2a !important;
-  border-color: #a71d2a !important;
-}
+.admin-page .admin-delete-button:hover:not(:disabled) {
+  background-color: var(--admin-danger-dark) !important;
 
+  border-color: var(--admin-danger-dark) !important;
 
-/* ============================================================
-   ROLE BADGES
-============================================================ */
-
-.admin-role-badge {
-  display: inline-block;
-  padding: 3px 10px;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-
-.admin-role-owner {
-  background-color: var(--danger);
-  color: #fff;
-}
-
-.admin-role-admin {
-  background-color: var(--accent);
-  color: var(--accent-text);
-}
-
-.admin-role-user {
-  background-color: #555;
-  color: #ddd;
+  box-shadow:
+    0 2px 6px rgba(220, 53, 69, 0.2);
 }
 
 
@@ -399,37 +776,61 @@
    RESPONSIVE
 ============================================================ */
 
+@media (max-width: 850px) {
+  .admin-page .admin-form-fields {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+
 @media (max-width: 640px) {
   .admin-page {
     padding: 20px 10px;
   }
 
-  .admin-dashboard {
+  .admin-page .admin-dashboard {
     padding: 20px 15px;
+    border-radius: 10px;
   }
 
-  .admin-user-form {
+  .admin-page .admin-page-header {
+    margin-bottom: 20px;
+  }
+
+  .admin-page .admin-page-header h1 {
+    font-size: 1.3rem;
+  }
+
+  .admin-page .admin-form-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-page .admin-form-heading {
+    align-items: flex-start;
     flex-direction: column;
+    gap: 5px;
   }
 
-  .admin-field {
-    width: 100%;
-    min-width: 0;
+  .admin-page .admin-form-actions {
+    justify-content: stretch;
   }
 
-  .admin-form-actions {
-    margin-left: 0;
-    width: 100%;
-    justify-content: flex-end;
+  .admin-page .admin-form-actions .admin-button {
+    flex: 1 1 0 !important;
+    max-width: none !important;
   }
 
-  .admin-actions-cell {
+  .admin-page .admin-actions-cell {
     text-align: left !important;
   }
 
-  .admin-dashboard
-    .admin-actions-cell
-    .admin-action-button {
-    margin-right: 4px !important;
+  .admin-page .admin-action-buttons {
+    justify-content: flex-start;
+  }
+
+  .admin-page .admin-user-table th,
+  .admin-page .admin-user-table td {
+    padding: 10px 12px;
   }
 }
