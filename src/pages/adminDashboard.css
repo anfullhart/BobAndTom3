@@ -24,6 +24,7 @@
   border-radius: 15px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
   font-family: Arial, sans-serif;
+  box-sizing: border-box;
 }
 
 
@@ -31,18 +32,18 @@
    HEADER
 ============================================================ */
 
-.page-header {
+.admin-page-header {
   margin-bottom: 24px;
   text-align: center;
 }
 
-.page-header h1 {
+.admin-page-header h1 {
   margin: 0 0 6px;
   color: #f1f1f1;
   font-size: 1.5rem;
 }
 
-.page-header p {
+.admin-page-header p {
   margin: 0;
   color: #9a9a9a;
   font-size: 0.9rem;
@@ -50,10 +51,10 @@
 
 
 /* ============================================================
-   FORM
+   USER FORM
 ============================================================ */
 
-.user-form {
+.admin-user-form {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
@@ -65,30 +66,30 @@
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
 }
 
-.field {
+.admin-field {
   display: flex;
   flex-direction: column;
   flex: 1 1 200px;
   min-width: 180px;
 }
 
-.field label {
+.admin-field label {
   font-size: 0.8125rem;
   color: #b0b0b0;
   margin-bottom: 6px;
 }
 
-.required {
+.admin-required {
   color: var(--danger);
 }
 
-.optional {
+.admin-optional {
   color: #777;
   font-weight: normal;
 }
 
-.user-form input,
-.user-form select {
+.admin-user-form input,
+.admin-user-form select {
   padding: 9px 10px;
   border-radius: 5px;
   border: 1px solid #3a3a3a;
@@ -98,23 +99,28 @@
   box-sizing: border-box;
 }
 
-.user-form input:focus,
-.user-form select:focus {
+.admin-user-form input:focus,
+.admin-user-form select:focus {
   outline: none;
   border-color: var(--border-focus);
 }
 
-.input-error {
+.admin-input-error {
   border-color: var(--danger) !important;
 }
 
-.field-error {
+.admin-field-error {
   margin-top: 4px;
   font-size: 0.75rem;
   color: var(--danger);
 }
 
-.form-actions {
+
+/* ============================================================
+   FORM BUTTONS
+============================================================ */
+
+.admin-form-actions {
   display: flex;
   gap: 10px;
   align-items: flex-end;
@@ -122,31 +128,29 @@
   padding-top: 20px;
 }
 
+.admin-button {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
 
-/* ============================================================
-   BASE BUTTON
-   IMPORTANT:
-   These rules intentionally use !important where Bootstrap
-   was overriding the action-button sizing.
-============================================================ */
-
-.admin-dashboard .btn {
-  display: inline-block !important;
   box-sizing: border-box !important;
+
   width: auto !important;
   min-width: 0 !important;
+  max-width: max-content !important;
+
+  padding: 9px 16px !important;
+  margin: 0 !important;
 
   border: 1px solid transparent !important;
   border-radius: 5px !important;
 
-  cursor: pointer;
   font-family: Arial, sans-serif !important;
   font-size: 0.9375rem !important;
   font-weight: 500 !important;
   line-height: 1.2 !important;
 
-  padding: 9px 16px !important;
-  margin: 0 !important;
+  cursor: pointer;
 
   text-align: center;
   text-decoration: none;
@@ -164,18 +168,18 @@
    PRIMARY BUTTON
 ============================================================ */
 
-.admin-dashboard .btn-primary {
+.admin-button-primary {
   background-color: var(--accent) !important;
   border-color: var(--accent) !important;
   color: var(--accent-text) !important;
   font-weight: 600 !important;
 }
 
-.admin-dashboard .btn-primary:hover:not(:disabled) {
+.admin-button-primary:hover:not(:disabled) {
   filter: brightness(1.08);
 }
 
-.admin-dashboard .btn-primary:disabled {
+.admin-button-primary:disabled {
   background-color: #3a3a3a !important;
   border-color: #3a3a3a !important;
   color: #888 !important;
@@ -184,95 +188,27 @@
 
 
 /* ============================================================
-   GHOST BUTTON
+   CANCEL BUTTON
 ============================================================ */
 
-.admin-dashboard .btn-ghost {
+.admin-button-cancel {
   background-color: transparent !important;
   border-color: #444 !important;
   color: #ccc !important;
 }
 
-.admin-dashboard .btn-ghost:hover {
-  background-color: transparent !important;
+.admin-button-cancel:hover {
+  background-color: #2a2a2a !important;
   border-color: #888 !important;
   color: #fff !important;
 }
 
 
 /* ============================================================
-   TABLE ACTION BUTTONS
+   ALERT
 ============================================================ */
 
-/*
-   These are deliberately very specific.
-
-   Bootstrap has its own .btn and .btn-sm rules and one of the
-   rules shown in DevTools was setting:
-
-       width: 100%;
-
-   That is why the buttons can initially appear huge.
-
-   The rules below guarantee that Edit/Delete stay compact.
-*/
-
-.admin-dashboard .user-table .actions-cell .btn.btn-sm {
-  display: inline-block !important;
-
-  width: auto !important;
-  min-width: 0 !important;
-  max-width: none !important;
-
-  height: auto !important;
-
-  padding: 5px 10px !important;
-  margin: 0 4px 0 0 !important;
-
-  border-radius: 5px !important;
-
-  font-size: 0.75rem !important;
-  font-weight: 500 !important;
-  line-height: 1.2 !important;
-
-  vertical-align: middle !important;
-}
-
-
-/* EDIT */
-
-.admin-dashboard .user-table .actions-cell .btn-outline {
-  background-color: transparent !important;
-  border: 1px solid var(--accent) !important;
-  color: var(--accent) !important;
-}
-
-.admin-dashboard .user-table .actions-cell .btn-outline:hover {
-  background-color: var(--accent) !important;
-  border-color: var(--accent) !important;
-  color: var(--accent-text) !important;
-}
-
-
-/* DELETE */
-
-.admin-dashboard .user-table .actions-cell .btn-danger {
-  background-color: var(--danger) !important;
-  border: 1px solid var(--danger) !important;
-  color: #fff !important;
-}
-
-.admin-dashboard .user-table .actions-cell .btn-danger:hover {
-  background-color: #a71d2a !important;
-  border-color: #a71d2a !important;
-}
-
-
-/* ============================================================
-   ALERT / STATES
-============================================================ */
-
-.alert-banner {
+.admin-alert {
   background-color: rgba(220, 53, 69, 0.15);
   border: 1px solid var(--danger);
   color: #f5b5bb;
@@ -282,8 +218,22 @@
   font-size: 0.9rem;
 }
 
-.loading-state,
-.empty-state {
+
+/* ============================================================
+   TABLE WRAPPER
+============================================================ */
+
+.admin-table-wrap {
+  overflow-x: auto;
+}
+
+
+/* ============================================================
+   TABLE STATES
+============================================================ */
+
+.admin-loading,
+.admin-empty {
   text-align: center;
   color: #9a9a9a;
   padding: 30px 0;
@@ -291,14 +241,10 @@
 
 
 /* ============================================================
-   TABLE
+   USERS TABLE
 ============================================================ */
 
-.table-wrap {
-  overflow-x: auto;
-}
-
-.user-table {
+.admin-user-table {
   width: 100%;
   border-collapse: collapse;
   background-color: #1c1c1c;
@@ -308,28 +254,28 @@
   table-layout: auto;
 }
 
-.user-table th,
-.user-table td {
+.admin-user-table th,
+.admin-user-table td {
   padding: 12px 15px;
   text-align: left;
   color: #fff;
 }
 
-.user-table th {
+.admin-user-table th {
   background-color: #333;
   font-size: 0.8125rem;
   color: #ccc;
 }
 
-.user-table tr:nth-child(even) {
+.admin-user-table tbody tr:nth-child(even) {
   background-color: #2a2a2a;
 }
 
-.user-table tr:hover {
+.admin-user-table tbody tr:hover {
   background-color: #3a3a3a;
 }
 
-.row-editing {
+.admin-row-editing {
   outline: 1px solid var(--accent);
   outline-offset: -1px;
 }
@@ -339,15 +285,85 @@
    ACTIONS CELL
 ============================================================ */
 
-.admin-dashboard .user-table .actions-cell {
+/*
+   IMPORTANT:
+   These selectors specifically target the buttons used by
+   AdminDashboard.jsx.
+
+   The !important rules prevent Bootstrap or other global
+   button styles from changing them to width: 100%.
+*/
+
+.admin-dashboard .admin-actions-cell {
   width: 1% !important;
   white-space: nowrap !important;
   text-align: right !important;
 }
 
-.admin-dashboard .user-table .actions-cell .btn {
-  display: inline-block !important;
+
+/* ============================================================
+   EDIT / DELETE BUTTONS
+============================================================ */
+
+.admin-dashboard .admin-actions-cell .admin-action-button {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+
+  box-sizing: border-box !important;
+
   width: auto !important;
+  min-width: 0 !important;
+  max-width: max-content !important;
+
+  height: auto !important;
+
+  padding: 5px 10px !important;
+  margin: 0 4px 0 0 !important;
+
+  border-radius: 5px !important;
+
+  font-family: Arial, sans-serif !important;
+  font-size: 0.75rem !important;
+  font-weight: 500 !important;
+  line-height: 1.2 !important;
+
+  vertical-align: middle !important;
+
+  cursor: pointer;
+}
+
+
+/* ============================================================
+   EDIT BUTTON
+============================================================ */
+
+.admin-dashboard .admin-actions-cell .admin-edit-button {
+  background-color: transparent !important;
+  border: 1px solid var(--accent) !important;
+  color: var(--accent) !important;
+}
+
+.admin-dashboard .admin-actions-cell .admin-edit-button:hover {
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
+  color: var(--accent-text) !important;
+}
+
+
+/* ============================================================
+   DELETE BUTTON
+============================================================ */
+
+.admin-dashboard .admin-actions-cell .admin-delete-button {
+  background-color: var(--danger) !important;
+  border: 1px solid var(--danger) !important;
+  color: #fff !important;
+}
+
+.admin-dashboard .admin-actions-cell .admin-delete-button:hover {
+  background-color: #a71d2a !important;
+  border-color: #a71d2a !important;
 }
 
 
@@ -355,7 +371,7 @@
    ROLE BADGES
 ============================================================ */
 
-.badge {
+.admin-role-badge {
   display: inline-block;
   padding: 3px 10px;
   border-radius: 999px;
@@ -363,17 +379,17 @@
   font-weight: 600;
 }
 
-.badge-owner {
+.admin-role-owner {
   background-color: var(--danger);
   color: #fff;
 }
 
-.badge-admin {
+.admin-role-admin {
   background-color: var(--accent);
   color: var(--accent-text);
 }
 
-.badge-user {
+.admin-role-user {
   background-color: #555;
   color: #ddd;
 }
@@ -392,25 +408,28 @@
     padding: 20px 15px;
   }
 
-  .user-form {
+  .admin-user-form {
     flex-direction: column;
   }
 
-  .field {
+  .admin-field {
     width: 100%;
+    min-width: 0;
   }
 
-  .form-actions {
+  .admin-form-actions {
     margin-left: 0;
     width: 100%;
     justify-content: flex-end;
   }
 
-  .actions-cell {
+  .admin-actions-cell {
     text-align: left !important;
   }
 
-  .admin-dashboard .user-table .actions-cell .btn {
+  .admin-dashboard
+    .admin-actions-cell
+    .admin-action-button {
     margin-right: 4px !important;
   }
 }
