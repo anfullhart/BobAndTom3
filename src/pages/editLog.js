@@ -254,7 +254,7 @@ const EditLog = () => {
             </button>
 
             <button type="button" className="btn btn-primary" onClick={handleConfirmEdits}>
-              Confirm edits
+              Confirm
             </button>
           </div>
         </div>
