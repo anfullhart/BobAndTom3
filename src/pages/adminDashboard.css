@@ -670,16 +670,11 @@
 .admin-page .admin-action-buttons {
   display: inline-flex !important;
   align-items: center;
-  justify-content: flex-end;
-
-  gap: 6px;
+  gap: 4px;
 
   width: auto !important;
   max-width: max-content !important;
-
-  white-space: nowrap !important;
 }
-
 
 /* ============================================================
    EDIT / DELETE BUTTONS
@@ -690,35 +685,25 @@
   align-items: center;
   justify-content: center;
 
-  flex: 0 0 auto !important;
-
   width: auto !important;
   min-width: 0 !important;
   max-width: max-content !important;
+  height: 28px !important;
 
-  height: auto !important;
-
-  padding: 5px 10px !important;
+  padding: 3px 8px !important;
   margin: 0 !important;
 
-  border-radius: 5px !important;
+  border-radius: 4px !important;
 
   font-family: Arial, sans-serif !important;
-  font-size: 0.75rem !important;
+  font-size: 0.7rem !important;
   font-weight: 600 !important;
-  line-height: 1.2 !important;
+  line-height: 1 !important;
 
   white-space: nowrap !important;
-
   box-sizing: border-box !important;
 
   cursor: pointer;
-
-  transition:
-    color 0.15s ease,
-    background-color 0.15s ease,
-    border-color 0.15s ease,
-    box-shadow 0.15s ease;
 }
 
 .admin-page .admin-action-button:disabled {
