@@ -208,7 +208,7 @@ const AddToday = () => {
               onClick={submitRunSheet}
               disabled={submitting}
             >
-              {submitting ? "Saving…" : "Submit run sheet"}
+              {submitting ? "Saving…" : "Submit"}
             </button>
           </div>
         </div>
