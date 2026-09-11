@@ -63,34 +63,63 @@
 .field label {
   display: block;
   font-size: 0.8125rem;
-  color: var(--text-muted);
-  margin-bottom: 6px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 7px;
 }
 
 .date-field input {
-  max-width: 200px;
-}
+  width: 200px;
+  max-width: 100%;
 
-input[type="text"],
-input[type="date"],
-select {
-  width: 100%;
-  background: var(--surface-input);
-  border: 1px solid var(--border);
-  color: var(--text);
-  border-radius: 6px;
-  padding: 9px 11px;
+  background: #2a2b31;
+  color: #ffffff;
+
+  border: 1px solid #666a73;
+  border-radius: 7px;
+
+  padding: 10px 12px;
+
   font-size: 0.9375rem;
+  font-weight: 500;
+
+  box-sizing: border-box;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
-input::placeholder {
-  color: #6b6d74;
+/* Make the date picker stand out on hover */
+.date-field input:hover {
+  background: #303139;
+  border-color: #858994;
 }
 
-input:focus,
-select:focus {
+/* Strong gold focus state */
+.date-field input:focus {
   outline: none;
-  border-color: var(--border-focus);
+
+  background: #303139;
+
+  border-color: var(--accent);
+
+  box-shadow:
+    0 0 0 2px rgba(215, 163, 61, 0.18);
+}
+
+/* Calendar icon */
+.date-field input::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.85;
+  cursor: pointer;
+}
+
+.date-field input::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
 }
 
 /* ============================================================
@@ -226,13 +255,28 @@ select:focus {
   cursor: not-allowed;
 }
 
+/* ============================================================
+   CLEAR BUTTON
+============================================================ */
+
 .btn-ghost {
-  background: transparent;
-  border-color: var(--border);
-  color: var(--text-muted);
+  background: var(--danger);
+  border: 1px solid var(--danger);
+  color: #ffffff;
 }
 
 .btn-ghost:hover {
-  border-color: var(--danger);
-  color: var(--danger);
+  background: #c9363d;
+  border-color: #c9363d;
+  color: #ffffff;
+}
+
+.btn-ghost:active {
+  background: #b52f35;
+  border-color: #b52f35;
+}
+
+.btn-ghost:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(229, 72, 77, 0.25);
 }
