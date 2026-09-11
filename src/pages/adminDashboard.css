@@ -154,10 +154,15 @@
   color: white;
 }
 
+/* ============================================================
+   TABLE ACTION BUTTONS
+============================================================ */
+
 .btn-sm {
-  padding: 5px 12px;
-  font-size: 0.8125rem;
-  margin-right: 6px;
+  padding: 5px 10px;
+  font-size: 0.75rem;
+  margin: 0;
+  line-height: 1.2;
 }
 
 .btn-outline {
@@ -178,6 +183,18 @@
 
 .btn-danger:hover {
   background-color: #a71d2a;
+}
+
+/* Keep action buttons compact and together */
+.actions-cell {
+  width: 1%;
+  white-space: nowrap;
+  text-align: right !important;
+}
+
+.actions-cell .btn {
+  display: inline-block;
+  width: auto;
 }
 
 /* ============================================================
@@ -216,6 +233,7 @@
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+  table-layout: auto;
 }
 
 .user-table th,
@@ -242,10 +260,6 @@
 .row-editing {
   outline: 1px solid var(--accent);
   outline-offset: -1px;
-}
-
-.actions-cell {
-  white-space: nowrap;
 }
 
 /* ============================================================
@@ -280,6 +294,14 @@
 ============================================================ */
 
 @media (max-width: 640px) {
+  .admin-page {
+    padding: 20px 10px;
+  }
+
+  .admin-dashboard {
+    padding: 20px 15px;
+  }
+
   .user-form {
     flex-direction: column;
   }
@@ -292,5 +314,13 @@
     margin-left: 0;
     width: 100%;
     justify-content: flex-end;
+  }
+
+  .actions-cell {
+    text-align: left !important;
+  }
+
+  .actions-cell .btn {
+    margin-right: 4px;
   }
 }
