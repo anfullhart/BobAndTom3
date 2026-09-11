@@ -199,7 +199,7 @@ const AddToday = () => {
 
           <div className="run-sheet-actions-right">
             <button type="button" className="btn btn-ghost" onClick={clearRunSheet}>
-              Clear all
+              Clear
             </button>
 
             <button
