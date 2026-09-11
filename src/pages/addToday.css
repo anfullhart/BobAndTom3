@@ -260,23 +260,19 @@
 ============================================================ */
 
 .btn-ghost {
-  background: var(--danger);
-  border: 1px solid var(--danger);
-  color: #ffffff;
+  background: #e5484d !important;
+  border: 1px solid #e5484d !important;
+  color: #ffffff !important;
 }
 
 .btn-ghost:hover {
-  background: #c9363d;
-  border-color: #c9363d;
-  color: #ffffff;
+  background: #c9363d !important;
+  border-color: #c9363d !important;
+  color: #ffffff !important;
 }
 
 .btn-ghost:active {
-  background: #b52f35;
-  border-color: #b52f35;
-}
-
-.btn-ghost:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(229, 72, 77, 0.25);
+  background: #b52f35 !important;
+  border-color: #b52f35 !important;
+  color: #ffffff !important;
 }
