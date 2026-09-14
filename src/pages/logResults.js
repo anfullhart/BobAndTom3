@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import Axios from "axios";
+import "./LogResults.css";
 
 const API_URL =
   process.env.REACT_APP_API_URL ||
@@ -19,31 +20,31 @@ const LogResults = () => {
   const [sortOrder, setSortOrder] = useState("asc");
   const [role, setRole] = useState(null);
 
-  // Build display text based on the selected search type
-let searchSummary = "Showing all Run Sheets";
+  // Build display text based on selected search type
+  let searchSummary = "Showing all Run Sheets";
 
-switch (searchType) {
-  case "keyword":
-    searchSummary = `Keyword: ${searchKeyword}`;
-    break;
+  switch (searchType) {
+    case "keyword":
+      searchSummary = `Keyword: ${searchKeyword}`;
+      break;
 
-  case "artist":
-    searchSummary = `Artist: ${searchArtist}`;
-    break;
+    case "artist":
+      searchSummary = `Artist: ${searchArtist}`;
+      break;
 
-  case "date":
-    searchSummary = `Date: ${searchDate}`;
-    break;
+    case "date":
+      searchSummary = `Date: ${searchDate}`;
+      break;
 
-  case "id":
-    searchSummary = `Run Sheet ID: ${searchKeyword}`;
-    break;
+    case "id":
+      searchSummary = `Run Sheet ID: ${searchKeyword}`;
+      break;
 
-  default:
-    if (searchKeyword) searchSummary = `Keyword: ${searchKeyword}`;
-    else if (searchArtist) searchSummary = `Artist: ${searchArtist}`;
-    else if (searchDate) searchSummary = `Date: ${searchDate}`;
-}
+    default:
+      if (searchKeyword) searchSummary = `Keyword: ${searchKeyword}`;
+      else if (searchArtist) searchSummary = `Artist: ${searchArtist}`;
+      else if (searchDate) searchSummary = `Date: ${searchDate}`;
+  }
 
   // Get user role from localStorage
   useEffect(() => {
@@ -64,11 +65,14 @@ switch (searchType) {
     )
       .then((response) => {
         let sortedData = [...response.data];
+
         sortedData.sort((a, b) => {
           const dateA = new Date(a.RSDate);
           const dateB = new Date(b.RSDate);
+
           return order === "asc" ? dateA - dateB : dateB - dateA;
         });
+
         setLogList(sortedData);
       })
       .catch((err) => console.error(err));
@@ -76,6 +80,7 @@ switch (searchType) {
 
   const handleSortChange = (e) => {
     const newOrder = e.target.value;
+
     setSortOrder(newOrder);
     fetchLogs(newOrder);
   };
@@ -97,68 +102,85 @@ switch (searchType) {
   const sortedGroupKeys = Object.keys(groups).sort((a, b) => {
     const dateA = new Date(groups[a][0].RSDate);
     const dateB = new Date(groups[b][0].RSDate);
+
     return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
   });
 
   return (
-    <div style={{ padding: "20px", color: "#fff", fontFamily: "Arial, sans-serif" }}>
-              
-      {/* Sort Dropdown */}
-      <div style={{ marginBottom: "20px" }}>
-        <label style={{ marginRight: "10px", fontWeight: "bold" }}>Sort by Date:</label>
-        <select
-          value={sortOrder}
-          onChange={handleSortChange}
-          style={{ padding: "5px", borderRadius: "5px" }}
-        >
-          <option value="asc">Ascending</option>
-          <option value="desc">Descending</option>
-        </select>
+    <div className="log-results-page">
 
-          <p
-            style={{
-              marginTop: "10px",
-              marginBottom: 0,
-              fontSize: "18px",
-              color: "#ddd",
-            }}
-          >
+      {/* Page Header */}
+      <div className="log-results-header">
+        <div>
+          <h2 className="log-results-title">Run Sheet Results</h2>
+
+          <p className="search-summary">
             {searchSummary}
           </p>
+        </div>
+
+        {/* Compact Sort Control */}
+        <div className="sort-control">
+          <label htmlFor="sortOrder">Sort by date</label>
+
+          <select
+            id="sortOrder"
+            value={sortOrder}
+            onChange={handleSortChange}
+          >
+            <option value="asc">Oldest First</option>
+            <option value="desc">Newest First</option>
+          </select>
+        </div>
       </div>
 
-      {/* Log Groups */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-        {sortedGroupKeys.map((RS_ID) => {
-          const runSheet = groups[RS_ID][0]; // first record for date
-          return (
-            <div
-              key={RS_ID}
-              style={{
-                backgroundColor: "#1c1c1c",
-                borderRadius: "10px",
-                padding: "20px",
-                boxShadow: "0px 4px 8px rgba(0,0,0,0.3)"
-              }}
-            >
-              {/* Header */}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "15px" }}>
-                <h3>
-                  Run Sheet Date: {runSheet.RSDate} | ID: {RS_ID}
-                </h3>
+      {/* Result Count */}
+      {sortedGroupKeys.length > 0 && (
+        <div className="result-count">
+          {sortedGroupKeys.length} Run Sheet
+          {sortedGroupKeys.length !== 1 ? "s" : ""} found
+        </div>
+      )}
 
-                <div style={{ display: "flex", gap: "10px" }}>
-                  {/* View Details - available to all users */}
+      {/* No Results */}
+      {sortedGroupKeys.length === 0 && (
+        <div className="no-results">
+          <div className="no-results-icon">📋</div>
+          <h3>No Run Sheets Found</h3>
+          <p>
+            Try changing your search criteria or searching for something else.
+          </p>
+        </div>
+      )}
+
+      {/* Log Groups */}
+      <div className="log-groups">
+        {sortedGroupKeys.map((RS_ID) => {
+          const runSheet = groups[RS_ID][0];
+
+          return (
+            <div className="run-sheet-card" key={RS_ID}>
+
+              {/* Run Sheet Header */}
+              <div className="run-sheet-header">
+
+                <div className="run-sheet-info">
+                  <div className="run-sheet-date">
+                    {runSheet.RSDate}
+                  </div>
+
+                  <div className="run-sheet-id">
+                    Run Sheet #{RS_ID}
+                  </div>
+                </div>
+
+                <div className="run-sheet-actions">
+
+                  {/* Details - Available to Everyone */}
                   <Link
                     to="/detailedLogResults"
                     state={{ RS_ID: parseInt(RS_ID) }}
-                    style={{
-                      padding: "6px 10px",
-                      backgroundColor: "#00ff88",
-                      color: "#111",
-                      borderRadius: "5px",
-                      textDecoration: "none",
-                    }}
+                    className="action-button details-button"
                   >
                     Details
                   </Link>
@@ -168,16 +190,26 @@ switch (searchType) {
                     <>
                       <Link
                         to="/editLog"
-                        state={{ RS_ID: parseInt(RS_ID), searchDate, searchArtist, searchKeyword, searchType }}
-                        className="btn btn-warning"
+                        state={{
+                          RS_ID: parseInt(RS_ID),
+                          searchDate,
+                          searchArtist,
+                          searchKeyword,
+                          searchType,
+                        }}
+                        className="action-button edit-button"
                       >
                         Edit
                       </Link>
 
                       <button
-                        className="btn btn-danger"
+                        className="action-button delete-button"
                         onClick={() => {
-                          if (window.confirm("Delete record for Run Sheet ID " + RS_ID + "?")) {
+                          if (
+                            window.confirm(
+                              "Delete record for Run Sheet ID " + RS_ID + "?"
+                            )
+                          ) {
                             deleteLog(parseInt(RS_ID));
                           }
                         }}
@@ -189,33 +221,32 @@ switch (searchType) {
                 </div>
               </div>
 
-              {/* Column headers for clarity */}
-              <div style={{ display: "flex", fontWeight: "bold", marginBottom: "10px", padding: "0 10px" }}>
-                <div style={{ width: "20%" }}>Time</div>
-                <div style={{ width: "55%" }}>Description</div>
-                <div style={{ width: "25%" }}>Artist</div>
+              {/* Column Headers */}
+              <div className="record-header">
+                <div className="time-column">Time</div>
+                <div className="description-column">Description</div>
+                <div className="artist-column">Artist</div>
               </div>
 
               {/* Records */}
-              <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+              <div className="records">
                 {groups[RS_ID].map((record, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      backgroundColor: "#2a2a2a",
-                      padding: "10px",
-                      borderRadius: "5px",
-                      alignItems: "center"
-                    }}
-                  >
-                    <div style={{ width: "20%" }}>{record.bTime}</div>
-                    <div style={{ width: "55%" }}>{record.bitDesc}</div>
-                    <div style={{ width: "25%" }}>{record.Name}</div>
+                  <div className="record-row" key={index}>
+                    <div className="time-column record-time">
+                      {record.bTime}
+                    </div>
+
+                    <div className="description-column">
+                      {record.bitDesc}
+                    </div>
+
+                    <div className="artist-column record-artist">
+                      {record.Name}
+                    </div>
                   </div>
                 ))}
               </div>
+
             </div>
           );
         })}
