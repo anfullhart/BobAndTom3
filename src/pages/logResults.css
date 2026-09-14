@@ -4,9 +4,12 @@
   padding: 25px;
   color: #fff;
   font-family: Arial, sans-serif;
-  max-width: 1400px;
+
+  /* Center the content */
+  max-width: 1300px;
   margin: 0 auto;
 }
+
 
 
 /* Page Header */
@@ -80,9 +83,12 @@
 /* Result Count */
 
 .result-count {
+  width: 92%;
+  max-width: 1200px;
+  margin: 0 auto 15px auto;
+
   color: #888;
   font-size: 14px;
-  margin-bottom: 15px;
 }
 
 
@@ -92,12 +98,19 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-}
 
+  /* Make cards wider while keeping them centered */
+  width: 92%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
 
 /* Run Sheet Card */
 
 .run-sheet-card {
+  width: 100%;
+  box-sizing: border-box;
+
   background-color: #1c1c1c;
   border: 1px solid #2f2f2f;
   border-radius: 10px;
@@ -114,7 +127,6 @@
   border-color: #444;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
 }
-
 
 /* Run Sheet Header */
 
@@ -316,9 +328,18 @@
   }
 
   .log-results-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 25px;
+
+  width: 92%;
+  max-width: 1200px;
+  margin: 0 auto 20px auto;
+
+  padding-bottom: 18px;
+  border-bottom: 1px solid #333;
+}
 
   .sort-control {
     width: 100%;
