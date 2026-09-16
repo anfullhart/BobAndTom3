@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
+import "./EditPage.css";
 
 const API_URL =
   process.env.REACT_APP_API_URL ||
@@ -15,13 +16,19 @@ const EditCelebrity = () => {
   }, []);
 
   const getCelebrities = () => {
-    Axios.get(`${API_URL}/api/get/celebrities`).then((response) => {
-      setCelebrityList(response.data);
+    Axios.get(`${API_URL}/api/get/celebrities`)
+      .then((response) => {
+        setCelebrityList(response.data);
 
-      if (response.data.length > 0) {
-        setDeleteCelebrity(response.data[0].CelebID);
-      }
-    });
+        if (response.data.length > 0) {
+          setDeleteCelebrity(response.data[0].CelebID);
+        } else {
+          setDeleteCelebrity("");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const addNewCelebrity = async () => {
@@ -32,7 +39,7 @@ const EditCelebrity = () => {
 
     try {
       await Axios.post(`${API_URL}/api/insert/celebrity`, {
-        name: celebName,
+        name: celebName.trim(),
       });
 
       window.alert(`${celebName} added successfully!`);
@@ -66,67 +73,34 @@ const EditCelebrity = () => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        minHeight: "100vh",
-        padding: "40px 20px",
-        boxSizing: "border-box",
-      }}
-    >
-      <h2
-        style={{
-          color: "white",
-          marginBottom: "30px",
-          textAlign: "center",
-        }}
-      >
+    <div className="edit-page">
+      <h2 className="edit-page-title">
         Edit Celebrities
       </h2>
 
-      <div
-        style={{
-          backgroundColor: "black",
-          color: "white",
-          borderRadius: "15px",
-          padding: "30px",
-          width: "100%",
-          maxWidth: "650px",
-          boxSizing: "border-box",
-        }}
-      >
+      <div className="edit-card">
         {/* Add Celebrity */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-            flexWrap: "wrap",
-            marginBottom: "30px",
-          }}
-        >
-          <label
-            style={{
-              minWidth: "100px",
-            }}
-          >
+        <div className="edit-row">
+          <label className="edit-label">
             Celebrity:
           </label>
 
           <input
-            style={{
-              flex: 1,
-              minWidth: "250px",
-              padding: "6px",
-            }}
+            className="edit-input"
+            type="text"
+            placeholder="Enter celebrity name"
             value={celebName}
             onChange={(e) => setCelebName(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                addNewCelebrity();
+              }
+            }}
           />
 
           <button
-            className="btn btn-success"
+            type="button"
+            className="edit-button edit-button-add"
             onClick={addNewCelebrity}
           >
             Add
@@ -134,43 +108,36 @@ const EditCelebrity = () => {
         </div>
 
         {/* Delete Celebrity */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-            flexWrap: "wrap",
-          }}
-        >
-          <label
-            style={{
-              minWidth: "100px",
-            }}
-          >
+        <div className="edit-row">
+          <label className="edit-label">
             Celebrities:
           </label>
 
           <select
-            style={{
-              flex: 1,
-              minWidth: "250px",
-              padding: "6px",
-            }}
+            className="edit-select"
             value={deleteCelebrity}
             onChange={(e) => setDeleteCelebrity(e.target.value)}
+            disabled={celebrityList.length === 0}
           >
-            {celebrityList.map((val) => (
-              <option
-                key={val.CelebID}
-                value={val.CelebID}
-              >
-                {val.Name}
+            {celebrityList.length === 0 ? (
+              <option value="">
+                No celebrities available
               </option>
-            ))}
+            ) : (
+              celebrityList.map((celebrity) => (
+                <option
+                  key={celebrity.CelebID}
+                  value={celebrity.CelebID}
+                >
+                  {celebrity.Name}
+                </option>
+              ))
+            )}
           </select>
 
           <button
-            className="btn btn-danger"
+            type="button"
+            className="edit-button edit-button-delete"
             onClick={() => {
               if (window.confirm("Remove celebrity?")) {
                 removeCelebrity();
