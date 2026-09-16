@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
+import "./editPage.css";
 
 const API_URL =
   process.env.REACT_APP_API_URL ||
@@ -15,13 +16,19 @@ const EditSport = () => {
   }, []);
 
   const getSports = () => {
-    Axios.get(`${API_URL}/api/get/sports`).then((response) => {
-      setSportList(response.data);
+    Axios.get(`${API_URL}/api/get/sports`)
+      .then((response) => {
+        setSportList(response.data);
 
-      if (response.data.length > 0) {
-        setDeleteSport(response.data[0].SportID);
-      }
-    });
+        if (response.data.length > 0) {
+          setDeleteSport(response.data[0].SportID);
+        } else {
+          setDeleteSport("");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const addSport = async () => {
@@ -32,10 +39,10 @@ const EditSport = () => {
 
     try {
       await Axios.post(`${API_URL}/api/insert/sport`, {
-        sport,
+        sport: sport.trim(),
       });
 
-      window.alert(`${sport} added successfully!`);
+      window.alert(`${sport.trim()} added successfully!`);
 
       setSport("");
       getSports();
@@ -66,67 +73,34 @@ const EditSport = () => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        minHeight: "100vh",
-        padding: "40px 20px",
-        boxSizing: "border-box",
-      }}
-    >
-      <h2
-        style={{
-          color: "white",
-          marginBottom: "30px",
-          textAlign: "center",
-        }}
-      >
+    <div className="edit-page">
+      <h2 className="edit-page-title">
         Edit Sports
       </h2>
 
-      <div
-        style={{
-          backgroundColor: "black",
-          color: "white",
-          borderRadius: "15px",
-          padding: "30px",
-          width: "100%",
-          maxWidth: "650px",
-          boxSizing: "border-box",
-        }}
-      >
+      <div className="edit-card">
         {/* Add Sport */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-            flexWrap: "wrap",
-            marginBottom: "30px",
-          }}
-        >
-          <label
-            style={{
-              minWidth: "100px",
-            }}
-          >
+        <div className="edit-row">
+          <label className="edit-label">
             Sport:
           </label>
 
           <input
-            style={{
-              flex: 1,
-              minWidth: "250px",
-              padding: "6px",
-            }}
+            className="edit-input"
+            type="text"
+            placeholder="Enter sport"
             value={sport}
             onChange={(e) => setSport(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                addSport();
+              }
+            }}
           />
 
           <button
-            className="btn btn-success"
+            type="button"
+            className="edit-button edit-button-add"
             onClick={addSport}
           >
             Add
@@ -134,43 +108,36 @@ const EditSport = () => {
         </div>
 
         {/* Delete Sport */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-            flexWrap: "wrap",
-          }}
-        >
-          <label
-            style={{
-              minWidth: "100px",
-            }}
-          >
+        <div className="edit-row">
+          <label className="edit-label">
             Sports:
           </label>
 
           <select
-            style={{
-              flex: 1,
-              minWidth: "250px",
-              padding: "6px",
-            }}
+            className="edit-select"
             value={deleteSport}
             onChange={(e) => setDeleteSport(e.target.value)}
+            disabled={sportList.length === 0}
           >
-            {sportList.map((item) => (
-              <option
-                key={item.SportID}
-                value={item.SportID}
-              >
-                {item.Sport}
+            {sportList.length === 0 ? (
+              <option value="">
+                No sports available
               </option>
-            ))}
+            ) : (
+              sportList.map((item) => (
+                <option
+                  key={item.SportID}
+                  value={item.SportID}
+                >
+                  {item.Sport}
+                </option>
+              ))
+            )}
           </select>
 
           <button
-            className="btn btn-danger"
+            type="button"
+            className="edit-button edit-button-delete"
             onClick={() => {
               if (window.confirm("Remove sport?")) {
                 removeSport();
