@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
+import "./EditPage.css";
 
 const API_URL =
   process.env.REACT_APP_API_URL ||
@@ -15,14 +16,19 @@ const EditAlbum = () => {
   }, []);
 
   const getAlbums = () => {
-    Axios.get(`${API_URL}/api/get/albums`).then((response) => {
-      setAlbumList(response.data);
+    Axios.get(`${API_URL}/api/get/albums`)
+      .then((response) => {
+        setAlbumList(response.data);
 
-      // Select the first album by default
-      if (response.data.length > 0) {
-        setDeleteAlbum(response.data[0].AlbumID);
-      }
-    });
+        if (response.data.length > 0) {
+          setDeleteAlbum(response.data[0].AlbumID);
+        } else {
+          setDeleteAlbum("");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const addAlbum = async () => {
@@ -33,7 +39,7 @@ const EditAlbum = () => {
 
     try {
       await Axios.post(`${API_URL}/api/insert/album`, {
-        album: albumName,
+        album: albumName.trim(),
       });
 
       window.alert(`${albumName} added successfully!`);
@@ -67,67 +73,34 @@ const EditAlbum = () => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        minHeight: "100vh",
-        padding: "40px 20px",
-        boxSizing: "border-box",
-      }}
-    >
-      <h2
-        style={{
-          color: "white",
-          marginBottom: "30px",
-          textAlign: "center",
-        }}
-      >
+    <div className="edit-page">
+      <h2 className="edit-page-title">
         Edit Albums
       </h2>
 
-      <div
-        style={{
-          backgroundColor: "black",
-          color: "white",
-          borderRadius: "15px",
-          padding: "30px",
-          width: "100%",
-          maxWidth: "650px",
-          boxSizing: "border-box",
-        }}
-      >
+      <div className="edit-card">
         {/* Add Album */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-            flexWrap: "wrap",
-            marginBottom: "30px",
-          }}
-        >
-          <label
-            style={{
-              minWidth: "100px",
-            }}
-          >
+        <div className="edit-row">
+          <label className="edit-label">
             Album Name:
           </label>
 
           <input
-            style={{
-              flex: 1,
-              minWidth: "250px",
-              padding: "6px",
-            }}
+            className="edit-input"
+            type="text"
+            placeholder="Enter album name"
             value={albumName}
             onChange={(e) => setAlbumName(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                addAlbum();
+              }
+            }}
           />
 
           <button
-            className="btn btn-success"
+            type="button"
+            className="edit-button edit-button-add"
             onClick={addAlbum}
           >
             Add
@@ -135,43 +108,36 @@ const EditAlbum = () => {
         </div>
 
         {/* Delete Album */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-            flexWrap: "wrap",
-          }}
-        >
-          <label
-            style={{
-              minWidth: "100px",
-            }}
-          >
-            List of Albums:
+        <div className="edit-row">
+          <label className="edit-label">
+            Albums:
           </label>
 
           <select
-            style={{
-              flex: 1,
-              minWidth: "250px",
-              padding: "6px",
-            }}
+            className="edit-select"
             value={deleteAlbum}
             onChange={(e) => setDeleteAlbum(e.target.value)}
+            disabled={albumList.length === 0}
           >
-            {albumList.map((val) => (
-              <option
-                key={val.AlbumID}
-                value={val.AlbumID}
-              >
-                {val.Album_Name}
+            {albumList.length === 0 ? (
+              <option value="">
+                No albums available
               </option>
-            ))}
+            ) : (
+              albumList.map((album) => (
+                <option
+                  key={album.AlbumID}
+                  value={album.AlbumID}
+                >
+                  {album.Album_Name}
+                </option>
+              ))
+            )}
           </select>
 
           <button
-            className="btn btn-danger"
+            type="button"
+            className="edit-button edit-button-delete"
             onClick={() => {
               if (window.confirm("Remove album?")) {
                 removeAlbum();
