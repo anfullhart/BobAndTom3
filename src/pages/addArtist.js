@@ -6,7 +6,7 @@ const API_URL =
   process.env.REACT_APP_API_URL ||
   "https://bobandtombackend-production-fb6d.up.railway.app";
 
-const AddArtist = () => {
+const EditArtist = () => {
   const [artistName, setArtistName] = useState("");
   const [artistList, setArtistList] = useState([]);
   const [deleteArtist, setDeleteArtist] = useState("");
@@ -152,4 +152,4 @@ const AddArtist = () => {
   );
 };
 
-export default AddArtist;
+export default EditArtist;
