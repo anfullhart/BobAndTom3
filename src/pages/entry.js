@@ -28,14 +28,9 @@ const Entry = () => {
     minWidth: "240px",
   };
 
-  const bitButtonStyle = {
+  const newButtonStyle = {
     ...buttonStyle,
-    backgroundColor: "#1d4ed8",
-  };
-
-  const logButtonStyle = {
-    ...buttonStyle,
-    backgroundColor: "#7c3aed",
+    backgroundColor: "#f97316",
   };
 
   return (
@@ -69,12 +64,12 @@ const Entry = () => {
         >
           <Link
             to="/addBit"
-            style={bitButtonStyle}
+            style={newButtonStyle}
             onMouseEnter={(e) =>
-              (e.currentTarget.style.backgroundColor = "#1e40af")
+              (e.currentTarget.style.backgroundColor = "#ea580c")
             }
             onMouseLeave={(e) =>
-              (e.currentTarget.style.backgroundColor = "#1d4ed8")
+              (e.currentTarget.style.backgroundColor = "#f97316")
             }
           >
             Add New Bit
@@ -82,12 +77,12 @@ const Entry = () => {
 
           <Link
             to="/addToday"
-            style={logButtonStyle}
+            style={newButtonStyle}
             onMouseEnter={(e) =>
-              (e.currentTarget.style.backgroundColor = "#6d28d9")
+              (e.currentTarget.style.backgroundColor = "#ea580c")
             }
             onMouseLeave={(e) =>
-              (e.currentTarget.style.backgroundColor = "#7c3aed")
+              (e.currentTarget.style.backgroundColor = "#f97316")
             }
           >
             Add New Log
