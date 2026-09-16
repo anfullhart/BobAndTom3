@@ -99,7 +99,7 @@ const Entry = () => {
           }}
         >
           <Link
-            to="/addArtist"
+            to="/editArtist"
             style={buttonStyle}
             onMouseEnter={(e) =>
               (e.currentTarget.style.backgroundColor = "grey")
