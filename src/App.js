@@ -80,7 +80,7 @@ function App() {
 
         <Route path="/logResults" element={<ProtectedRoute><LogResults /></ProtectedRoute>} />
         <Route path="/editLog" element={<RoleProtectedRoute allowedRoles={["admin", "owner"]}><EditLog /></RoleProtectedRoute>} />
-        <Route path="/editArtist" element={<RoleProtectedRoute allowedRoles={["admin", "owner"]}><AddArtist /></RoleProtectedRoute>} />
+        <Route path="/editArtist" element={<RoleProtectedRoute allowedRoles={["admin", "owner"]}><EditArtist /></RoleProtectedRoute>} />
         <Route path="/editCelebrity" element={<RoleProtectedRoute allowedRoles={["admin", "owner"]}><EditCelebrity /></RoleProtectedRoute>} />
         <Route path="/editSeason" element={<RoleProtectedRoute allowedRoles={["admin", "owner"]}><EditSeason /></RoleProtectedRoute>} />
         <Route path="/editSport" element={<RoleProtectedRoute allowedRoles={["admin", "owner"]}><EditSport /></RoleProtectedRoute>} />
