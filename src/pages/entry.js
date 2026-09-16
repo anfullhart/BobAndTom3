@@ -28,6 +28,16 @@ const Entry = () => {
     minWidth: "240px",
   };
 
+  const bitButtonStyle = {
+    ...buttonStyle,
+    backgroundColor: "#1d4ed8",
+  };
+
+  const logButtonStyle = {
+    ...buttonStyle,
+    backgroundColor: "#7c3aed",
+  };
+
   return (
     <div
       style={{
@@ -48,6 +58,7 @@ const Entry = () => {
           alignItems: "center",
         }}
       >
+        {/* Main Entry Actions */}
         <div
           style={{
             display: "flex",
@@ -58,49 +69,32 @@ const Entry = () => {
         >
           <Link
             to="/addBit"
-            style={buttonStyle}
-            onMouseEnter={(e) => (e.target.style.backgroundColor = "grey")}
-            onMouseLeave={(e) => (e.target.style.backgroundColor = "black")}
+            style={bitButtonStyle}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor = "#1e40af")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor = "#1d4ed8")
+            }
           >
-            Add New Entry
+            Add New Bit
           </Link>
 
           <Link
             to="/addToday"
-            style={buttonStyle}
-            onMouseEnter={(e) => (e.target.style.backgroundColor = "grey")}
-            onMouseLeave={(e) => (e.target.style.backgroundColor = "black")}
+            style={logButtonStyle}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor = "#6d28d9")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor = "#7c3aed")
+            }
           >
-            Today's Log
+            Add New Log
           </Link>
         </div>
-        <div
-          style={{
-            display: "flex",
-            gap: "20px",
-            flexWrap: "wrap",
-            justifyContent: "center",
-          }}
-        >
-        <Link
-          to="/addArtist"
-          style={buttonStyle}
-          onMouseEnter={(e) => (e.target.style.backgroundColor = "grey")}
-          onMouseLeave={(e) => (e.target.style.backgroundColor = "black")}
-        >
-          Edit Artists
-        </Link>
 
-        
-         <Link
-          to="/editAlbum"
-          style={buttonStyle}
-          onMouseEnter={(e) => (e.target.style.backgroundColor = "grey")}
-          onMouseLeave={(e) => (e.target.style.backgroundColor = "black")}
-        >
-          Edit Albums
-        </Link>
-        </div>
+        {/* Artists / Albums */}
         <div
           style={{
             display: "flex",
@@ -110,23 +104,33 @@ const Entry = () => {
           }}
         >
           <Link
-          to="/editCelebrity"
-          style={buttonStyle}
-          onMouseEnter={(e) => (e.target.style.backgroundColor = "grey")}
-          onMouseLeave={(e) => (e.target.style.backgroundColor = "black")}
-        >
-          Edit Celebrities
-        </Link>
-        <Link
-          to="/editSeason"
-          style={buttonStyle}
-          onMouseEnter={(e) => (e.target.style.backgroundColor = "grey")}
-          onMouseLeave={(e) => (e.target.style.backgroundColor = "black")}
-        >
-          Edit Seasons
-        </Link>
-       
+            to="/addArtist"
+            style={buttonStyle}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor = "grey")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor = "black")
+            }
+          >
+            Edit Artists
+          </Link>
+
+          <Link
+            to="/editAlbum"
+            style={buttonStyle}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor = "grey")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor = "black")
+            }
+          >
+            Edit Albums
+          </Link>
         </div>
+
+        {/* Celebrities / Seasons */}
         <div
           style={{
             display: "flex",
@@ -135,23 +139,67 @@ const Entry = () => {
             justifyContent: "center",
           }}
         >
-           <Link
-          to="/editSport"
-          style={buttonStyle}
-          onMouseEnter={(e) => (e.target.style.backgroundColor = "grey")}
-          onMouseLeave={(e) => (e.target.style.backgroundColor = "black")}
+          <Link
+            to="/editCelebrity"
+            style={buttonStyle}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor = "grey")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor = "black")
+            }
+          >
+            Edit Celebrities
+          </Link>
+
+          <Link
+            to="/editSeason"
+            style={buttonStyle}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor = "grey")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor = "black")
+            }
+          >
+            Edit Seasons
+          </Link>
+        </div>
+
+        {/* Sports / Subjects */}
+        <div
+          style={{
+            display: "flex",
+            gap: "20px",
+            flexWrap: "wrap",
+            justifyContent: "center",
+          }}
         >
-          Edit Sports
-        </Link>
-            <Link
-          to="/editSubject"
-          style={buttonStyle}
-          onMouseEnter={(e) => (e.target.style.backgroundColor = "grey")}
-          onMouseLeave={(e) => (e.target.style.backgroundColor = "black")}
-        >
-          Edit Subjects
-        </Link>
-       
+          <Link
+            to="/editSport"
+            style={buttonStyle}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor = "grey")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor = "black")
+            }
+          >
+            Edit Sports
+          </Link>
+
+          <Link
+            to="/editSubject"
+            style={buttonStyle}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor = "grey")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor = "black")
+            }
+          >
+            Edit Subjects
+          </Link>
         </div>
       </div>
     </div>
