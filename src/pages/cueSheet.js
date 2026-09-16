@@ -7,7 +7,7 @@ const CueSheet = () => {
     return(
         
         <div style={{backgroundColor: 'black', color:'white', fontSize:'15px', marginTop:'50px', marginLeft:'200px', paddingLeft:'20px', paddingRight:'20px', paddingTop:'10px', paddingBottom:'10px', borderRadius:'15px', width:'1100px', height:'500px'}}>
-            <div style={{fontSize:'30px', marginLeft:'42%', paddingBottom:'10px', color: '#979bdb'}}>Cue Sheet</div>
+            <div style={{fontSize:'30px', marginLeft:'42%', paddingBottom:'10px', color: '#979bdb'}}>Cue Sheet (This is a legacy page from the old system, it is here to preserve the original fields if this page is ever needed. This page is not functional.</div>
             <label for='file'>Select Cue Sheet:
                 <input type='file' name='file' style={{marginLeft:'5px'}} ></input>
             </label>
