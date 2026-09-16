@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
+import "./editPage.css";
 
 const API_URL =
   process.env.REACT_APP_API_URL ||
@@ -15,13 +16,19 @@ const AddArtist = () => {
   }, []);
 
   const getArtists = () => {
-    Axios.get(`${API_URL}/api/get/artist`).then((response) => {
-      setArtistList(response.data);
+    Axios.get(`${API_URL}/api/get/artist`)
+      .then((response) => {
+        setArtistList(response.data);
 
-      if (response.data.length > 0) {
-        setDeleteArtist(response.data[0].ArtistID);
-      }
-    });
+        if (response.data.length > 0) {
+          setDeleteArtist(response.data[0].ArtistID);
+        } else {
+          setDeleteArtist("");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const addNewArtist = async () => {
@@ -32,7 +39,7 @@ const AddArtist = () => {
 
     try {
       await Axios.post(`${API_URL}/api/insert/artist`, {
-        name: artistName,
+        name: artistName.trim(),
       });
 
       window.alert(`${artistName} added successfully!`);
@@ -66,67 +73,34 @@ const AddArtist = () => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        minHeight: "100vh",
-        padding: "40px 20px",
-        boxSizing: "border-box",
-      }}
-    >
-      <h2
-        style={{
-          color: "white",
-          marginBottom: "30px",
-          textAlign: "center",
-        }}
-      >
+    <div className="edit-page">
+      <h2 className="edit-page-title">
         Edit Artists
       </h2>
 
-      <div
-        style={{
-          backgroundColor: "black",
-          color: "white",
-          borderRadius: "15px",
-          padding: "30px",
-          width: "100%",
-          maxWidth: "650px",
-          boxSizing: "border-box",
-        }}
-      >
+      <div className="edit-card">
         {/* Add Artist */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-            flexWrap: "wrap",
-            marginBottom: "30px",
-          }}
-        >
-          <label
-            style={{
-              minWidth: "100px",
-            }}
-          >
+        <div className="edit-row">
+          <label className="edit-label">
             Artist:
           </label>
 
           <input
-            style={{
-              flex: 1,
-              minWidth: "250px",
-              padding: "6px",
-            }}
+            className="edit-input"
+            type="text"
+            placeholder="Enter artist name"
             value={artistName}
             onChange={(e) => setArtistName(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                addNewArtist();
+              }
+            }}
           />
 
           <button
-            className="btn btn-success"
+            type="button"
+            className="edit-button edit-button-add"
             onClick={addNewArtist}
           >
             Add
@@ -134,43 +108,36 @@ const AddArtist = () => {
         </div>
 
         {/* Delete Artist */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-            flexWrap: "wrap",
-          }}
-        >
-          <label
-            style={{
-              minWidth: "100px",
-            }}
-          >
+        <div className="edit-row">
+          <label className="edit-label">
             Artists:
           </label>
 
           <select
-            style={{
-              flex: 1,
-              minWidth: "250px",
-              padding: "6px",
-            }}
+            className="edit-select"
             value={deleteArtist}
             onChange={(e) => setDeleteArtist(e.target.value)}
+            disabled={artistList.length === 0}
           >
-            {artistList.map((artist) => (
-              <option
-                key={artist.ArtistID}
-                value={artist.ArtistID}
-              >
-                {artist.Name}
+            {artistList.length === 0 ? (
+              <option value="">
+                No artists available
               </option>
-            ))}
+            ) : (
+              artistList.map((artist) => (
+                <option
+                  key={artist.ArtistID}
+                  value={artist.ArtistID}
+                >
+                  {artist.Name}
+                </option>
+              ))
+            )}
           </select>
 
           <button
-            className="btn btn-danger"
+            type="button"
+            className="edit-button edit-button-delete"
             onClick={() => {
               if (window.confirm("Remove artist?")) {
                 removeArtist();
