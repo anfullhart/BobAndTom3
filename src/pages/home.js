@@ -40,7 +40,7 @@ const Home = () => {
           onMouseEnter={(e) => (e.target.style.backgroundColor = "grey")}
           onMouseLeave={(e) => (e.target.style.backgroundColor = "black")}
         >
-          Search Media Entries
+          Search Bit Database
         </Link>
 
         <Link
@@ -49,7 +49,7 @@ const Home = () => {
           onMouseEnter={(e) => (e.target.style.backgroundColor = "grey")}
           onMouseLeave={(e) => (e.target.style.backgroundColor = "black")}
         >
-          Search Run Sheets
+          Search Run Sheet Database
         </Link>
       </div>
     </div>
