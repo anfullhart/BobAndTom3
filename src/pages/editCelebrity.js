@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
-import "./EditPage.css";
+import "./editPage.css";
 
 const API_URL =
   process.env.REACT_APP_API_URL ||
