@@ -1,0 +1,242 @@
+/* =========================================
+   Shared Edit Pages
+   ========================================= */
+
+.edit-page {
+  min-height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 50px 20px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  background: linear-gradient(135deg, #111111 0%, #1f1f1f 100%);
+}
+
+/* Page title */
+.edit-page-title {
+  margin: 0 0 30px;
+
+  color: #ffffff;
+  text-align: center;
+
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* Main black card */
+.edit-card {
+  width: 100%;
+  max-width: 700px;
+
+  box-sizing: border-box;
+
+  padding: 35px;
+
+  background: #000000;
+  color: #ffffff;
+
+  border: 1px solid #2f2f2f;
+  border-radius: 18px;
+
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+}
+
+/* Add/delete rows */
+.edit-row {
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+
+  gap: 14px;
+}
+
+.edit-row + .edit-row {
+  margin-top: 30px;
+}
+
+/* Labels */
+.edit-label {
+  min-width: 120px;
+
+  color: #ffffff;
+
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* Inputs and select boxes */
+.edit-input,
+.edit-select {
+  flex: 1;
+
+  min-width: 0;
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding: 10px 12px;
+
+  background-color: #ffffff;
+  color: #111111;
+
+  border: 1px solid #555555;
+  border-radius: 7px;
+
+  font-size: 1rem;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+/* Input placeholder */
+.edit-input::placeholder {
+  color: #777777;
+}
+
+/* Focus effect */
+.edit-input:focus,
+.edit-select:focus {
+  border-color: #0d6efd;
+
+  box-shadow:
+    0 0 0 3px rgba(13, 110, 253, 0.2);
+}
+
+/* Dropdown */
+.edit-select {
+  cursor: pointer;
+}
+
+/* Disabled dropdown */
+.edit-select:disabled {
+  background-color: #dddddd;
+  color: #777777;
+  cursor: not-allowed;
+}
+
+/* =========================================
+   Buttons
+   ========================================= */
+
+.edit-button {
+  padding: 10px 20px;
+
+  border: none;
+  border-radius: 7px;
+
+  font-size: 0.95rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.edit-button:hover {
+  transform: translateY(-1px);
+}
+
+.edit-button:active {
+  transform: translateY(0);
+}
+
+/* Add button */
+.edit-button-add {
+  background-color: #198754;
+  color: #ffffff;
+}
+
+.edit-button-add:hover {
+  background-color: #157347;
+
+  box-shadow:
+    0 4px 12px rgba(25, 135, 84, 0.35);
+}
+
+/* Delete button */
+.edit-button-delete {
+  background-color: #dc3545;
+  color: #ffffff;
+}
+
+.edit-button-delete:hover {
+  background-color: #bb2d3b;
+
+  box-shadow:
+    0 4px 12px rgba(220, 53, 69, 0.35);
+}
+
+/* =========================================
+   Responsive Design
+   ========================================= */
+
+@media (max-width: 600px) {
+  .edit-page {
+    padding: 30px 15px;
+  }
+
+  .edit-page-title {
+    margin-bottom: 22px;
+    font-size: 1.6rem;
+  }
+
+  .edit-card {
+    padding: 24px 20px;
+    border-radius: 14px;
+  }
+
+  .edit-row {
+    flex-direction: column;
+    align-items: stretch;
+
+    gap: 8px;
+  }
+
+  .edit-row + .edit-row {
+    margin-top: 28px;
+  }
+
+  .edit-label {
+    min-width: unset;
+  }
+
+  .edit-input,
+  .edit-select {
+    width: 100%;
+  }
+
+  .edit-button {
+    width: 100%;
+    padding: 11px;
+  }
+}
+
+/* =========================================
+   Small Phones
+   ========================================= */
+
+@media (max-width: 400px) {
+  .edit-page {
+    padding: 20px 10px;
+  }
+
+  .edit-card {
+    padding: 20px 15px;
+  }
+
+  .edit-page-title {
+    font-size: 1.4rem;
+  }
+}
